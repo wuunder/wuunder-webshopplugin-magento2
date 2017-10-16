@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Config/etc/system_file.xsd">
+    <system>
+        <tab id="wuunder" translate="label" sortOrder="10">
+            <label>Wuunder</label>
+        </tab>
+
+        <section id="wuunder_wuunderconnector" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Wuunder_Wuunderconnector</label>
+            <tab>wuunder</tab>
+            <resource>Wuunder_Wuunderconnector::wuunder_wuunderconnector</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General</label>
+                <field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Connector</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="testmode" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Testmode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If Yes, staging API is used. Set to No, for live mode.</comment>
+                </field>
+                <field id="api_key_live" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Live API key</label>
+                    <comment>Used when Testmode = No</comment>
+                </field>
+                <field id="api_key_test" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Test API key</label>
+                    <comment>Used when Testmode = Yes</comment>
+                </field>
+                <field id="company" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Company name</label>
+                </field>
+                <field id="firstname" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Firstname</label>
+                </field>
+                <field id="lastname" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Lastname</label>
+                </field>
+                <field id="email" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email</label>
+                </field>
+                <field id="phone" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Phonenumber</label>
+                    <comment>Phonenumber with country code prefix e.g. +31612345678</comment>
+                </field>
+                <field id="streetname" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Street name</label>
+                </field>
+                <field id="housenumber" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Housenumber</label>
+                </field>
+                <field id="zipcode" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Zipcode</label>
+                </field>
+                <field id="city" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>City</label>
+                </field>
+                <field id="country" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Country</label>
+                    <comment>Country code, use ISO 3166-1 alpha-2 format e.g. NL</comment>
+                </field>
+            </group>
+        </section>
+
+    </system>
+</config>

@@ -36,6 +36,9 @@ class Status extends Column
 
     private function renderIcons($item)
     {
+        //<a class="action-menu-item" data-bind="attr: {href: $action().href}, text: $action().label, click: $col.getActionHandler($action())" data-repeat-index="0" href="http://188.226.134.167/magento2/admin/sales/order/view/order_id/1/key/61064304d062385ce5fd0c8804cdd722e4aba3c67585b0535388fa09da162ccf/">View</a>
+
+
         $orderId = $item['entity_id'];
 //        $order = Mage::getModel('sales/order')->load($orderId);
 //        $shipping_method = $order->getShippingMethod();
@@ -43,7 +46,7 @@ class Status extends Column
 //        if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'))) ||
 //            in_array("wuunder_default_all_selected", explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
         if (!empty($item['label_id'])) {
-            $icons = '<li class="wuunder-label-download"><a href="' . $item['label_url'] . '"  target="_blank" title="Print verzendlabel"></a></li>';
+            $icons = '<li class="wuunder-label-download"><a data-bind="attr: {href: $action().href}, text: $action().label, click: $col.getActionHandler($action())" href="' . $item['label_url'] . '"  target="_blank" title="Print verzendlabel"></a></li>';
         } else if (!empty($item['booking_url'])) {
             //http://188.226.134.167/magento2/admin/sales/order/index/key/f6ac9a2ab01eabf2ff352450b72bc4dbdd02ff1fc776ca4cf7a78218bf43b5a2/
             if (strpos($item['booking_url'], 'http:') === 0 || strpos($item['booking_url'], 'https:') === 0) {
@@ -58,9 +61,9 @@ class Status extends Column
                     $booking_url = 'https://api.wuunder.co' . $item['booking_url'];
                 }
             }
-            $icons = '<li class="wuunder-label-create"><a href="' . $booking_url . '" title="Verzendlabel aanmaken"></a></li>';
+            $icons = '<li class="wuunder-label-create"><a data-bind="attr: {href: $action().href}, text: $action().label, click: $col.getActionHandler($action())" href="' . $booking_url . '" title="Verzendlabel aanmaken"></a></li>';
         } else {
-            $icons = '<li class="wuunder-label-create"><a href="' . $this->_urlBuilder->getUrl('wuunder/index/label') . '" title="Verzendlabel aanmaken"></a></li>';
+            $icons = '<li class="wuunder-label-create"><a data-bind="attr: {href: $action().href}, text: $action().label, click: $col.getActionHandler($action())" href="' . $this->_urlBuilder->getUrl('wuunder/index/label', ["orderId" => $orderId]) . '" title="Verzendlabel aanmaken"></a></li>';
         }
 //        }
 
