@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
     <columns name="sales_order_columns">
-        <column name="export_status" class="Wuunder\Wuunderconnector\Ui\Component\Listing\Column\Status">
+        <actionsColumn name="export_status" class="Wuunder\Wuunderconnector\Ui\Component\Listing\Column\Status">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">text</item>
@@ -10,6 +10,6 @@
                     <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
                 </item>
             </argument>
-        </column>
+        </actionsColumn>
     </columns>
 </listing>

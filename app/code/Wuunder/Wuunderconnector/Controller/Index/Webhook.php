@@ -4,11 +4,16 @@ namespace Wuunder\Wuunderconnector\Controller\Index;
 
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Sales\Model\Order;
 
 class Webhook extends \Magento\Framework\App\Action\Action
 {
-    public function __construct(Context $context)
+
+    protected $scopeConfig;
+
+    public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
     {
+        $this->scopeConfig = $scopeConfig;
         parent::__construct($context);
     }
 
@@ -26,15 +31,16 @@ class Webhook extends \Magento\Framework\App\Action\Action
             $sql = "UPDATE " . $tableName . " SET label_id = '".$result['id']."', label_url = '".$result['label_url']."', tt_url = '".$result['track_and_trace_url']."' WHERE order_id = ".$this->getRequest()->getParam('order_id');
 //            $connection->query($sql, array($result['id'], $result['label_url'], $result['track_and_trace_url'], $this->getRequest()->getParam('order_id')));
             $connection->query($sql);
-//            $processDataSuccess = Mage::helper('wuunderconnector')->processDataFromApi($result['shipment'], "no_retour", $this->getRequest()->getParam('order_id'), $this->getRequest()->getParam('token'));
-//            if (!$processDataSuccess) {
-//                Mage::helper('wuunderconnector')->log("Cannot update wuunder_shipment data");
-//            } else {
-//                $this->ship($this->getRequest()->getParam('order_id'), $result['shipment']['id']);
-//            }
-        } else {
-//            Mage::helper('wuunderconnector')->log("Invalid order_id for webhook");
+            $this->ship($this->getRequest()->getParam('order_id'));
         }
 
+    }
+
+    private function ship($order_id) {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $order = $objectManager->create('\Magento\Sales\Model\Order') ->load($order_id);
+        $orderState = $this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/post_booking_status');
+        $order->setState($orderState)->setStatus($this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/post_booking_status'));
+        $order->save();
     }
 }

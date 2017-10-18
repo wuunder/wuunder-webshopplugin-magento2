@@ -32,8 +32,6 @@ class Label extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         return $this->processOrderInfo();
-//        $resultPage = $this->_resultPageFactory->create();
-//        return $resultPage;
     }
 
     private function processOrderInfo()
@@ -47,7 +45,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/enable');
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
-        $redirect_url = urlencode($this->HelperBackend->getHomePageUrl() . 'sales/order');
+        $redirect_url = urlencode($this->HelperBackend->getUrl('sales/order'));
         $webhook_url = urlencode($this->_storeManager->getStore()->getBaseUrl() . 'wuunder/index/webhook/order_id/' . $orderId);
 
         if ($test_mode == 1) {
@@ -115,7 +113,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $shipmentDescription = "";
         foreach ($order->getAllItems() as $item) {
             $product = $this->_productloader->create()->load($item->getProductId());
-            $shipmentDescription .= $product->getShortDescription() . " ";
+            $shipmentDescription .= $product->getName() . " ";
         }
 
         $phonenumber = trim($shippingAdr->getTelephone());
@@ -139,8 +137,15 @@ class Label extends \Magento\Framework\App\Action\Action
 
         $shippingLastname = $shippingAddress->getLastname();
 
-        $streetName = $shippingAddress->getStreet()[0];
-        $houseNumber = $shippingAddress->getStreet()[1];
+        $streetAddress = $shippingAddress->getStreet();
+        if (count($streetAddress) > 1) {
+            $streetName = $streetAddress[0];
+            $houseNumber = $streetAddress[1];
+        } else {
+            $streetAddress = $this->addressSplitter($streetAddress[0]);
+            $streetName = $streetAddress['streetName'];
+            $houseNumber = $streetAddress['houseNumber'] . $shippingAddress['houseNumberSuffix'];
+        }
 
         // Fix DPD parcelshop first- and lastname override fix
         $firstname = $shippingAddress->getFirstname();
@@ -173,20 +178,19 @@ class Label extends \Magento\Framework\App\Action\Action
             'country' => $this->scopeConfig->getValue('wuunder_wuunderconnector/general/country')
         );
 
-        $orderAmountExclVat = round(($order->getGrandTotal() - $order->getTaxAmount() - $order->getShippingAmount()) * 100);
-        if ($orderAmountExclVat <= 0) {
-            $orderAmountExclVat = 2500;
-        }
-
         // Load product image for first ordered item
         $image = '';
         $orderedItems = $order->getAllVisibleItems();
         if (count($orderedItems) > 0) {
             foreach ($orderedItems AS $orderedItem) {
                 $_product = $this->_productloader->create()->load($orderedItem->getProductId());
+                $imageUrl = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage();
                 try {
-//                    $base64Image = base64_encode(file_get_contents($_product->getData('image')));
-                    $base64Image = "";
+                    if (!empty($_product->getImage())) {
+                        $base64Image = base64_encode(file_get_contents($imageUrl));
+                    } else {
+                        $base64Image = "";
+                    }
                 } catch (Exception $e) {
                     $base64Image = '';
                 }
@@ -207,5 +211,23 @@ class Label extends \Magento\Framework\App\Action\Action
             'pickup_address' => $webshopAdr,
             'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.0", "plugin" => "1.0"))
         );
+    }
+
+    private function addressSplitter($address)
+    {
+        if (!isset($address)) {
+            return false;
+        }
+
+        // Pregmatch pattern, dutch addresses
+        $pattern = '#^([a-z0-9 [:punct:]\']*) ([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
+
+        preg_match($pattern, $address, $addressParts);
+
+        $result['streetName'] = isset($addressParts[1]) ? $addressParts[1] : $address;
+        $result['houseNumber'] = isset($addressParts[2]) ? $addressParts[2] : "";
+        $result['houseNumberSuffix'] = (isset($addressParts[3])) ? $addressParts[3] : '';
+
+        return $result;
     }
 }

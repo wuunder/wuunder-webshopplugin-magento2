@@ -61,6 +61,13 @@
                     <comment>Country code, use ISO 3166-1 alpha-2 format e.g. NL</comment>
                 </field>
             </group>
+            <group id="advanced" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Advanced settings</label>
+                <field id="post_booking_status" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Set order status after booking to:</label>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
+            </group>
         </section>
 
     </system>
