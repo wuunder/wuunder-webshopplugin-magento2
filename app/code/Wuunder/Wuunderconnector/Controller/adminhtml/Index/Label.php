@@ -202,6 +202,15 @@ class Label extends \Magento\Framework\App\Action\Action
             }
         }
 
+        $preferredServiceLevel = null;
+        $usedShippingMethod = $order->getShippingMethod();
+        for ($i = 1; $i < 5; $i++) {
+            if ($this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/filtermapping_' . $i . '_carrier') === $usedShippingMethod) {
+                $preferredServiceLevel = $this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/filtermapping_' . $i . '_filter');
+                break;
+            }
+        }
+
         return array(
             'description' => $infoArray['description'],
             'personal_message' => $infoArray['personal_message'],
@@ -209,6 +218,7 @@ class Label extends \Magento\Framework\App\Action\Action
             'customer_reference' => $order->getIncrementId(),
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
+            'preferred_service_level' => $preferredServiceLevel,
             'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.0", "plugin" => "1.0"))
         );
     }

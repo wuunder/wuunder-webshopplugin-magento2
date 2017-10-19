@@ -67,6 +67,34 @@
                     <label>Set order status after booking to:</label>
                     <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
                 </field>
+                <field id="filtermapping_1_carrier" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 1 - Carrier</label>
+                    <source_model>\Magento\Shipping\Model\Config\Source\Allmethods</source_model>
+                </field>
+                <field id="filtermapping_1_filter" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 1 - Filter</label>
+                </field>
+                <field id="filtermapping_2_carrier" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 2 - Carrier</label>
+                    <source_model>\Magento\Shipping\Model\Config\Source\Allmethods</source_model>
+                </field>
+                <field id="filtermapping_2_filter" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 2 - Filter</label>
+                </field>
+                <field id="filtermapping_3_carrier" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 3 - Carrier</label>
+                    <source_model>\Magento\Shipping\Model\Config\Source\Allmethods</source_model>
+                </field>
+                <field id="filtermapping_3_filter" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 3 - Filter</label>
+                </field>
+                <field id="filtermapping_4_carrier" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 4 - Carrier</label>
+                    <source_model>\Magento\Shipping\Model\Config\Source\Allmethods</source_model>
+                </field>
+                <field id="filtermapping_4_filter" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter mapping 4 - Filter</label>
+                </field>
             </group>
         </section>
 

@@ -45,7 +45,7 @@ class Status extends Column
         $icons = '';
 //        if (in_array($shipping_method, explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods'))) ||
 //            in_array("wuunder_default_all_selected", explode(",", Mage::getStoreConfig('wuunderconnector/connect/wuunder_enabled_shipping_methods')))) {
-        if (!empty($item['label_id'])) {
+        if (!is_null($item['label_id'])) {
             $icons = '<li class="wuunder-label-download"><a href="' . $item['label_url'] . '"  target="_blank" title="Print verzendlabel"></a></li>';
             $icons .= '<li class="wuunder-label-tracktrace"><a href="' . $item['tt_url'] . '"  target="_blank" title="Bekijk Track&Trace info"></a></li>';
         } else if (!empty($item['booking_url'])) {
