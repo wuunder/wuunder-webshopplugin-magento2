@@ -42,7 +42,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $order = $this->orderRepository->get($orderId);
 
         // Get configuration
-        $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/enable');
+        $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
         $booking_token = uniqid();
         $infoArray['booking_token'] = $booking_token;
         $redirect_url = urlencode($this->HelperBackend->getUrl('sales/order'));
