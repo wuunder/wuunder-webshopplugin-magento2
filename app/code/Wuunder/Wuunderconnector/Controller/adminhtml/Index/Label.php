@@ -3,7 +3,7 @@
 namespace Wuunder\Wuunderconnector\Controller\adminhtml\Index;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\Result;
 
 class Label extends \Magento\Framework\App\Action\Action
 {
@@ -11,20 +11,16 @@ class Label extends \Magento\Framework\App\Action\Action
     protected $orderRepository;
     protected $_productloader;
     protected $scopeConfig;
-    protected $_urlBuilder;
     protected $_storeManager;
-    protected $resultRedirect;
     protected $HelperBackend;
 
-    public function __construct(Context $context, \Magento\Framework\View\Result\PageFactory $resultPageFactory, \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, \Magento\Catalog\Model\ProductFactory $_productloader, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Magento\Framework\UrlInterface $urlBuilder, \Magento\Store\Model\StoreManagerInterface $storeManager, \Magento\Framework\Controller\ResultFactory $result, \Magento\Backend\Helper\Data $HelperBackend)
+    public function __construct(Context $context, \Magento\Framework\View\Result\PageFactory $resultPageFactory, \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, \Magento\Catalog\Model\ProductFactory $_productloader, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Magento\Store\Model\StoreManagerInterface $storeManager, \Magento\Backend\Helper\Data $HelperBackend)
     {
         $this->_resultPageFactory = $resultPageFactory;
         $this->orderRepository = $orderRepository;
         $this->_productloader = $_productloader;
         $this->scopeConfig = $scopeConfig;
-        $this->_urlBuilder = $urlBuilder;
         $this->_storeManager = $storeManager;
-        $this->resultRedirect = $result;
         $this->HelperBackend = $HelperBackend;
         parent::__construct($context);
     }
@@ -79,6 +75,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
         $header = substr($result, 0, $header_size);
         preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
+        var_dump($result);
         $url = $matches[1];
 
         // Close connection
@@ -86,10 +83,9 @@ class Label extends \Magento\Framework\App\Action\Action
 
         // Create or update wuunder_shipment
         $this->saveWuunderShipment($orderId, $url, "testtoken");
-        $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setUrl($url);
 
-        return $resultRedirect;
+        $this->_redirect($url);
+        return true;
     }
 
     private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
