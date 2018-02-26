@@ -175,7 +175,7 @@ class Label extends \Magento\Framework\App\Action\Action
         );
 
         // Load product image for first ordered item
-        $image = '';
+        $image = null;
         $orderedItems = $order->getAllVisibleItems();
         if (count($orderedItems) > 0) {
             foreach ($orderedItems AS $orderedItem) {
@@ -183,14 +183,19 @@ class Label extends \Magento\Framework\App\Action\Action
                 $imageUrl = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage();
                 try {
                     if (!empty($_product->getImage())) {
-                        $base64Image = base64_encode(file_get_contents($imageUrl));
+                        $data = @file_get_contents($imageUrl);
+                        if ($data) {
+                            $base64Image = base64_encode($data);
+                        } else {
+                            $base64Image = null;
+                        }
                     } else {
-                        $base64Image = "";
+                        $base64Image = null;
                     }
                 } catch (Exception $e) {
-                    $base64Image = '';
+                    $base64Image = null;
                 }
-                if ($base64Image != '') {
+                if (!is_null($base64Image)) {
                     // Break after first image
                     $image = $base64Image;
                     break;
@@ -215,7 +220,7 @@ class Label extends \Magento\Framework\App\Action\Action
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $preferredServiceLevel,
-            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.2", "plugin" => "1.0"))
+            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.3", "plugin" => "1.0"))
         );
     }
 
