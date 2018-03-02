@@ -33,58 +33,63 @@ class Label extends \Magento\Framework\App\Action\Action
     private function processOrderInfo()
     {
         $orderId = $this->getRequest()->getParam('orderId');
-        $infoArray = $this->getOrderInfo($orderId);
-        // Fetch order
-        $order = $this->orderRepository->get($orderId);
+        if (!$this->wuunderShipmentExists($orderId)) {
+            $infoArray = $this->getOrderInfo($orderId);
+            // Fetch order
+            $order = $this->orderRepository->get($orderId);
 
-        // Get configuration
-        $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
-        $booking_token = uniqid();
-        $infoArray['booking_token'] = $booking_token;
-        $redirect_url = urlencode($this->HelperBackend->getUrl('sales/order'));
-        $webhook_url = urlencode($this->_storeManager->getStore()->getBaseUrl() . 'wuunder/index/webhook/order_id/' . $orderId);
+            // Get configuration
+            $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
+            $booking_token = uniqid();
+            $infoArray['booking_token'] = $booking_token;
+            $redirect_url = urlencode($this->HelperBackend->getUrl('sales/order'));
+            $webhook_url = urlencode($this->_storeManager->getStore()->getBaseUrl() . 'wuunder/index/webhook/order_id/' . $orderId);
 
-        if ($test_mode == 1) {
-            $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
-            $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
+            if ($test_mode == 1) {
+                $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
+                $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
+            } else {
+                $apiUrl = 'https://api.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
+                $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
+            }
+
+            // Combine wuunder info and order data
+            $wuunderData = $this->buildWuunderData($infoArray, $order);
+
+            // Encode variables
+            $json = json_encode($wuunderData);
+            // Setup API connection
+            $cc = curl_init($apiUrl);
+
+            curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
+            curl_setopt($cc, CURLOPT_POST, 1);
+            curl_setopt($cc, CURLOPT_POSTFIELDS, $json);
+            curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($cc, CURLOPT_VERBOSE, 1);
+            curl_setopt($cc, CURLOPT_HEADER, 1);
+
+            // Don't log base64 image string
+            $wuunderData['picture'] = 'base64 string removed for logging';
+
+            // Execute the cURL, fetch the XML
+            $result = curl_exec($cc);
+            $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
+            $header = substr($result, 0, $header_size);
+            preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
+            $url = $matches[1];
+
+            // Close connection
+            curl_close($cc);
+
+            // Create or update wuunder_shipment
+            $this->saveWuunderShipment($orderId, $url, "testtoken");
+
+            $this->_redirect($url);
         } else {
-            $apiUrl = 'https://api.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
-            $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
+            $redirect_url = $this->HelperBackend->getUrl('sales/order');
+            $this->_redirect($redirect_url);
+
         }
-
-        // Combine wuunder info and order data
-        $wuunderData = $this->buildWuunderData($infoArray, $order);
-
-        // Encode variables
-        $json = json_encode($wuunderData);
-        // Setup API connection
-        $cc = curl_init($apiUrl);
-
-        curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
-        curl_setopt($cc, CURLOPT_POST, 1);
-        curl_setopt($cc, CURLOPT_POSTFIELDS, $json);
-        curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cc, CURLOPT_VERBOSE, 1);
-        curl_setopt($cc, CURLOPT_HEADER, 1);
-
-        // Don't log base64 image string
-        $wuunderData['picture'] = 'base64 string removed for logging';
-
-        // Execute the cURL, fetch the XML
-        $result = curl_exec($cc);
-        $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
-        $header = substr($result, 0, $header_size);
-        preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
-        var_dump($result);
-        $url = $matches[1];
-
-        // Close connection
-        curl_close($cc);
-
-        // Create or update wuunder_shipment
-        $this->saveWuunderShipment($orderId, $url, "testtoken");
-
-        $this->_redirect($url);
         return true;
     }
 
@@ -97,6 +102,29 @@ class Label extends \Magento\Framework\App\Action\Action
 
         $sql = "INSERT INTO " . $tableName . " (order_id, booking_url, booking_token) VALUES ($orderId, '$bookingUrl', '$bookingToken')";
         $connection->query($sql);
+    }
+
+    private function wuunderShipmentExists($orderId)
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+        $connection = $resource->getConnection();
+        $tableName = $resource->getTableName('wuunder_shipment');
+
+        $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
+        $result = $connection->query($sql);
+        return (bool)$result->rowCount();
+    }
+
+    private function getWwuunderShipment($orderId)
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+        $connection = $resource->getConnection();
+        $tableName = $resource->getTableName('wuunder_shipment');
+
+        $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
+        return $connection->fetchAll($sql);
     }
 
     private function getOrderInfo($orderId)
@@ -220,7 +248,7 @@ class Label extends \Magento\Framework\App\Action\Action
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $preferredServiceLevel,
-            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.3", "plugin" => "1.0"))
+            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.4", "plugin" => "1.0"))
         );
     }
 
