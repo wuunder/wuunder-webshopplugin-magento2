@@ -4,6 +4,7 @@ namespace Wuunder\Wuunderconnector\Controller\adminhtml\Index;
 
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result;
+use Magento\Framework\Controller\ResultFactory;
 
 class Label extends \Magento\Framework\App\Action\Action
 {
@@ -27,12 +28,16 @@ class Label extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        return $this->processOrderInfo();
+        $redirect_url = $this->processOrderInfo();
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setUrl($redirect_url);
+        return $resultRedirect;
     }
 
     private function processOrderInfo()
     {
         $orderId = $this->getRequest()->getParam('orderId');
+        $redirect_url = $this->HelperBackend->getUrl('sales/order');
         if (!$this->wuunderShipmentExists($orderId)) {
             $infoArray = $this->getOrderInfo($orderId);
             // Fetch order
@@ -76,21 +81,15 @@ class Label extends \Magento\Framework\App\Action\Action
             $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
             $header = substr($result, 0, $header_size);
             preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
-            $url = $matches[1];
+            $redirect_url = $matches[1];
 
             // Close connection
             curl_close($cc);
 
             // Create or update wuunder_shipment
-            $this->saveWuunderShipment($orderId, $url, "testtoken");
-
-            $this->_redirect($url);
-        } else {
-            $redirect_url = $this->HelperBackend->getUrl('sales/order');
-            $this->_redirect($redirect_url);
-
+            $this->saveWuunderShipment($orderId, $redirect_url, "testtoken");
         }
-        return true;
+        return $redirect_url;
     }
 
     private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
