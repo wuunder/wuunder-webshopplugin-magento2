@@ -6,9 +6,12 @@ We make shipping any parcel, pallet and document easy, personal and efficient. A
 ## Install ##
 * Download the .zip file from this repository and unpack.
 * Use FTP to transfer the __app__  folder to the Magento 2 directory on the web-server.
-* In your commandline run the following commands: ```php bin/magento setup:upgrade
+* In your commandline run the following commands:
+```
+php bin/magento setup:upgrade
 php bin/magento setup:di:compile
-php bin/magento setup:static-content:deploy```
+php bin/magento setup:static-content:deploy
+```
 * Wuunder is now added to your orders page and is ready for use!
 
 ## Changelog ##
