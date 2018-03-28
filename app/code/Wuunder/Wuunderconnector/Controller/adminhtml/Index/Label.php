@@ -5,6 +5,7 @@ namespace Wuunder\Wuunderconnector\Controller\adminhtml\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result;
 use Magento\Framework\Controller\ResultFactory;
+include_once "app/code/Wuunder/Wuunderconnector/Helper/MyData.php";
 
 class Label extends \Magento\Framework\App\Action\Action
 {
@@ -28,6 +29,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
+        logger("Function executed");
         $redirect_url = $this->processOrderInfo();
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($redirect_url);
@@ -65,6 +67,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $json = json_encode($wuunderData);
             // Setup API connection
             $cc = curl_init($apiUrl);
+            logger("API connection established");
 
             curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
             curl_setopt($cc, CURLOPT_POST, 1);
@@ -85,6 +88,8 @@ class Label extends \Magento\Framework\App\Action\Action
 
             // Close connection
             curl_close($cc);
+
+            logger('API response string: ' . $result);
 
             // Create or update wuunder_shipment
             $this->saveWuunderShipment($orderId, $redirect_url, "testtoken");
@@ -156,6 +161,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
     private function buildWuunderData($infoArray, $order)
     {
+        logger("Building data object for api.");
         $shippingAddress = $order->getShippingAddress();
 
         $shippingLastname = $shippingAddress->getLastname();
