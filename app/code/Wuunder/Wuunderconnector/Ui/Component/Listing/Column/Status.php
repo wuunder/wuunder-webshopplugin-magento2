@@ -57,9 +57,9 @@ class Status extends Column
 //                $testMode = Mage::getStoreConfig('wuunderconnector/connect/testmode', $storeId);
                 $testMode = 1;
                 if ($testMode == 1) {
-                    $booking_url = 'https://api-staging.wuunder.co' . $item['booking_url'];
+                    $booking_url = 'https://api-staging.wearewuunder.com' . $item['booking_url'];
                 } else {
-                    $booking_url = 'https://api.wuunder.co' . $item['booking_url'];
+                    $booking_url = 'https://api.wearewuunder.com' . $item['booking_url'];
                 }
             }
             $icons = '<li class="wuunder-label-create"><a href="' . $booking_url . '" title="Verzendlabel aanmaken"></a></li>';

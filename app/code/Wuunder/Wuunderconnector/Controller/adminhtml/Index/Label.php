@@ -51,10 +51,10 @@ class Label extends \Magento\Framework\App\Action\Action
             $webhook_url = urlencode($this->_storeManager->getStore()->getBaseUrl() . 'wuunder/index/webhook/order_id/' . $orderId);
 
             if ($test_mode == 1) {
-                $apiUrl = 'https://api-staging.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
+                $apiUrl = 'https://api-staging.wearewuunder.com/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
             } else {
-                $apiUrl = 'https://api.wuunder.co/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
+                $apiUrl = 'https://api.wearewuunder.com/api/bookings?redirect_url=' . $redirect_url . '&webhook_url=' . $webhook_url;
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
             }
 
