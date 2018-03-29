@@ -6,8 +6,12 @@ use \Magento\Framework\App\Helper\AbstractHelper;
 
 class Data extends AbstractHelper{
 
+  public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
+  {
+    $this->scopeConfig = $scopeConfig;
+  }
 
-  function log($message)
+  public function log($message)
   {
 
       // if ($isError === true && !$this->isExceptionLoggingEnabled() && !$forced) {
@@ -28,36 +32,36 @@ class Data extends AbstractHelper{
       //
       // return $this;
 
-      $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/wuunder.log');
-      $logger = new \Zend\Log\Logger();
-      $logger->addWriter($writer);
-      $logger->info($message);
+      if($this->isLoggingEnabled()) {
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/wuunder.log');
+        $logger = new \Zend\Log\Logger();
+        $logger->addWriter($writer);
+        $logger->info($message);
+      }
   }
 
-  // public function isLoggingEnabled()
-  // {
-  //     if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<')) {
-  //         return false;
-  //     }
-  //
-  //     $debugMode = $this->getDebugMode();
-  //     if ($debugMode > 0) {
-  //         return true;
-  //     }
-  //
-  //     return false;
-  // }
-  //
-  // public function getDebugMode()
-  // {
-  //     if (Mage::registry('wuunderconnector_debug_mode') !== null) {
-  //         return Mage::registry('wuunderconnector_debug_mode');
-  //     }
-  //
-  //     $debugMode = (int)Mage::getStoreConfig(self::XPATH_DEBUG_MODE, Mage_Core_Model_App::ADMIN_STORE_ID);
-  //     Mage::register('wuunderconnector_debug_mode', $debugMode);
-  //     return $debugMode;
-  // }
+  public function isLoggingEnabled()
+  {
+      // if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<')) {
+      //     return false;
+      // }
+
+      $debugMode = $this->getDebugMode();
+      if ($debugMode > 0)
+      {
+          return true;
+      }
+
+      return false;
+  }
+
+  public function getDebugMode()
+  {
+      $debug = $this->scopeConfig->getValue('wuunder_wuunderconnector/debugging/debugging', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+      if ($debug !== null) {
+          return $debug;
+      }
+  }
 
 }
 ?>

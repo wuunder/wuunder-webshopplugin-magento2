@@ -5,14 +5,16 @@ namespace Wuunder\Wuunderconnector\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Sales\Model\Order;
+use \Wuunder\Wuunderconnector\Helper\Data;
 
 class Webhook extends \Magento\Framework\App\Action\Action
 {
 
     protected $scopeConfig;
 
-    public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
+    public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, Data $helper)
     {
+        $this->helper = $helper;
         $this->scopeConfig = $scopeConfig;
         parent::__construct($context);
     }

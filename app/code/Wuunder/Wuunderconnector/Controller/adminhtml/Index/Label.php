@@ -5,7 +5,6 @@ namespace Wuunder\Wuunderconnector\Controller\adminhtml\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result;
 use Magento\Framework\Controller\ResultFactory;
-// include_once "app/code/Wuunder/Wuunderconnector/Helper/MyData.php";
 use \Wuunder\Wuunderconnector\Helper\Data;
 
 class Label extends \Magento\Framework\App\Action\Action
@@ -19,7 +18,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
     public function __construct(Context $context, \Magento\Framework\View\Result\PageFactory $resultPageFactory, \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, \Magento\Catalog\Model\ProductFactory $_productloader, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Magento\Store\Model\StoreManagerInterface $storeManager, \Magento\Backend\Helper\Data $HelperBackend, Data $helper)
     {
-      $this->helper = $helper;
+        $this->helper = $helper;
         $this->_resultPageFactory = $resultPageFactory;
         $this->orderRepository = $orderRepository;
         $this->_productloader = $_productloader;
@@ -31,7 +30,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-      $this->helper->log("executed");
+        $this->helper->log("executed");
         $redirect_url = $this->processOrderInfo();
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setUrl($redirect_url);
@@ -163,7 +162,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
     private function buildWuunderData($infoArray, $order)
     {
-        $thi->helper->log("Building data object for api.");
+        $this->helper->log("Building data object for api.");
         $shippingAddress = $order->getShippingAddress();
 
         $shippingLastname = $shippingAddress->getLastname();
