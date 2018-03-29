@@ -1,7 +1,13 @@
 <?php
 
+namespace Wuunder\Wuunderconnector\Helper;
+use \Magento\Framework\App\Helper\AbstractHelper;
 
-  function logger($message)
+
+class Data extends AbstractHelper{
+
+
+  function log($message)
   {
 
       // if ($isError === true && !$this->isExceptionLoggingEnabled() && !$forced) {
@@ -53,4 +59,5 @@
   //     return $debugMode;
   // }
 
+}
 ?>

@@ -21,7 +21,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
     {
 
         if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id'))) {
-            logger("Received the webhook.");
+            $this->helper->log("Received the webhook.");
             $result = json_decode(file_get_contents('php://input'), true);
             $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
             $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
