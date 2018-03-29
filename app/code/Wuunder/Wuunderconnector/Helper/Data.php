@@ -13,25 +13,6 @@ class Data extends AbstractHelper{
 
   public function log($message)
   {
-
-      // if ($isError === true && !$this->isExceptionLoggingEnabled() && !$forced) {
-      //     return $this;
-      // } elseif ($isError !== true && !$this->isLoggingEnabled() && !$forced) {
-      //     return $this;
-      // }
-      //
-      // if (is_null($level)) {
-      //     $level = Zend_Log::DEBUG;
-      // }
-      //
-      // if (is_null($file)) {
-      //     $file = static::WUUNERCONNECTOR_LOG_FILE;
-      // }
-      //
-      // Mage::log($message, $level, $file, $forced);
-      //
-      // return $this;
-
       if($this->isLoggingEnabled()) {
         $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/wuunder.log');
         $logger = new \Zend\Log\Logger();
