@@ -21,7 +21,7 @@ class Data extends AbstractHelper{
       }
   }
 
-  public function isLoggingEnabled()
+  private function isLoggingEnabled()
   {
       // if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<')) {
       //     return false;
@@ -36,7 +36,7 @@ class Data extends AbstractHelper{
       return false;
   }
 
-  public function getDebugMode()
+  private function getDebugMode()
   {
       $debug = $this->scopeConfig->getValue('wuunder_wuunderconnector/debugging/debugging', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
       if ($debug !== null) {
