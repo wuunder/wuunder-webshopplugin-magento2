@@ -96,6 +96,14 @@
                     <label>Filter mapping 4 - Filter</label>
                 </field>
             </group>
+            <group id="debugging" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Enable debugging</label>
+                <field id="debugging" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Set order status after booking to:</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Indien ingeschakeld, zie /var/log/wuunder.log voor debug info</comment>
+                </field>
+            </group>
         </section>
 
     </system>

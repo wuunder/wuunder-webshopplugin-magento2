@@ -38,7 +38,6 @@ class Status extends Column
     {
         //<a class="action-menu-item" data-bind="attr: {href: $action().href}, text: $action().label, click: $col.getActionHandler($action())" data-repeat-index="0" href="http://188.226.134.167/magento2/admin/sales/order/view/order_id/1/key/61064304d062385ce5fd0c8804cdd722e4aba3c67585b0535388fa09da162ccf/">View</a>
 
-
         $orderId = $item['entity_id'];
 //        $order = Mage::getModel('sales/order')->load($orderId);
 //        $shipping_method = $order->getShippingMethod();
