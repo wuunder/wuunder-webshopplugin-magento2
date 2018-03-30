@@ -12,11 +12,10 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
     protected $scopeConfig;
 
-    public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, Data $helper, \Magento\Framework\DB\Transaction $transactionFactory)
+    public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, Data $helper)
     {
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
-        $this->transactionFactory = $transactionFactory;
         parent::__construct($context);
     }
 
@@ -41,21 +40,19 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $this->helper->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
                 $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
             }
+        } else {
+          $this->helper->log("Invalid order_id for the webhook");
         }
 
     }
 
     private function ship($order_id, $carrier, $label_id) {
 
-        $email = true;
-        $includeComment = false;
-        $comment = "Order Completed And Shipped";
-
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $order = $objectManager->create('\Magento\Sales\Model\Order') ->load($order_id);
 
         if ($order->canShip()) {
-            $this->helper->log("Can ship");
+            $this->helper->log("Is able to ship");
             $convertOrder = $objectManager->create('\Magento\Sales\Model\Convert\Order');
             $shipment = $convertOrder->toShipment($order);
             foreach ($order->getAllItems() as $orderItem) {
@@ -66,39 +63,31 @@ class Webhook extends \Magento\Framework\App\Action\Action
               $shipmentItem = $convertOrder->itemToShipmentItem($orderItem)->setQty($qtyShipped);
               $shipment->addItem($shipmentItem);
             }
-$this->helper->log("Adding track and trace");
+
             $track = $objectManager->create('\Magento\Sales\Model\Order\Shipment\TrackFactory')->create();
             $track->setNumber($label_id);
             $track->setCarrierCode('wuunder');
             $track->setTitle($carrier);
             $shipment->addTrack($track);
 
-$this->helper->log("Registering Shipment");
             $shipment->register();
-            $shipment->addComment($comment);
+            $shipment->addComment("Order Completed And Shipped");
             $shipment->setEmailSent(true);
             $shipment->getOrder()->setIsInProcess(true);
-$this->helper->log("Shipment set: in process");
 
             try {
-                $saveTransaction = $this->transactionFactory->create();
-                $saveTransaction->addObject($shipment)
-                                ->addObject($shipment->getOrder())
-                                ->save();
-                $this->helper->log("transaction saved");
+                $shipment->save();
+                $shipment->getOrder()->save();
+
+                $orderState = $this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/post_booking_status');
+                $order->setState($orderState)->setStatus($this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/post_booking_status'));
+                $order->save();
+
+                $shipment->save();
+                $this->helper->log("Order shipped and shipment saved");
             } catch (\Exception $e) {
                 $this->helper->log($e->getMessage());
             }
-
-            // $shipment->sendEmail($email, ($includeComment ? $comment : ''));
-
-            $orderState = $this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/post_booking_status');
-            $order->setState($orderState)->setStatus($this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/post_booking_status'));
-            $order->save();
-$this->helper->log("Order status updated");
-
-            $shipment->save();
-            $this->helper->log("Shipment saved");
         } else {
             $this->helper->log("Error: Cannot ship");
         }
