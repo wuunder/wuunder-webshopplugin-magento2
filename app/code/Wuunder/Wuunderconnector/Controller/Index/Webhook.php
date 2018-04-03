@@ -36,15 +36,16 @@ class Webhook extends \Magento\Framework\App\Action\Action
             $result = json_decode(file_get_contents('php://input'), true);
             if ($result['action'] === "shipment_booked") {
                 $this->helper->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
-                // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 // $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
                 // $connection = $resource->getConnection();
                 // $tableName = $resource->getTableName('wuunder_shipment');
                 $result = $result['shipment'];
 
                 // $WSFactory->setData('label_id',$result['id']);
-                $contact = $this->_objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
-                $contact->setLabelId('Dit is een test voor label_id');
+                $contact = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+                $contact->load($this->getRequest()->getParam('order_id') , 'order_id');
+                $contact->setLabelId(00); // Add variables here, something was not working yet
                 $contact->setLabelUrl('Dit is een test voor label_url');
                 $contact->setTtUrl('Dit is een test voor tt_url');
                 $contact->save();

@@ -2,7 +2,7 @@
 
 namespace Wuunder\Wuunderconnector\Model;
 
-use Magento\Framework\Model\AbstractModel;
+// use Magento\Framework\Model\AbstractModel;
 
 class WuunderShipment extends \Magento\Framework\Model\AbstractModel
 {
@@ -28,7 +28,8 @@ class WuunderShipment extends \Magento\Framework\Model\AbstractModel
      */
     protected function _construct()
     {
-        $this->_init('Wuunder\Wuunderconnector\Model\ResourceModel\WuunderShipment');
+        // $this->_init('Wuunder\Wuunderconnector\Model\ResourceModel\WuunderShipment');
+        $this->_init(\Wuunder\Wuunderconnector\Model\ResourceModel\WuunderShipment::class);
     }
 
 }

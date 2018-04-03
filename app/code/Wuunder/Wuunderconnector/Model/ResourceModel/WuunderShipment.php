@@ -5,12 +5,7 @@ namespace Wuunder\Wuunderconnector\Model\ResourceModel;
 class WuunderShipment extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
 
-  public function __construct(\Magento\Framework\Model\ResourceModel\Db\Context $context)
-  {
-      parent::__construct($context);
-  }
-
-  protected function _construct()
+  public function _construct()
   {
       $this->_init('wuunder_shipment', 'shipment_id');
   }
