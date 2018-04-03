@@ -19,23 +19,39 @@ class Webhook extends \Magento\Framework\App\Action\Action
         parent::__construct($context);
     }
 
+    public function setShipment()
+    {
+      // Model kan waarschijnlijk in constructor aangemaakt worden. Hoeft maar één keer.
+        $model = $this->_objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+        $return = $model->setData();
+
+        return $return;
+    }
+
     public function execute()
     {
 
         if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id'))) {
-            // $this->helper->log("Received the webhook.");
+            $this->helper->log("Webhook executed");
             $result = json_decode(file_get_contents('php://input'), true);
             if ($result['action'] === "shipment_booked") {
                 $this->helper->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
-                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-                $connection = $resource->getConnection();
-                $tableName = $resource->getTableName('wuunder_shipment');
+                // $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                // $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+                // $connection = $resource->getConnection();
+                // $tableName = $resource->getTableName('wuunder_shipment');
                 $result = $result['shipment'];
-    //            $sql = "UPDATE " . $tableName . " SET label_id = ?, label_url = ?, tt_url = ? WHERE order_id = ?";
-                $sql = "UPDATE " . $tableName . " SET label_id = '".$result['id']."', label_url = '".$result['label_url']."', tt_url = '".$result['track_and_trace_url']."' WHERE order_id = ".$this->getRequest()->getParam('order_id');
-    //            $connection->query($sql, array($result['id'], $result['label_url'], $result['track_and_trace_url'], $this->getRequest()->getParam('order_id')));
-                $connection->query($sql);
+
+                // $WSFactory->setData('label_id',$result['id']);
+                $contact = $this->_objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+                $contact->setLabelId('Dit is een test voor label_id');
+                $contact->setLabelUrl('Dit is een test voor label_url');
+                $contact->setTtUrl('Dit is een test voor tt_url');
+                $contact->save();
+    // //            $sql = "UPDATE " . $tableName . " SET label_id = ?, label_url = ?, tt_url = ? WHERE order_id = ?";
+    //             $sql = "UPDATE " . $tableName . " SET label_id = '".$result['id']."', label_url = '".$result['label_url']."', tt_url = '".$result['track_and_trace_url']."' WHERE order_id = ".$this->getRequest()->getParam('order_id');
+    // //            $connection->query($sql, array($result['id'], $result['label_url'], $result['track_and_trace_url'], $this->getRequest()->getParam('order_id')));
+                // $connection->query($sql);
             } else if ($result['action'] === "track_and_trace_updated"){
                 $this->helper->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
                 $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
