@@ -30,12 +30,12 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $result = $result['shipment'];
 
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-                $contact = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
-                $contact->load($this->getRequest()->getParam('order_id') , 'order_id');
-                $contact->setLabelId($result['id']); // Add variables here, something was not working yet
-                $contact->setLabelUrl($result['label_url']);
-                $contact->setTtUrl($result['track_and_trace_url']);
-                $contact->save();
+                $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+                $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
+                $wuunderShipment->setLabelId($result['id']); // Add variables here, something was not working yet
+                $wuunderShipment->setLabelUrl($result['label_url']);
+                $wuunderShipment->setTtUrl($result['track_and_trace_url']);
+                $wuunderShipment->save();
             } else if ($result['action'] === "track_and_trace_updated"){
                 $this->helper->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
                 $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
