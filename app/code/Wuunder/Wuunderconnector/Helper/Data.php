@@ -44,5 +44,37 @@ class Data extends AbstractHelper{
       }
   }
 
+  public function curlRequest($wuunderData, $apiUrl, $apiKey)
+  {
+    // Encode variables
+    $json = json_encode($wuunderData);
+    // Setup API connection
+    $cc = curl_init($apiUrl);
+    $this->log("API connection established");
+
+    curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
+    curl_setopt($cc, CURLOPT_POST, 1);
+    curl_setopt($cc, CURLOPT_POSTFIELDS, $json);
+    curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($cc, CURLOPT_VERBOSE, 1);
+    curl_setopt($cc, CURLOPT_HEADER, 1);
+
+    // Don't log base64 image string
+    $wuunderData['picture'] = 'base64 string removed for logging';
+
+    // Execute the cURL, fetch the XML
+    $curlReturn = array();
+    $curlReturn['result'] = curl_exec($cc);
+    $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
+    $header = substr($curlReturn['result'], 0, $header_size);
+    preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
+    $curlReturn['redirect_url'] = $matches[1];
+
+    // Close connection
+    curl_close($cc);
+
+    return $curlReturn;
+  }
+
 }
 ?>
