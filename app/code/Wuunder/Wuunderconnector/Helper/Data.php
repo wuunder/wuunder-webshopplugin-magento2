@@ -23,10 +23,6 @@ class Data extends AbstractHelper{
 
   private function isLoggingEnabled()
   {
-      // if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<')) {
-      //     return false;
-      // }
-
       $debugMode = $this->getDebugMode();
       if ($debugMode > 0)
       {

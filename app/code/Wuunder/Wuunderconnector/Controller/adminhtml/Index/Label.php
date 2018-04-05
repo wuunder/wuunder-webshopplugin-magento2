@@ -77,17 +77,25 @@ class Label extends \Magento\Framework\App\Action\Action
     private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-        $connection = $resource->getConnection();
-        $tableName = $resource->getTableName('wuunder_shipment');
-
-        $sql = "INSERT INTO " . $tableName . " (order_id, booking_url, booking_token) VALUES ($orderId, '$bookingUrl', '$bookingToken')";
-        $connection->query($sql);
+        $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+        $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
+        $wuunderShipment->setOrderId($orderId);
+        $wuunderShipment->setBookingUrl($bookingUrl);
+        $wuunderShipment->setBookingToken($bookingToken);
+        $wuunderShipment->save();
     }
 
     private function wuunderShipmentExists($orderId)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+        $wuunderShipment->load($orderId , 'order_id');
+        // $wuunderShipment->getData();
+        // $test = $wuunderShipment->getOrderId($orderId);
+        // echo "<pre>";
+        // var_dump( (array)$wuunderShipment);
+        $this->helper->log("This is the (bool) wuunderShipmentExists: " . (bool)$wuunderShipment);
+
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
         $connection = $resource->getConnection();
         $tableName = $resource->getTableName('wuunder_shipment');
@@ -95,18 +103,19 @@ class Label extends \Magento\Framework\App\Action\Action
         $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
         $result = $connection->query($sql);
         return (bool)$result->rowCount();
+        // return !(bool)$wuunderShipment;
     }
 
-    private function getWwuunderShipment($orderId)
-    {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-        $connection = $resource->getConnection();
-        $tableName = $resource->getTableName('wuunder_shipment');
-
-        $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
-        return $connection->fetchAll($sql);
-    }
+    // private function getWwuunderShipment($orderId)
+    // {
+    //     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    //     $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+    //     $connection = $resource->getConnection();
+    //     $tableName = $resource->getTableName('wuunder_shipment');
+    //
+    //     $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
+    //     return $connection->fetchAll($sql);
+    // }
 
     private function getOrderInfo($orderId)
     {
