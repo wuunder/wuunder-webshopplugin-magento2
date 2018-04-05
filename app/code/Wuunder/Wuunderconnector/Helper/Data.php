@@ -59,17 +59,17 @@ class Data extends AbstractHelper{
     $wuunderData['picture'] = 'base64 string removed for logging';
 
     // Execute the cURL, fetch the XML
-    $curlReturn = array();
-    $curlReturn['result'] = curl_exec($cc);
+    // $curlReturn = array();
+    $result = curl_exec($cc);
     $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
-    $header = substr($curlReturn['result'], 0, $header_size);
+    $header = substr($result, 0, $header_size);
     preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
-    $curlReturn['redirect_url'] = $matches[1];
-
+    $redirect_url = $matches[1];
+    $this->log('API response string: ' . $result);
     // Close connection
     curl_close($cc);
 
-    return $curlReturn;
+    return $redirect_url;
   }
 
 }

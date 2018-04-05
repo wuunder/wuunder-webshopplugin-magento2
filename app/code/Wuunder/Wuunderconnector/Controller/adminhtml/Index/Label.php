@@ -63,10 +63,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
             // Combine wuunder info and order data
             $wuunderData = $this->buildWuunderData($infoArray, $order);
-
-            $curlResult = $this->helper->curlRequest($wuunderData, $apiUrl, $apiKey);
-            $redirect_url = $curlResult['redirect_url'];
-            $this->helper->log('API response string: ' . $curlResult['result']);
+            $redirect_url = $this->helper->curlRequest($wuunderData, $apiUrl, $apiKey);
 
             // Create or update wuunder_shipment
             $this->saveWuunderShipment($orderId, $redirect_url, "testtoken");
@@ -94,17 +91,6 @@ class Label extends \Magento\Framework\App\Action\Action
 
         return (bool)$shipmentData;
     }
-
-    // private function getWwuunderShipment($orderId)
-    // {
-    //     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-    //     $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-    //     $connection = $resource->getConnection();
-    //     $tableName = $resource->getTableName('wuunder_shipment');
-    //
-    //     $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
-    //     return $connection->fetchAll($sql);
-    // }
 
     private function getOrderInfo($orderId)
     {
