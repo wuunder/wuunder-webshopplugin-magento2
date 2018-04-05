@@ -90,20 +90,9 @@ class Label extends \Magento\Framework\App\Action\Action
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
         $wuunderShipment->load($orderId , 'order_id');
-        // $wuunderShipment->getData();
-        // $test = $wuunderShipment->getOrderId($orderId);
-        // echo "<pre>";
-        // var_dump( (array)$wuunderShipment);
-        $this->helper->log("This is the (bool) wuunderShipmentExists: " . (bool)$wuunderShipment);
+        $shipmentData = $wuunderShipment->getData();
 
-        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-        $connection = $resource->getConnection();
-        $tableName = $resource->getTableName('wuunder_shipment');
-
-        $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
-        $result = $connection->query($sql);
-        return (bool)$result->rowCount();
-        // return !(bool)$wuunderShipment;
+        return (bool)$shipmentData;
     }
 
     // private function getWwuunderShipment($orderId)
