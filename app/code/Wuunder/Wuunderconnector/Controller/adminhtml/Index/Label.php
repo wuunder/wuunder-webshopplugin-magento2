@@ -63,7 +63,11 @@ class Label extends \Magento\Framework\App\Action\Action
 
             // Combine wuunder info and order data
             $wuunderData = $this->buildWuunderData($infoArray, $order);
-            $redirect_url = $this->helper->curlRequest($wuunderData, $apiUrl, $apiKey);
+            $header = $this->helper->curlRequest($wuunderData, $apiUrl, $apiKey, true);
+
+            // Get redirect url from header
+            preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
+            $redirect_url = $matches[1];
 
             // Create or update wuunder_shipment
             $this->saveWuunderShipment($orderId, $redirect_url, "testtoken");

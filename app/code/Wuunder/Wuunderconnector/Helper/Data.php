@@ -40,10 +40,10 @@ class Data extends AbstractHelper{
       }
   }
 
-  public function curlRequest($wuunderData, $apiUrl, $apiKey)
+  public function curlRequest($data, $apiUrl, $apiKey, $returnHeader = false)
   {
     // Encode variables
-    $json = json_encode($wuunderData);
+    $json = json_encode($data);
     // Setup API connection
     $cc = curl_init($apiUrl);
     $this->log("API connection established");
@@ -56,20 +56,19 @@ class Data extends AbstractHelper{
     curl_setopt($cc, CURLOPT_HEADER, 1);
 
     // Don't log base64 image string
-    $wuunderData['picture'] = 'base64 string removed for logging';
+    $data['picture'] = 'base64 string removed for logging';
 
     // Execute the cURL, fetch the XML
-    // $curlReturn = array();
     $result = curl_exec($cc);
     $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
     $header = substr($result, 0, $header_size);
-    preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
-    $redirect_url = $matches[1];
+
     $this->log('API response string: ' . $result);
     // Close connection
     curl_close($cc);
 
-    return $redirect_url;
+    if ($returnHeader)
+      return $header;
   }
 
 }
