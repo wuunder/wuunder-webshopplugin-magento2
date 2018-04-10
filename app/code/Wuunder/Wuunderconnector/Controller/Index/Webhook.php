@@ -47,10 +47,10 @@ class Webhook extends \Magento\Framework\App\Action\Action
                   $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
                   $this->helper->log("Test mode is: " . $test_mode, '/var/log/ecobliss.log');
                   if ($test_mode == 1) {
-                      $apiUrl = 'Dit is de test url';
+                      $apiUrl = 'https://api-staging.wearewuunder.com/api/shipments';
                       $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
                   } else {
-                      $apiUrl = 'Dit is de live url';
+                      $apiUrl = 'https://api.wearewuunder.com/api/shipments';
                       $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
                   }
                   $this->helper->log("Api-Url: " . $apiUrl, '/var/log/ecobliss.log');
@@ -61,6 +61,9 @@ class Webhook extends \Magento\Framework\App\Action\Action
                       $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
                       // Call to the automated API
                       //Results nog omzetten in Data dan is het goed.
+
+                      /* TO DO */                      
+                      /* Do correct formating of the return data to actual data */
                       $header = $this->helper->curlRequest($data, $apiUrl, $apiKey, true);
                       $this->helper->log($header, '/var/log/ecobliss.log');
                       // Use results towards function in helper?
