@@ -61,6 +61,9 @@ class Label extends \Magento\Framework\App\Action\Action
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
             }
 
+            // Loop over order -> packing-details om grootste pakket te bepalen (gordelomvang 1lx2bx2h opgeteld).
+            // Sql update (colomn toevoegen) lijst met resterende boxes (json).
+
             // Combine wuunder info and order data
             $wuunderData = $this->buildWuunderData($infoArray, $order);
             $header = $this->helper->curlRequest($wuunderData, $apiUrl, $apiKey, true);

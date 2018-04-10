@@ -24,6 +24,9 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
         if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id'))) {
             $this->helper->log("Webhook executed");
+
+            // Met order_id load($this->getRequest->getParam()) en met die lijst (json_decode) call naar automated.
+
             $result = json_decode(file_get_contents('php://input'), true);
             if ($result['action'] === "shipment_booked") {
                 $this->helper->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
