@@ -93,7 +93,7 @@ class Label extends \Magento\Framework\App\Action\Action
                 }
             }
 
-            // Add the dimensions from the biggest box here, in the webhook we'll take these values from the response
+            // Add the dimensions from the biggest box here, in the webhook we'll take these values from the response and only take the number of boxes from the DB
             // Combine wuunder info and order data
             $this->helper->log('Building Wuunder Data', '/var/log/ecobliss.log');
             $wuunderData = $this->buildWuunderData($infoArray, $order, $boxDimensions);

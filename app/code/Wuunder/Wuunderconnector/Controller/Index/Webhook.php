@@ -32,22 +32,43 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $this->helper->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
                 $result = $result['shipment'];
 
-                // Everything is included in result except for the number of boxes, we need to fetch these from the DB
-
-                // Fetch number of boxes from DB
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
                 $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
 
+                // Only if the result kind is package will multiple boxes be sent
+                if ($result['kind'] === 'package')
+                {
+                  $this->helper->log("Kind is package, preparing to send multiple boxes", '/var/log/ecobliss.log');
+                  // Fetch number of boxes from DB
+                  $numBoxes = $wuunderShipment->getBoxesOrder();
 
-                $numBoxes = $wuunderShipment->getBoxesOrder();
-                $this->helper->log("Fetching boxes in webhook", '/var/log/ecobliss.log');
-                $this->helper->log("Total boxes: " . $numBoxes, '/var/log/ecobliss.log');
-                for ($i=0; $i < $numBoxes; $i++) {
-                    $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
-                    // Call to the automated API
-                    // Use results towards function in helper?
+                  // Fetch API-key and Url
+                  $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
+                  $this->helper->log("Test mode is: " . $test_mode, '/var/log/ecobliss.log');
+                  if ($test_mode == 1) {
+                      $apiUrl = 'Dit is de test url';
+                      $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
+                  } else {
+                      $apiUrl = 'Dit is de live url';
+                      $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
+                  }
+                  $this->helper->log("Api-Url: " . $apiUrl, '/var/log/ecobliss.log');
+                  $this->helper->log("Api-Key: " . $apiKey, '/var/log/ecobliss.log');
+
+                  $this->helper->log("Total boxes: " . (string)$numBoxes, '/var/log/ecobliss.log');
+                  for ($i=0; $i < $numBoxes-1; $i++) {
+                      $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
+                      // Call to the automated API
+                      //Results nog omzetten in Data dan is het goed.
+                      $header = $this->helper->curlRequest($data, $apiUrl, $apiKey, true);
+                      $this->helper->log($header, '/var/log/ecobliss.log');
+                      // Use results towards function in helper?
+                  }
                 }
+
+                $this->helper->log("Setting the total number of boxes to NULL", '/var/log/ecobliss.log');
+                $wuunderShipment->setBoxesOrder(null);
 
                 $wuunderShipment->setLabelId($result['id']);
                 $wuunderShipment->setLabelUrl($result['label_url']);
