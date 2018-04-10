@@ -32,9 +32,23 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $this->helper->log("Webhook - Shipment for order: " . $this->getRequest()->getParam('order_id'));
                 $result = $result['shipment'];
 
+                // Everything is included in result except for the number of boxes, we need to fetch these from the DB
+
+                // Fetch number of boxes from DB
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
                 $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
+
+
+                $numBoxes = $wuunderShipment->getBoxesOrder();
+                $this->helper->log("Fetching boxes in webhook", '/var/log/ecobliss.log');
+                $this->helper->log("Total boxes: " . $numBoxes, '/var/log/ecobliss.log');
+                for ($i=0; $i < $numBoxes; $i++) {
+                    $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
+                    // Call to the automated API
+                    // Use results towards function in helper?
+                }
+
                 $wuunderShipment->setLabelId($result['id']);
                 $wuunderShipment->setLabelUrl($result['label_url']);
                 $wuunderShipment->setTtUrl($result['track_and_trace_url']);

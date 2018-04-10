@@ -11,10 +11,10 @@ class Data extends AbstractHelper{
     $this->scopeConfig = $scopeConfig;
   }
 
-  public function log($message)
+  public function log($message, $path = '/var/log/wuunder.log')
   {
       if($this->isLoggingEnabled()) {
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/wuunder.log');
+        $writer = new \Zend\Log\Writer\Stream(BP . $path);
         $logger = new \Zend\Log\Logger();
         $logger->addWriter($writer);
         $logger->info($message);

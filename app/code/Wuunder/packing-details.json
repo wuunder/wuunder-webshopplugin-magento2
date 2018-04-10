@@ -1,0 +1,110 @@
+{
+  "boxes": [
+    {
+      "reference": "TESTCS042084346010",
+      "width": "340",
+      "length": "600",
+      "depth": "100",
+      "weight": "600",
+      "keepFlat": false
+    },
+    {
+      "reference": "TESTCS042084346010",
+      "width": "340",
+      "length": "600",
+      "depth": "100",
+      "weight": "600",
+      "keepFlat": false
+    },
+    {
+      "reference": "TEST CS042084\/34-60-20",
+      "width": "340",
+      "length": "600",
+      "depth": "200",
+      "weight": "100",
+      "keepFlat": false
+    },
+    {
+      "reference": "TEST CS165180\/D140-60",
+      "width": "140",
+      "length": "140",
+      "depth": "140",
+      "weight": "100",
+      "keepFlat": false
+    },
+    {
+      "reference": "TEST CS057092\/50-67-15",
+      "width": "500",
+      "length": "670",
+      "depth": "150",
+      "weight": "100",
+      "keepFlat": false
+    },
+    {
+      "reference": "TEST CS057092\/50-67-15",
+      "width": "500",
+      "length": "670",
+      "depth": "150",
+      "weight": "100",
+      "keepFlat": false
+    }
+  ],
+  "pallets": [
+    [
+      {
+        "description": "TEST CS057092\/50-67-15",
+        "width": "500",
+        "length": "670",
+        "depth": "150",
+        "weight": "100",
+        "keepFlat": false,
+        "volume": 50250000
+      },
+      {
+        "description": "TEST CS057092\/50-67-15",
+        "width": "500",
+        "length": "670",
+        "depth": "150",
+        "weight": "100",
+        "keepFlat": false,
+        "volume": 50250000
+      },
+      {
+        "description": "TEST CS042084\/34-60-20",
+        "width": "340",
+        "length": "600",
+        "depth": "200",
+        "weight": "100",
+        "keepFlat": false,
+        "volume": 40800000
+      },
+      {
+        "description": "TESTCS042084346010",
+        "width": "340",
+        "length": "600",
+        "depth": "100",
+        "weight": "600",
+        "keepFlat": false,
+        "volume": 20400000
+      },
+      {
+        "description": "TESTCS042084346010",
+        "width": "340",
+        "length": "600",
+        "depth": "100",
+        "weight": "600",
+        "keepFlat": false,
+        "volume": 20400000
+      },
+      {
+        "description": "TEST CS165180\/D140-60",
+        "width": "140",
+        "length": "140",
+        "depth": "140",
+        "weight": "100",
+        "keepFlat": false,
+        "volume": 2744000
+      }
+    ]
+  ]
+}

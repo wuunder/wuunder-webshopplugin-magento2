@@ -62,10 +62,41 @@ class Label extends \Magento\Framework\App\Action\Action
             }
 
             // Loop over order -> packing-details om grootste pakket te bepalen (gordelomvang 1lx2bx2h opgeteld).
-            // Sql update (colomn toevoegen) lijst met resterende boxes (json).
+            // Sql update (colomn toevoegen) lijst met resterende boxes (json, gordelomvang en resterende boxes: gordelomvang: xx , resterende boxes: xx).
 
+            $this->helper->log("Fetching boxes", '/var/log/ecobliss.log');
+            // This is how the info for the total number of boxes should be fetched.
+            // $boxes = $order->getPackingDetails();
+
+            // This is the example json
+            $json = file_get_contents("app/code/Wuunder/packing-details.json");
+            $packingDetail = json_decode($json, true);
+
+            // Find largest of the boxes and the total number
+            $numBoxes = count($packingDetail['boxes']);
+            $this->helper->log('The number of boxes is: ' . $numBoxes, '/var/log/ecobliss.log');
+
+            $biggestBox = 0;
+            foreach ($packingDetail['boxes'] as $box)
+            {
+                $size = $box["length"] + ($box["width"]*2) + ($box["depth"]*2);
+                $this->helper->log('Size of box: ' . $size, '/var/log/ecobliss.log');
+                if ($size > $biggestBox)
+                {
+                    $biggestBox = $size;
+                    $this->helper->log('This one is bigger', '/var/log/ecobliss.log');
+                    $boxDimensions = array('length' => (int)($box["length"]*.1),
+                                           'width'  => (int)($box["width"]*.1),
+                                           'height' => (int)($box["depth"]*.1),
+                                           // For Wuunder the weight should be in grams, not sure if these values are kilo's? If so: *1000
+                                           'weight' => $box["weight"]);
+                }
+            }
+
+            // Add the dimensions from the biggest box here, in the webhook we'll take these values from the response
             // Combine wuunder info and order data
-            $wuunderData = $this->buildWuunderData($infoArray, $order);
+            $this->helper->log('Building Wuunder Data', '/var/log/ecobliss.log');
+            $wuunderData = $this->buildWuunderData($infoArray, $order, $boxDimensions);
             $header = $this->helper->curlRequest($wuunderData, $apiUrl, $apiKey, true);
 
             // Get redirect url from header
@@ -73,12 +104,12 @@ class Label extends \Magento\Framework\App\Action\Action
             $redirect_url = $matches[1];
 
             // Create or update wuunder_shipment
-            $this->saveWuunderShipment($orderId, $redirect_url, "testtoken");
+            $this->saveWuunderShipment($orderId, $redirect_url, "testtoken", $numBoxes);
         }
         return $redirect_url;
     }
 
-    private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
+    private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken, $numBoxes)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
@@ -86,6 +117,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $wuunderShipment->setOrderId($orderId);
         $wuunderShipment->setBookingUrl($bookingUrl);
         $wuunderShipment->setBookingToken($bookingToken);
+        $wuunderShipment->setBoxesOrder($numBoxes);
         $wuunderShipment->save();
     }
 
@@ -127,7 +159,7 @@ class Label extends \Magento\Framework\App\Action\Action
         );
     }
 
-    private function buildWuunderData($infoArray, $order)
+    private function buildWuunderData($infoArray, $order, $boxDimensions)
     {
         $this->helper->log("Building data object for api.");
         $shippingAddress = $order->getShippingAddress();
@@ -221,7 +253,11 @@ class Label extends \Magento\Framework\App\Action\Action
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $preferredServiceLevel,
-            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.5", "plugin" => "1.0"))
+            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.5", "plugin" => "1.0")),
+            'length' => $boxDimensions["length"],
+            'width'  => $boxDimensions["width"],
+            'height' => $boxDimensions["height"],
+            'weight' => $boxDimensions["weight"]
         );
     }
 
