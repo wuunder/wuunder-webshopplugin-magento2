@@ -63,34 +63,11 @@ class Label extends \Magento\Framework\App\Action\Action
 
             // Combine wuunder info and order data
             $wuunderData = $this->buildWuunderData($infoArray, $order);
+            $header = $this->helper->curlRequest($wuunderData, $apiUrl, $apiKey, true);
 
-            // Encode variables
-            $json = json_encode($wuunderData);
-            // Setup API connection
-            $cc = curl_init($apiUrl);
-            $this->helper->log("API connection established");
-
-            curl_setopt($cc, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $apiKey, 'Content-type: application/json'));
-            curl_setopt($cc, CURLOPT_POST, 1);
-            curl_setopt($cc, CURLOPT_POSTFIELDS, $json);
-            curl_setopt($cc, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($cc, CURLOPT_VERBOSE, 1);
-            curl_setopt($cc, CURLOPT_HEADER, 1);
-
-            // Don't log base64 image string
-            $wuunderData['picture'] = 'base64 string removed for logging';
-
-            // Execute the cURL, fetch the XML
-            $result = curl_exec($cc);
-            $header_size = curl_getinfo($cc, CURLINFO_HEADER_SIZE);
-            $header = substr($result, 0, $header_size);
+            // Get redirect url from header
             preg_match("!\r\n(?:Location|URI): *(.*?) *\r\n!i", $header, $matches);
             $redirect_url = $matches[1];
-
-            // Close connection
-            curl_close($cc);
-
-            $this->helper->log('API response string: ' . $result);
 
             // Create or update wuunder_shipment
             $this->saveWuunderShipment($orderId, $redirect_url, "testtoken");
@@ -101,35 +78,22 @@ class Label extends \Magento\Framework\App\Action\Action
     private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-        $connection = $resource->getConnection();
-        $tableName = $resource->getTableName('wuunder_shipment');
-
-        $sql = "INSERT INTO " . $tableName . " (order_id, booking_url, booking_token) VALUES ($orderId, '$bookingUrl', '$bookingToken')";
-        $connection->query($sql);
+        $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+        $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
+        $wuunderShipment->setOrderId($orderId);
+        $wuunderShipment->setBookingUrl($bookingUrl);
+        $wuunderShipment->setBookingToken($bookingToken);
+        $wuunderShipment->save();
     }
 
     private function wuunderShipmentExists($orderId)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-        $connection = $resource->getConnection();
-        $tableName = $resource->getTableName('wuunder_shipment');
+        $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+        $wuunderShipment->load($orderId , 'order_id');
+        $shipmentData = $wuunderShipment->getData();
 
-        $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
-        $result = $connection->query($sql);
-        return (bool)$result->rowCount();
-    }
-
-    private function getWwuunderShipment($orderId)
-    {
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
-        $connection = $resource->getConnection();
-        $tableName = $resource->getTableName('wuunder_shipment');
-
-        $sql = "SELECT * FROM  " . $tableName . " WHERE order_id = " . $orderId;
-        return $connection->fetchAll($sql);
+        return (bool)$shipmentData;
     }
 
     private function getOrderInfo($orderId)
