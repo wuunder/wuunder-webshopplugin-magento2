@@ -6,16 +6,20 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Sales\Model\Order;
 use \Wuunder\Wuunderconnector\Helper\Data;
+// use Magento\Framework\ObjectManagerInterface;
 
 class Webhook extends \Magento\Framework\App\Action\Action
 {
 
     protected $scopeConfig;
+    // private $objectManager;
 
     public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, Data $helper)
     {
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
+        // $this->helper->log("Reached the webhook constructor", '/var/log/ecobliss.log');
+        // $this->ObjectManager = \Magento\Framework\App\ObjectManager::getInstance();
         parent::__construct($context);
     }
 
@@ -33,6 +37,10 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
                 $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
+                $wuunderShipment->setLabelId($result['id']);
+                $wuunderShipment->setLabelUrl($result['label_url']);
+                $wuunderShipment->setTtUrl($result['track_and_trace_url']);
+                $wuunderShipment->save();
 
                 // Only if the result kind is package will multiple boxes be sent
                 if ($result['kind'] === 'package')
@@ -59,11 +67,9 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
                 $this->helper->log("Setting the total number of boxes to NULL", '/var/log/ecobliss.log');
                 $wuunderShipment->setBoxesOrder(null);
-
-                $wuunderShipment->setLabelId($result['id']);
-                $wuunderShipment->setLabelUrl($result['label_url']);
-                $wuunderShipment->setTtUrl($result['track_and_trace_url']);
                 $wuunderShipment->save();
+
+
             } else if ($result['action'] === "track_and_trace_updated"){
                 $this->helper->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
                 $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);

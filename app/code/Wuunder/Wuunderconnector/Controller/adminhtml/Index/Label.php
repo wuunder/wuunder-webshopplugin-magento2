@@ -61,26 +61,22 @@ class Label extends \Magento\Framework\App\Action\Action
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
             }
 
-            // Loop over order -> packing-details om grootste pakket te bepalen (gordelomvang 1lx2bx2h opgeteld).
-            // Sql update (colomn toevoegen) lijst met resterende boxes (json, gordelomvang en resterende boxes: gordelomvang: xx , resterende boxes: xx).
-
             $this->helper->log("Fetching boxes", '/var/log/ecobliss.log');
-            // This is how the info for the total number of boxes should be fetched.
-            // $boxes = $order->getPackingDetails();
+            // This is how the info for the total number of boxes should be fetched in the X-COM system.
+            // $json = $order->getPackingDetails();
 
             // This is the example json
             $json = file_get_contents("app/code/Wuunder/packing-details.json");
             $packingDetail = json_decode($json, true);
 
-            // Find largest of the boxes and the total number
+            // Find largest of the boxes and the total number to be sent
             $numBoxes = count($packingDetail['boxes']);
             $this->helper->log('The number of boxes is: ' . $numBoxes, '/var/log/ecobliss.log');
 
             $biggestBox = 0;
             foreach ($packingDetail['boxes'] as $box)
             {
-                // $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);
-                $size = $box["length"] + ($box["width"]*2) + ($box["depth"]*2);
+                $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);                
                 $this->helper->log('Size of box: ' . $size, '/var/log/ecobliss.log');
                 if ($size > $biggestBox)
                 {
