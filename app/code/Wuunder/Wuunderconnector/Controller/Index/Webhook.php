@@ -6,20 +6,16 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Sales\Model\Order;
 use \Wuunder\Wuunderconnector\Helper\Data;
-// use Magento\Framework\ObjectManagerInterface;
 
 class Webhook extends \Magento\Framework\App\Action\Action
 {
 
     protected $scopeConfig;
-    // private $objectManager;
 
     public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, Data $helper)
     {
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
-        // $this->helper->log("Reached the webhook constructor", '/var/log/ecobliss.log');
-        // $this->ObjectManager = \Magento\Framework\App\ObjectManager::getInstance();
         parent::__construct($context);
     }
 
