@@ -210,6 +210,10 @@ class Label extends \Magento\Framework\App\Action\Action
             }
         }
 
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
+        $version = $productMetadata->getVersion();
+
         return array(
             'description' => $infoArray['description'],
             'personal_message' => $infoArray['personal_message'],
@@ -218,7 +222,7 @@ class Label extends \Magento\Framework\App\Action\Action
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $preferredServiceLevel,
-            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.5", "plugin" => "1.0"))
+            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.0.5", "plugin" => "1.0"), "platform" => array("name" => "Magento", "build" => $version))
         );
     }
 
