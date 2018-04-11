@@ -69,6 +69,7 @@ class Data extends AbstractHelper{
 
     if ($returnHeader)
       return $header;
+    return $result;
   }
 
 }

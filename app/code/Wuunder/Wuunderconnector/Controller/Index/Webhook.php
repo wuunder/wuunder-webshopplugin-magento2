@@ -21,10 +21,8 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-
         if (!is_null($this->getRequest()->getParam('order_id')) && !empty($this->getRequest()->getParam('order_id'))) {
             $this->helper->log("Webhook executed");
-
             // Met order_id load($this->getRequest->getParam()) en met die lijst (json_decode) call naar automated.
 
             $result = json_decode(file_get_contents('php://input'), true);
@@ -39,35 +37,24 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 // Only if the result kind is package will multiple boxes be sent
                 if ($result['kind'] === 'package')
                 {
-                  $this->helper->log("Kind is package, preparing to send multiple boxes", '/var/log/ecobliss.log');
-                  // Fetch number of boxes from DB
-                  $numBoxes = $wuunderShipment->getBoxesOrder();
+                    $this->helper->log("Kind is package, preparing to send multiple boxes", '/var/log/ecobliss.log');
+                    // Fetch number of boxes from DB
+                    $numBoxes = $wuunderShipment->getBoxesOrder();
 
-                  // Fetch API-key and Url
-                  $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
-                  $this->helper->log("Test mode is: " . $test_mode, '/var/log/ecobliss.log');
-                  if ($test_mode == 1) {
-                      $apiUrl = 'https://api-staging.wearewuunder.com/api/shipments';
-                      $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
-                  } else {
-                      $apiUrl = 'https://api.wearewuunder.com/api/shipments';
-                      $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
-                  }
-                  $this->helper->log("Api-Url: " . $apiUrl, '/var/log/ecobliss.log');
-                  $this->helper->log("Api-Key: " . $apiKey, '/var/log/ecobliss.log');
+                    // Fetch API-key and Url, based on the test mode
+                    $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
+                    $apiData = $this->getApiData($test_mode);
 
-                  $this->helper->log("Total boxes: " . (string)$numBoxes, '/var/log/ecobliss.log');
-                  for ($i=0; $i < $numBoxes-1; $i++) {
-                      $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
-                      // Call to the automated API
-                      //Results nog omzetten in Data dan is het goed.
+                    // Parse the data into correct format for automated API
+                    $data = $this->parseData($result);
 
-                      /* TO DO */                      
-                      /* Do correct formating of the return data to actual data */
-                      $header = $this->helper->curlRequest($data, $apiUrl, $apiKey, true);
-                      $this->helper->log($header, '/var/log/ecobliss.log');
-                      // Use results towards function in helper?
-                  }
+                    $this->helper->log("Total boxes: " . (string)$numBoxes, '/var/log/ecobliss.log');
+                    for ($i=0; $i < $numBoxes-1; $i++) {
+                        $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
+                        // Call to the automated API
+                        $header = $this->helper->curlRequest($data, $apiData['api_url'], $apiData['api_key']);
+                        $this->helper->log($header, '/var/log/ecobliss.log');
+                    }
                 }
 
                 $this->helper->log("Setting the total number of boxes to NULL", '/var/log/ecobliss.log');
@@ -133,4 +120,57 @@ class Webhook extends \Magento\Framework\App\Action\Action
             $this->helper->log("Error: Cannot ship");
         }
     }
+
+    private function parseData($result)
+    {
+
+      $pickup = $result['pickup_address'];
+      $pickup['country'] = 'NL';
+      $delivery = $result['delivery_address'];
+      $delivery['country'] = 'NL';
+      $this->helper->log("Parsing the data.", '/var/log/ecobliss.log');
+
+        return array (
+          'description'             => $result['description'],
+          'value'                   => $result['value'],
+          'kind'                    => $result['kind'],
+          'length'                  => $result["length"],
+          'width'                   => $result["width"],
+          'height'                  => $result["height"],
+          // 'weight'                  => $result["weight"],
+          'weight'                  => 666,
+          // 'delivery_address'        => $result['delivery_address'],
+          // 'pickup_address'          => $result['pickup_address'],
+          'delivery_address'        => $delivery,
+          'pickup_address'          => $pickup,
+          // Misschien static even aan Jeroen vragen.
+          // 'preferred_service_level' => $result['preferred_service_level'],
+          'preferred_service_level' => 'cheapest',
+          'personal_message'        => (isset($result['personal_message']) ? $result['personal_message'] : ""),
+          'picture'                 => (isset($result['picture']) ? $result['picture'] : ""),
+          'customer_reference'      => (isset($result['customer_reference']) ? $result['customer_reference'] : ""),
+          'is_return'               => (isset($result['is_return']) ? $result['is_return'] : false),
+          'drop_off'                => (isset($result['drop_off']) ? $result['drop_off'] : false),
+          'parcelshop_id'           => (isset($result['parcelshop_id']) ? $result['parcelshop_id'] : "")
+        );
+    }
+
+    private function getApiData($test_mode)
+    {
+      $this->helper->log("Test mode is: " . $test_mode, '/var/log/ecobliss.log');
+      $this->helper->log("Fetching API url & key.", '/var/log/ecobliss.log');
+      if ($test_mode == 1) {
+          $apiUrl = 'https://api-staging.wearewuunder.com/api/shipments';
+          $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
+      } else {
+          $apiUrl = 'https://api.wearewuunder.com/api/shipments';
+          $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
+      }
+
+      return array (
+        'api_url' => $apiUrl,
+        'api_key' => $apiKey
+      );
+    }
+
 }

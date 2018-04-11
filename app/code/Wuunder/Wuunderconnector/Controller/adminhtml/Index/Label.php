@@ -79,6 +79,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $biggestBox = 0;
             foreach ($packingDetail['boxes'] as $box)
             {
+                // $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);
                 $size = $box["length"] + ($box["width"]*2) + ($box["depth"]*2);
                 $this->helper->log('Size of box: ' . $size, '/var/log/ecobliss.log');
                 if ($size > $biggestBox)
