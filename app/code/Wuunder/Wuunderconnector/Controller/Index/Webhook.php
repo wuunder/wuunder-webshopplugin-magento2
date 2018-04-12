@@ -125,26 +125,16 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
     private function parseData($result)
     {
-
-      $pickup = $result['pickup_address'];
-      $pickup['country'] = 'NL';
-      $delivery = $result['delivery_address'];
-      $delivery['country'] = 'NL';
-      $this->helper->log("Parsing the data.", '/var/log/ecobliss.log');
-
         return array (
           'description'             => $result['description'],
-          'value'                   => $result['value'],
+          'value'                   => $result['value']*100,
           'kind'                    => $result['kind'],
           'length'                  => $result["length"],
           'width'                   => $result["width"],
           'height'                  => $result["height"],
-          // 'weight'                  => $result["weight"],
-          'weight'                  => 666,
-          // 'delivery_address'        => $result['delivery_address'],
-          // 'pickup_address'          => $result['pickup_address'],
-          'delivery_address'        => $delivery,
-          'pickup_address'          => $pickup,
+          'weight'                  => $result["weight"],
+          'delivery_address'        => $result['delivery_address'],
+          'pickup_address'          => $result['pickup_address'],
           // Misschien static even aan Jeroen vragen.
           // 'preferred_service_level' => $result['preferred_service_level'],
           'preferred_service_level' => 'cheapest',

@@ -62,7 +62,7 @@ class Label extends \Magento\Framework\App\Action\Action
             }
 
             $this->helper->log("Fetching boxes", '/var/log/ecobliss.log');
-            // This is how the info for the total number of boxes should be fetched in the X-COM system.
+            // This is how the info should be fetched using the X-COM system.
             // $json = $order->getPackingDetails();
 
             // This is the example json
@@ -76,12 +76,12 @@ class Label extends \Magento\Framework\App\Action\Action
             $biggestBox = 0;
             foreach ($packingDetail['boxes'] as $box)
             {
-                $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);                
-                $this->helper->log('Size of box: ' . $size, '/var/log/ecobliss.log');
+                $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);
+                // $this->helper->log('Size of box: ' . $size, '/var/log/ecobliss.log');
                 if ($size > $biggestBox)
                 {
                     $biggestBox = $size;
-                    $this->helper->log('This one is bigger', '/var/log/ecobliss.log');
+                    // $this->helper->log('This one is bigger', '/var/log/ecobliss.log');
                     $boxDimensions = array('length' => (int)($box["length"]*.1),
                                            'width'  => (int)($box["width"]*.1),
                                            'height' => (int)($box["depth"]*.1),
@@ -89,6 +89,7 @@ class Label extends \Magento\Framework\App\Action\Action
                                            'weight' => $box["weight"]);
                 }
             }
+            $this->helper->log('Biggest box found', '/var/log/ecobliss.log');
 
             // Add the dimensions from the biggest box here, in the webhook we'll take these values from the response and only take the number of boxes from the DB
             // Combine wuunder info and order data
