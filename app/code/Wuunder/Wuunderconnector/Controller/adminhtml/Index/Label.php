@@ -69,19 +69,18 @@ class Label extends \Magento\Framework\App\Action\Action
             $json = file_get_contents("app/code/Wuunder/packing-details.json");
             $packingDetail = json_decode($json, true);
 
-            // Find largest of the boxes and the total number to be sent
+            // Total number of boxes to be sent
             $numBoxes = count($packingDetail['boxes']);
             $this->helper->log('The number of boxes is: ' . $numBoxes, '/var/log/ecobliss.log');
 
+            // Find largest of the boxes
             $biggestBox = 0;
             foreach ($packingDetail['boxes'] as $box)
             {
                 $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);
-                // $this->helper->log('Size of box: ' . $size, '/var/log/ecobliss.log');
                 if ($size > $biggestBox)
                 {
                     $biggestBox = $size;
-                    // $this->helper->log('This one is bigger', '/var/log/ecobliss.log');
                     $boxDimensions = array('length' => (int)($box["length"]*.1),
                                            'width'  => (int)($box["width"]*.1),
                                            'height' => (int)($box["depth"]*.1),
@@ -91,7 +90,8 @@ class Label extends \Magento\Framework\App\Action\Action
             }
             $this->helper->log('Biggest box found', '/var/log/ecobliss.log');
 
-            // Add the dimensions from the biggest box here, in the webhook we'll take these values from the response and only take the number of boxes from the DB
+            // Add the dimensions from the biggest box here
+            // In the webhook we'll take these values from the response and only take the number of boxes from the DB
             // Combine wuunder info and order data
             $this->helper->log('Building Wuunder Data', '/var/log/ecobliss.log');
             $wuunderData = $this->buildWuunderData($infoArray, $order, $boxDimensions);
