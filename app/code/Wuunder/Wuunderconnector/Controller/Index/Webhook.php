@@ -134,9 +134,8 @@ class Webhook extends \Magento\Framework\App\Action\Action
           'weight'                  => $result["weight"],
           'delivery_address'        => $result['delivery_address'],
           'pickup_address'          => $result['pickup_address'],
-          // Misschien static even aan Jeroen vragen.
-          // 'preferred_service_level' => $result['preferred_service_level'],
-          'preferred_service_level' => 'cheapest',
+          
+          'preferred_service_level' => 'dpd_cheapest',
           'personal_message'        => (isset($result['personal_message']) ? $result['personal_message'] : ""),
           'picture'                 => (isset($result['picture']) ? $result['picture'] : ""),
           'customer_reference'      => (isset($result['customer_reference']) ? $result['customer_reference'] : ""),
