@@ -91,7 +91,7 @@ class Label extends \Magento\Framework\App\Action\Action
                     }
                 }
                 $this->helper->log('Biggest box found', '/var/log/ecobliss.log');
-            } else // If the package is empty (monster) give these arbitrary values and numBoxes as 1
+            } else // If the package is empty (monster) give these arbitrary values and numBoxes as 0
             {
                 $boxDimensions = array('length' => 10,
                                        'width'  => 10,
