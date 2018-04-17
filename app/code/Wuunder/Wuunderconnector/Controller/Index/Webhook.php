@@ -37,12 +37,14 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $wuunderShipment->setTtUrl($result['track_and_trace_url']);
                 $wuunderShipment->save();
 
-                // Only if the result kind is package will multiple boxes be sent
-                if ($result['kind'] === 'package')
+                // Fetch number of boxes from DB
+                $numBoxes = $wuunderShipment->getBoxesOrder();
+
+                // Only if the result kind is package and the number of boxes is positive will multiple boxes be sent
+                // Could add a third check for NULL
+                if ($result['kind'] === 'package' && $numBoxes != 0)
                 {
-                    $this->helper->log("Kind is package, preparing to send multiple boxes", '/var/log/ecobliss.log');
-                    // Fetch number of boxes from DB
-                    $numBoxes = $wuunderShipment->getBoxesOrder();
+                    $this->helper->log("Kind is package with multiple boxes, preparing to send multiple boxes", '/var/log/ecobliss.log');
 
                     // Fetch API-key and Url, based on the test mode
                     $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
@@ -134,7 +136,6 @@ class Webhook extends \Magento\Framework\App\Action\Action
           'weight'                  => $result["weight"],
           'delivery_address'        => $result['delivery_address'],
           'pickup_address'          => $result['pickup_address'],
-          
           'preferred_service_level' => 'dpd_cheapest',
           'personal_message'        => (isset($result['personal_message']) ? $result['personal_message'] : ""),
           'picture'                 => (isset($result['picture']) ? $result['picture'] : ""),

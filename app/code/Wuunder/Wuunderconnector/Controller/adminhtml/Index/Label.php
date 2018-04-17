@@ -69,26 +69,37 @@ class Label extends \Magento\Framework\App\Action\Action
             $json = file_get_contents("app/code/Wuunder/packing-details.json");
             $packingDetail = json_decode($json, true);
 
-            // Total number of boxes to be sent
-            $numBoxes = count($packingDetail['boxes']);
-            $this->helper->log('The number of boxes is: ' . $numBoxes, '/var/log/ecobliss.log');
-
-            // Find largest of the boxes
-            $biggestBox = 0;
-            foreach ($packingDetail['boxes'] as $box)
+            if(!empty($packingDetail) && !is_null($packingDetail))
             {
-                $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);
-                if ($size > $biggestBox)
+                // Total number of boxes to be sent
+                $numBoxes = count($packingDetail['boxes']);
+                $this->helper->log('The number of boxes is: ' . $numBoxes, '/var/log/ecobliss.log');
+
+                // Find largest of the boxes
+                $biggestBox = 0;
+                foreach ($packingDetail['boxes'] as $box)
                 {
-                    $biggestBox = $size;
-                    $boxDimensions = array('length' => (int)($box["length"]*.1),
-                                           'width'  => (int)($box["width"]*.1),
-                                           'height' => (int)($box["depth"]*.1),
-                                           // For Wuunder the weight should be in grams, not sure if these values are kilo's? If so: *1000
-                                           'weight' => $box["weight"]);
+                    $size = (int)$box["length"] + ((int)$box["width"]*2) + ((int)$box["depth"]*2);
+                    if ($size > $biggestBox)
+                    {
+                        $biggestBox = $size;
+                        $boxDimensions = array('length' => (int)($box["length"]*.1),
+                                               'width'  => (int)($box["width"]*.1),
+                                               'height' => (int)($box["depth"]*.1),
+                                               // For Wuunder the weight should be in grams, not sure if these values are kilo's? If so: *1000
+                                               'weight' => $box["weight"]);
+                    }
                 }
+                $this->helper->log('Biggest box found', '/var/log/ecobliss.log');
+            } else // If the package is empty (monster) give these arbitrary values and numBoxes as 1
+            {
+                $boxDimensions = array('length' => 10,
+                                       'width'  => 10,
+                                       'height' => 10,
+                                       'weight' => 10);
+                $numBoxes = 0;
             }
-            $this->helper->log('Biggest box found', '/var/log/ecobliss.log');
+
 
             // Add the dimensions from the biggest box here
             // In the webhook we'll take these values from the response and only take the number of boxes from the DB
