@@ -69,7 +69,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $json = file_get_contents("app/code/Wuunder/packing-details.json");
             $packingDetail = json_decode($json, true);
 
-            if(!empty($packingDetail) && !is_null($packingDetail))
+            if(!empty($packingDetail))
             {
                 // Total number of boxes to be sent
                 $numBoxes = count($packingDetail['boxes']);
@@ -83,19 +83,19 @@ class Label extends \Magento\Framework\App\Action\Action
                     if ($size > $biggestBox)
                     {
                         $biggestBox = $size;
-                        $boxDimensions = array('length' => (int)($box["length"]*.1),
-                                               'width'  => (int)($box["width"]*.1),
-                                               'height' => (int)($box["depth"]*.1),
-                                               // For Wuunder the weight should be in grams, not sure if these values are kilo's? If so: *1000
-                                               'weight' => $box["weight"]);
+                        $boxDimensions = array('length' => (int)floor(($box["length"]*.1)),
+                                               'width'  => (int)floor(($box["width"]*.1)),
+                                               'height' => (int)floor(($box["depth"]*.1)),
+                                               // For Wuunder the weight should be in grams received in ounces.
+                                               'weight' => (int)floor($box["weight"]*28.3495));
                     }
                 }
                 $this->helper->log('Biggest box found', '/var/log/ecobliss.log');
             } else // If the package is empty (monster) give these arbitrary values and numBoxes as 0
             {
-                $boxDimensions = array('length' => 10,
-                                       'width'  => 10,
-                                       'height' => 10,
+                $boxDimensions = array('length' => 80,
+                                       'width'  => 50,
+                                       'height' => 35,
                                        'weight' => 10);
                 $numBoxes = 0;
             }

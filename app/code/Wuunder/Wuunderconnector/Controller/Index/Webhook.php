@@ -40,9 +40,8 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 // Fetch number of boxes from DB
                 $numBoxes = $wuunderShipment->getBoxesOrder();
 
-                // Only if the result kind is package and the number of boxes is positive will multiple boxes be sent
-                // Could add a third check for NULL
-                if ($result['kind'] === 'package' && $numBoxes != 0)
+                // Only if the result kind is package and the number of boxes is positive will multiple boxes be sent                
+                if ($result['kind'] === 'package' && $numBoxes > 0)
                 {
                     $this->helper->log("Kind is package with multiple boxes, preparing to send multiple boxes", '/var/log/ecobliss.log');
 
