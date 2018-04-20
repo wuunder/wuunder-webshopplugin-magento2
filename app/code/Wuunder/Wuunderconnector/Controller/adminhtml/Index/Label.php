@@ -70,7 +70,7 @@ class Label extends \Magento\Framework\App\Action\Action
             // $json = file_get_contents("app/code/Wuunder/packing-details-monster.json");
             $packingDetail = json_decode($json, true);
 
-            if(!empty($packingDetail))
+            if(!empty($packingDetail['boxes']))
             {
                 // Total number of boxes to be sent
                 $numBoxes = count($packingDetail['boxes']);
