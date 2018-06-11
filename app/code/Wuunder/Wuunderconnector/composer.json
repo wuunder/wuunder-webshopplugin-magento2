@@ -1,0 +1,5 @@
+{
+  "require": {
+    "wuunder/connector-php": ">=1.0.8"
+  }
+}
