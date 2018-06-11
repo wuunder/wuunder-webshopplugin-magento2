@@ -31,7 +31,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
                 $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
                 $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
-                $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
+                $wuunderShipment->load($this->getRequest()->getParam('order_id'), 'order_id');
                 $wuunderShipment->setLabelId($result['id']);
                 $wuunderShipment->setLabelUrl($result['label_url']);
                 $wuunderShipment->setTtUrl($result['track_and_trace_url']);
@@ -41,8 +41,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $numBoxes = $wuunderShipment->getBoxesOrder();
 
                 // Only if the result kind is package and the number of boxes is positive will multiple boxes be sent
-                if ($result['kind'] === 'package' && $numBoxes > 0)
-                {
+                if ($result['kind'] === 'package' && $numBoxes > 0) {
                     $this->helper->log("Kind is package with multiple boxes, preparing to send multiple boxes", '/var/log/ecobliss.log');
 
                     // Fetch API-key and Url, based on the test mode
@@ -53,7 +52,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                     $data = $this->parseData($result);
 
                     $this->helper->log("Total boxes: " . (string)$numBoxes, '/var/log/ecobliss.log');
-                    for ($i=0; $i < $numBoxes-1; $i++) {
+                    for ($i = 0; $i < $numBoxes - 1; $i++) {
                         $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
                         // Call to the automated API
                         $header = $this->helper->curlRequest($data, $apiData['api_url'], $apiData['api_key']);
@@ -66,32 +65,33 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $wuunderShipment->save();
 
 
-            } else if ($result['action'] === "track_and_trace_updated"){
+            } else if ($result['action'] === "track_and_trace_updated") {
                 $this->helper->log("Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id'));
                 $this->ship($this->getRequest()->getParam('order_id'), $result['carrier_code'], $result['track_and_trace_code']);
             }
         } else {
-          $this->helper->log("Invalid order_id for the webhook");
+            $this->helper->log("Invalid order_id for the webhook");
         }
 
     }
 
-    private function ship($order_id, $carrier, $label_id) {
+    private function ship($order_id, $carrier, $label_id)
+    {
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $order = $objectManager->create('\Magento\Sales\Model\Order') ->load($order_id);
+        $order = $objectManager->create('\Magento\Sales\Model\Order')->load($order_id);
 
         if ($order->canShip()) {
             $this->helper->log("Is able to ship");
             $convertOrder = $objectManager->create('\Magento\Sales\Model\Convert\Order');
             $shipment = $convertOrder->toShipment($order);
             foreach ($order->getAllItems() as $orderItem) {
-              if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
-                  continue;
-              }
-              $qtyShipped = $orderItem->getQtyToShip();
-              $shipmentItem = $convertOrder->itemToShipmentItem($orderItem)->setQty($qtyShipped);
-              $shipment->addItem($shipmentItem);
+                if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
+                    continue;
+                }
+                $qtyShipped = $orderItem->getQtyToShip();
+                $shipmentItem = $convertOrder->itemToShipmentItem($orderItem)->setQty($qtyShipped);
+                $shipment->addItem($shipmentItem);
             }
 
             $track = $objectManager->create('\Magento\Sales\Model\Order\Shipment\TrackFactory')->create();
@@ -125,42 +125,50 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
     private function parseData($result)
     {
-        return array (
-          'description'             => $result['description'],
-          'value'                   => $result['value']*100,
-          'kind'                    => $result['kind'],
-          'length'                  => $result["length"],
-          'width'                   => $result["width"],
-          'height'                  => $result["height"],
-          'weight'                  => $result["weight"],
-          'delivery_address'        => $result['delivery_address'],
-          'pickup_address'          => $result['pickup_address'],
-          'preferred_service_level' => 'dpd_cheapest',
-          'personal_message'        => (isset($result['personal_message']) ? $result['personal_message'] : ""),
-          'picture'                 => (isset($result['picture']) ? $result['picture'] : ""),
-          'customer_reference'      => (isset($result['customer_reference']) ? $result['customer_reference'] : ""),
-          'is_return'               => (isset($result['is_return']) ? $result['is_return'] : false),
-          'drop_off'                => (isset($result['drop_off']) ? $result['drop_off'] : false),
-          'parcelshop_id'           => (isset($result['parcelshop_id']) ? $result['parcelshop_id'] : "")
+        if (isset($result['delivery_address']['email_address'])) {
+            unset($result['delivery_address']['email_address']);
+        }
+        return array(
+            'description' => $result['description'],
+            'value' => ($this->isdecimal($result['value']) ? $result['value'] * 100 : $result['value']),
+            'kind' => $result['kind'],
+            'length' => $result["length"],
+            'width' => $result["width"],
+            'height' => $result["height"],
+            'weight' => $result["weight"],
+            'delivery_address' => $result['delivery_address'],
+            'pickup_address' => $result['pickup_address'],
+            'preferred_service_level' => 'dpd_cheapest',
+            'personal_message' => (isset($result['personal_message']) ? $result['personal_message'] : ""),
+            'picture' => (isset($result['picture']) ? $result['picture'] : ""),
+            'customer_reference' => (isset($result['customer_reference']) ? $result['customer_reference'] : ""),
+            'is_return' => (isset($result['is_return']) ? $result['is_return'] : false),
+            'drop_off' => (isset($result['drop_off']) ? $result['drop_off'] : false),
+            'parcelshop_id' => (isset($result['parcelshop_id']) ? $result['parcelshop_id'] : "")
         );
+    }
+
+    private function isDecimal($val)
+    {
+        return is_numeric($val) && floor($val) != $val;
     }
 
     private function getApiData($test_mode)
     {
-      $this->helper->log("Test mode is: " . $test_mode, '/var/log/ecobliss.log');
-      $this->helper->log("Fetching API url & key.", '/var/log/ecobliss.log');
-      if ($test_mode == 1) {
-          $apiUrl = 'https://api-staging.wearewuunder.com/api/shipments';
-          $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
-      } else {
-          $apiUrl = 'https://api.wearewuunder.com/api/shipments';
-          $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
-      }
+        $this->helper->log("Test mode is: " . $test_mode, '/var/log/ecobliss.log');
+        $this->helper->log("Fetching API url & key.", '/var/log/ecobliss.log');
+        if ($test_mode == 1) {
+            $apiUrl = 'https://api-staging.wearewuunder.com/api/shipments';
+            $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
+        } else {
+            $apiUrl = 'https://api.wearewuunder.com/api/shipments';
+            $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
+        }
 
-      return array (
-        'api_url' => $apiUrl,
-        'api_key' => $apiKey
-      );
+        return array(
+            'api_url' => $apiUrl,
+            'api_key' => $apiKey
+        );
     }
 
 }
