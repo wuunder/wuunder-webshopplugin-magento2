@@ -222,7 +222,7 @@ class Label extends \Magento\Framework\App\Action\Action
             'delivery_address' => $customerAdr,
             'pickup_address' => $webshopAdr,
             'preferred_service_level' => $preferredServiceLevel,
-            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "1.2.0", "plugin" => "1.0"), "platform" => array("name" => "Magento", "build" => $version))
+            'source' => array("product" => "Magento 2 extension", "version" => array("build" => "2.0.0", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version))
         );
     }
 
