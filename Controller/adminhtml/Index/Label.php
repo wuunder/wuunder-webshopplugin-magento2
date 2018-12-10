@@ -54,10 +54,8 @@ class Label extends \Magento\Framework\App\Action\Action
             $webhook_url = $this->_storeManager->getStore()->getBaseUrl() . 'wuunder/index/webhook/order_id/' . $orderId;
 
             if ($test_mode == 1) {
-//                $apiUrl = 'https://api-staging.wearewuunder.com/api/bookings';
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
             } else {
-//                $apiUrl = 'https://api.wearewuunder.com/api/bookings';
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
             }
 
@@ -66,7 +64,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $bookingConfig->setRedirectUrl($redirect_url);
             $bookingConfig->setWebhookUrl($webhook_url);
 
-            $connector = new Wuunder\Connector($apiKey, $test_mode == 1);
+            $connector = new \Wuunder\Connector($apiKey, $test_mode == 1);
             $booking = $connector->createBooking();
 
             if ($bookingConfig->validate()) {
@@ -232,21 +230,13 @@ class Label extends \Magento\Framework\App\Action\Action
         $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
         $version = $productMetadata->getVersion();
 
-        $bookingConfig = new Wuunder\Api\Config\BookingConfig();
-//        $bookingConfig->setWebhookUrl($webhookUrl);
-//        $bookingConfig->setRedirectUrl($redirectUrl);
+        $bookingConfig = new \Wuunder\Api\Config\BookingConfig();
         $bookingConfig->setDescription($infoArray['description']);
         $bookingConfig->setPersonalMessage($infoArray['personal_message']);
         $bookingConfig->setPicture($image);
-//        $bookingConfig->setKind($totalWeight > 23000 ? "pallet" : "package");
-//        $bookingConfig->setValue($value ? $value : null);
-//        $bookingConfig->setLength($this->roundButNull($dimensions[0]));
-//        $bookingConfig->setWidth($this->roundButNull($dimensions[1]));
-//        $bookingConfig->setHeight($this->roundButNull($dimensions[2]));
-//        $bookingConfig->setWeight($totalWeight ? $totalWeight : null);
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
-        $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.1", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
+        $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.3", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
         $bookingConfig->setDeliveryAddress($deliveryAddress);
         $bookingConfig->setPickupAddress($pickupAddress);
 
