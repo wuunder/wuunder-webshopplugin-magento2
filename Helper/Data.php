@@ -72,4 +72,3 @@ class Data extends AbstractHelper{
   }
 
 }
-?>

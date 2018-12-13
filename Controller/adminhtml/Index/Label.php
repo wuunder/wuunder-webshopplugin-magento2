@@ -236,7 +236,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setPicture($image);
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
-        $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.4", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
+        $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.5", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
         $bookingConfig->setDeliveryAddress($deliveryAddress);
         $bookingConfig->setPickupAddress($pickupAddress);
 

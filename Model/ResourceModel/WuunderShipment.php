@@ -11,5 +11,3 @@ class WuunderShipment extends \Magento\Framework\Model\ResourceModel\Db\Abstract
   }
 
 }
-
-?>

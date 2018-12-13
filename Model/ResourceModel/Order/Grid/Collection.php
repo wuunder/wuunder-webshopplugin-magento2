@@ -28,4 +28,3 @@ class Collection extends OriginalCollection
         parent::_renderFiltersBefore();
     }
 }
-?>
