@@ -206,7 +206,7 @@ class Label extends \Magento\Framework\App\Action\Action
                     } else {
                         $base64Image = null;
                     }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $base64Image = null;
                 }
                 if (!is_null($base64Image)) {
@@ -236,7 +236,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setPicture($image);
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
-        $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.5", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
+        $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.6", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
         $bookingConfig->setDeliveryAddress($deliveryAddress);
         $bookingConfig->setPickupAddress($pickupAddress);
 
