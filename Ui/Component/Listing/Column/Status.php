@@ -14,20 +14,18 @@ class Status extends Column
     protected $_orderRepository;
     protected $_searchCriteria;
     protected $_urlBuilder;
-    protected $scopeConfig;
 
-    public function __construct(UrlInterface $urlBuilder, ContextInterface $context, UiComponentFactory $uiComponentFactory, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, OrderRepositoryInterface $orderRepository, SearchCriteriaBuilder $criteria, array $components = [], array $data = [])
+    public function __construct(UrlInterface $urlBuilder, ContextInterface $context, UiComponentFactory $uiComponentFactory, OrderRepositoryInterface $orderRepository, SearchCriteriaBuilder $criteria, array $components = [], array $data = [])
     {
         $this->_orderRepository = $orderRepository;
         $this->_searchCriteria = $criteria;
         $this->_urlBuilder = $urlBuilder;
-        $this->scopeConfig = $scopeConfig;
         parent::__construct($context, $uiComponentFactory, $components, $data);
     }
 
     public function prepareDataSource(array $dataSource)
     {
-        if ($this->scopeConfig->getValue('wuunder_wuunderconnector/general/enable') == 1 && isset($dataSource['data']['items'])) {
+        if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as & $item) {
                 $item[$this->getData('name')] = $this->renderIcons($item);
             }

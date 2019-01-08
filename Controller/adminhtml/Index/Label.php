@@ -15,9 +15,8 @@ class Label extends \Magento\Framework\App\Action\Action
     protected $scopeConfig;
     protected $_storeManager;
     protected $HelperBackend;
-    protected $_messageManager;
 
-    public function __construct(Context $context, \Magento\Framework\View\Result\PageFactory $resultPageFactory, \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, \Magento\Catalog\Model\ProductFactory $_productloader, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Magento\Store\Model\StoreManagerInterface $storeManager, \Magento\Backend\Helper\Data $HelperBackend, Data $helper, \Magento\Framework\Message\ManagerInterface $messageManager)
+    public function __construct(Context $context, \Magento\Framework\View\Result\PageFactory $resultPageFactory, \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, \Magento\Catalog\Model\ProductFactory $_productloader, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Magento\Store\Model\StoreManagerInterface $storeManager, \Magento\Backend\Helper\Data $HelperBackend, Data $helper)
     {
         $this->helper = $helper;
         $this->_resultPageFactory = $resultPageFactory;
@@ -26,7 +25,6 @@ class Label extends \Magento\Framework\App\Action\Action
         $this->scopeConfig = $scopeConfig;
         $this->_storeManager = $storeManager;
         $this->HelperBackend = $HelperBackend;
-        $this->_messageManager = $messageManager;
         parent::__construct($context);
     }
 
@@ -35,18 +33,14 @@ class Label extends \Magento\Framework\App\Action\Action
         $this->helper->log("executed");
         $redirect_url = $this->processOrderInfo();
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        if (empty($redirect_url)) {
-            $this->_messageManager->addError("Wuunderconnector: Something went wrong, please check the logging.");
-            $resultRedirect->setUrl($this->HelperBackend->getUrl('sales/order'));
-        } else {
-            $resultRedirect->setUrl($redirect_url);
-        }
+        $resultRedirect->setUrl($redirect_url);
         return $resultRedirect;
     }
 
     private function processOrderInfo()
     {
         $orderId = $this->getRequest()->getParam('orderId');
+        $redirect_url = $this->HelperBackend->getUrl('sales/order');
         if (!$this->wuunderShipmentExists($orderId)) {
             $infoArray = $this->getOrderInfo($orderId);
             // Fetch order
@@ -97,7 +91,7 @@ class Label extends \Magento\Framework\App\Action\Action
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
-        $wuunderShipment->load($this->getRequest()->getParam('order_id'), 'order_id');
+        $wuunderShipment->load($this->getRequest()->getParam('order_id') , 'order_id');
         $wuunderShipment->setOrderId($orderId);
         $wuunderShipment->setBookingUrl($bookingUrl);
         $wuunderShipment->setBookingToken($bookingToken);
@@ -108,7 +102,7 @@ class Label extends \Magento\Framework\App\Action\Action
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
-        $wuunderShipment->load($orderId, 'order_id');
+        $wuunderShipment->load($orderId , 'order_id');
         $shipmentData = $wuunderShipment->getData();
 
         return (bool)$shipmentData;
