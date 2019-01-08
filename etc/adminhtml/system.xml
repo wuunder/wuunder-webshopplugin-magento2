@@ -23,22 +23,27 @@
                 <field id="api_key_live" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Live API key</label>
                     <comment>Used when Testmode = No</comment>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="api_key_test" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Test API key</label>
                     <comment>Used when Testmode = Yes</comment>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="company" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Company name</label>
                 </field>
                 <field id="firstname" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Firstname</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="lastname" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Lastname</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="email" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Email</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="phone" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Phonenumber</label>
@@ -49,16 +54,20 @@
                 </field>
                 <field id="housenumber" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Housenumber</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="zipcode" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Zipcode</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="city" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>City</label>
+                    <validate>required-entry</validate>
                 </field>
                 <field id="country" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Country</label>
                     <comment>Country code, use ISO 3166-1 alpha-2 format e.g. NL</comment>
+                    <validate>required-entry</validate>
                 </field>
             </group>
             <group id="advanced" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
