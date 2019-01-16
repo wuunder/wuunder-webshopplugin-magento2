@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <carriers>
-            <simpleshipping>
+            <parcelshop_locator>
                 <active>1</active>
                 <sallowspecific>0</sallowspecific>
                 <model>Wuunder\Wuunderconnector\Model\Carrier\Shipping</model>
@@ -11,7 +11,7 @@
                 <title>Wuunder Parcelshop Locator</title>
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
                 <handling_type>F</handling_type>
-            </simpleshipping>
+            </parcelshop_locator>
         </carriers>
     </default>
 </config>
