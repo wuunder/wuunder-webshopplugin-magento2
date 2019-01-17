@@ -6,7 +6,7 @@ define([
 
     return Component.extend({
         defaults: {
-            template: 'Wuunder_Wuunderconnector/checkout/shipping/additional-block'
+            template: 'Wuunder_Wuunderconnector/checkout/shipping/parcelshop'
         }
     });
 });

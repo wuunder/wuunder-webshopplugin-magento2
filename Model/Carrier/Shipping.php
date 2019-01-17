@@ -10,7 +10,7 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
     /**
      * @var string
      */
-    protected $_code = 'simpleshipping';
+    protected $_code = 'parcelshop-picker';
 
     /**
      * @var \Magento\Shipping\Model\Rate\ResultFactory
