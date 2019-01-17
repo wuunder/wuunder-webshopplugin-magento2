@@ -159,7 +159,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $houseNumber = $streetAddress['houseNumber'] . $shippingAddress['houseNumberSuffix'];
         }
 
-        // Fix DPD parcelshop first- and lastname override fix
+        // Fix wuunder parcelshop first- and lastname override fix
         $firstname = $shippingAddress->getFirstname();
         $lastname = $shippingLastname;
         $company = $shippingAddress->getCompany();

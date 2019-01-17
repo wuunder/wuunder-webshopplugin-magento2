@@ -1,0 +1,20 @@
+<!-- ko if: initializewuunderShopInfo() -->
+<!-- /ko -->
+<div class="wuunder-shipping-information" style="display: none;">
+    <div class="wuunder-shipping-info">
+        <div class="shipping-information-title">
+            <span data-bind="i18n: 'Parcelshop:'"></span>
+        </div>
+        <div class="shipping-information-content">
+            <p id="wuunder_company"></p>
+            <p id="wuunder_street"></p>
+            <p id="wuunder_zipcode_and_city"></p>
+            <p id="wuunder_country"></p>
+        </div>
+    </div>
+</div>
+<style>
+    .wuunder-shipping-information p {
+        margin-bottom: 3px;
+    }
+</style>
