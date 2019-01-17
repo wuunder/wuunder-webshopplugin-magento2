@@ -6,9 +6,9 @@
                 <active>1</active>
                 <sallowspecific>0</sallowspecific>
                 <model>Wuunder\Wuunderconnector\Model\Carrier\Shipping</model>
-                <name>Wuunder Parcelshop Locator</name>
+                <name>Wuunder</name>
                 <price>10.00</price>
-                <title>Wuunder Parcelshop Locator</title>
+                <title>Parcelshop Locator</title>
                 <specificerrmsg>This shipping method is not available. To use this shipping method, please contact us.</specificerrmsg>
                 <handling_type>F</handling_type>
             </parcelshop-picker>
