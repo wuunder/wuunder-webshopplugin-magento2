@@ -16,12 +16,8 @@ define([
 
         initialize: function () {
             this._super()
-            this.sayHello = "Hello this is content populated with KO!";
-        
             var parcelShops = null;
-
             var parcelshopShippingMethodElem;
-
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
