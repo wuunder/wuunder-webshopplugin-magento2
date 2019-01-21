@@ -4,5 +4,8 @@
         <route id="wuunderWebhook" frontName="wuunder">
             <module name="Wuunder_Wuunderconnector" />
         </route>
+        <route id="wuunderParcelshopPicker" frontName="wuunder">
+            <module name="Wuunder_Wuunderconnector">
+        </route>
     </router>
 </config>
