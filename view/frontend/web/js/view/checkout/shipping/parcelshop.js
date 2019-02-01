@@ -42,11 +42,12 @@ define([
                 var shippingMethodElems = jQuery('input.delivery_option_radio');
                 var shippingAddress;
                 //var parcelshopAddress = _markupParcelshopAddress("");
-                var baseUrl;
-                var baseUrlApi;
+                var baseUrl = window.checkoutConfig.backend_base_url;
+                var baseUrlApi = window.checkoutConfig.api_base_url;
+                console.log(baseUrl + ' ||||| ' + baseUrlApi);
                 var availableCarrierList;
-                var getAddressUrl = "index.php?fc=module&module=wuunderconnector&controller=parcelshop&getAddress=1";
-                var setParcelshopId = "index.php?fc=module&module=wuunderconnector&controller=parcelshop&setParcelshopId=1";
+                var getAddressUrl = "wuunder/index/parcelshop/getAddress=1";
+                var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId=1";
                 var addressId = "";
                 function initParcelshopLocator(url, apiUrl, carrierList) {
                     console.log(parcelshopShippingMethodElem);
@@ -111,7 +112,7 @@ define([
 
 
                 function _openIframe() {
-                    var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=' + availableCarrierList + '&address=' + encodeURI(shippingAddress);
+                    var iframeUrl = 'https://api-playground.wearewuunder.com/parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,postnl&address=Noorderpoort%2069%205916Pj%20Venlo%20NL';
 
                     var iframeContainer = document.createElement('div');
                     iframeContainer.className = "parcelshopPickerIframeContainer";
@@ -158,9 +159,10 @@ define([
                         jQuery.post( baseUrl + setParcelshopId, {
                                 'parcelshopId' : id,
                         }, function( data ) {
+                                console.log(data);
                                 parcelshopAddress = _markupParcelshopAddress(data);
                                 _printParcelshopAddress();
-                    });
+                            });
                 }
 
                 function _markupParcelshopAddress(parcelshopData) {
