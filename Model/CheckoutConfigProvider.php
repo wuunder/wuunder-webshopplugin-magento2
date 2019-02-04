@@ -27,7 +27,7 @@ class CheckoutConfigProvider implements \Magento\Checkout\Model\ConfigProviderIn
 
     public function getConfig()
     {
-        $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
+        $test_mode = (int)$this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
 
         $tmpEnvironment = new \Wuunder\Api\Environment($test_mode === 1 ? 'staging' : 'production');
         $baseApiUrl = substr($tmpEnvironment->getStageBaseUrl(), 0, -3);

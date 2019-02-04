@@ -1,11 +1,9 @@
 define([
     'jquery',
-    //'ko',
     'uiComponent',
     'ko',
     'Magento_Checkout/js/model/quote',
 
-//], function ($, ko, Component, quote) {
     ], function ($, Component, ko, quote) {  
         'use strict';
 
@@ -15,7 +13,7 @@ define([
         },
 
         initialize: function () {
-            this._super()
+            this._super();
             var parcelShops = null;
             var parcelshopShippingMethodElem;
             this.selectedMethod = ko.computed(function () {
@@ -41,32 +39,14 @@ define([
                 // Get the modal
                 var shippingMethodElems = jQuery('input.delivery_option_radio');
                 var shippingAddress;
-                //var parcelshopAddress = _markupParcelshopAddress("");
+                var parcelshopAddress;
                 var baseUrl = window.checkoutConfig.backend_base_url;
                 var baseUrlApi = window.checkoutConfig.api_base_url;
                 console.log(baseUrl + ' ||||| ' + baseUrlApi);
                 var availableCarrierList;
-                var getAddressUrl = "wuunder/index/parcelshop/getAddress=1";
-                var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId=1";
+                var getAddressUrl = "wuunder/index/parcelshop/getAddress";
+                var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId";
                 var addressId = "";
-                function initParcelshopLocator(url, apiUrl, carrierList) {
-                    console.log(parcelshopShippingMethodElem);
-                    baseUrl = url;
-                    baseUrlApi = apiUrl;
-                    availableCarrierList = carrierList;
-                    
-                    jQuery('.delivery_options').append('<div class="delivery_option alternate_item parcelshop_container"></div>');
-
-                    if (parcelshopShippingMethodElem) {
-                        //parcelshopShippingMethodElem.onchange = _onShippingMethodChange;
-                        if (parcelshopAddress !== "") {
-                            parcelshopId = "";
-                        }
-                        //jQuery(shippingMethodElems).change(_onShippingMethodChange);
-                        jQuery(shippingMethodElems).on('change', _onShippingMethodChange);
-                        _onShippingMethodChange();
-                    }
-                }
 
                 function _onShippingMethodChange() {
                     if (parcelshopShippingMethodElem.checked) {      
@@ -112,7 +92,7 @@ define([
 
 
                 function _openIframe() {
-                    var iframeUrl = 'https://api-playground.wearewuunder.com/parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,postnl&address=Noorderpoort%2069%205916Pj%20Venlo%20NL';
+                    var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,postnl&address=Noorderpoort%2069%205916Pj%20Venlo%20NL';
 
                     var iframeContainer = document.createElement('div');
                     iframeContainer.className = "parcelshopPickerIframeContainer";
@@ -166,7 +146,7 @@ define([
                 }
 
                 function _markupParcelshopAddress(parcelshopData) {
-                                data = JSON.parse(parcelshopData);
+                                let data = JSON.parse(parcelshopData);
                                 var parcelshopInfoHtml = _capFirst(data.company_name) + "<br>" + _capFirst(data.address.street_name) +
                                 " " + data.address.house_number + "<br>" + data.address.city;
                                 parcelshopInfoHtml = parcelshopInfoHtml.replace(/"/g, '\\"').replace(/'/g, "\\'");

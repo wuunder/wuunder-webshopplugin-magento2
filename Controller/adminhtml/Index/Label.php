@@ -17,8 +17,17 @@ class Label extends \Magento\Framework\App\Action\Action
     protected $HelperBackend;
     protected $_messageManager;
 
-    public function __construct(Context $context, \Magento\Framework\View\Result\PageFactory $resultPageFactory, \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, \Magento\Catalog\Model\ProductFactory $_productloader, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Magento\Store\Model\StoreManagerInterface $storeManager, \Magento\Backend\Helper\Data $HelperBackend, Data $helper, \Magento\Framework\Message\ManagerInterface $messageManager)
-    {
+    public function __construct(
+        Context $context, 
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory, 
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, 
+        \Magento\Catalog\Model\ProductFactory $_productloader, 
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
+        \Magento\Store\Model\StoreManagerInterface $storeManager, 
+        \Magento\Backend\Helper\Data $HelperBackend, 
+        Data $helper, 
+        \Magento\Framework\Message\ManagerInterface $messageManager
+    ) {
         $this->helper = $helper;
         $this->_resultPageFactory = $resultPageFactory;
         $this->orderRepository = $orderRepository;

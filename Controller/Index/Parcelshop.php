@@ -2,8 +2,30 @@
 
 namespace Wuunder\Wuunderconnector\Controller\Index;
 
+use \Wuunder\Wuunderconnector\Helper\Data;
+use Magento\Framework\App\Action\Context;
+
 class Parcelshop extends \Magento\Framework\App\Action\Action
 {
+    protected $logger;
+
+    protected $scopeConfig;
+
+    protected $HelperBackend;
+
+    public function __construct(
+        \Magento\Backend\Helper\Data $HelperBackend,
+        \Psr\Log\LoggerInterface $logger, 
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        Data $helper,
+        Context $context
+    ) {
+        $this->HelperBackend = $HelperBackend;
+        $this->logger = $logger;
+        $this->scopeConfig = $scopeConfig;
+        $this->helper = $helper;
+        parent::__construct($context);
+    }
     /**
      * Parcelshop action
      *
@@ -12,31 +34,29 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $post = $this->getRequest()->getPostValue();
-        if (isset($_POST['getAddress'])) {
-            $this->getCheckoutAddress();
+        if (null !== $this->getRequest()->getParam('getAddress')) {
+            $this->getCheckoutAddress($post);
         }
 
-        if (isset($_POST['setParcelshopId'])) {
-            $this->setParcelshopId();
+        if (null !== $this->getRequest()->getParam('setParcelshopId')) {
+            $this->setParcelshopId($post);
         }
     }
 
-    private function getCheckoutAddress()
+    private function getCheckoutAddress($post)
     {
-        $addressId = $_REQUEST['addressId'];
+        $addressId = $post['addressId'];
         $address = new Address((int) $addressId);
         header('Content-Type: application/json');
         die(json_encode($address));
     }
 
-    private function setParcelshopId()
+    private function setParcelshopId($post)
     {
-        if (Tools::getValue('parcelshopId')) {
-            $parcelshopId = Tools::getValue('parcelshopId');
-            $this->context->cookie->parcelId = $parcelshopId;
+        if ($post['parcelshopId']) {
+            $parcelshopId = $post['parcelshopId'];
             $address = $this->getParcelshopAddress($parcelshopId);
             $encodedAddress = json_encode($address);
-            $this->context->cookie->parcelAddress = $encodedAddress;
             die($encodedAddress);
         }
         return null;
@@ -55,7 +75,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
             }
 
-            $connector = new Wuunder\Connector($apiKey);
+            $connector = new \Wuunder\Connector($apiKey, $test_mode === 1);
             $connector->setLanguage("NL");
             $parcelshopRequest = $connector->getParcelshopById();
             $parcelshopConfig = new \Wuunder\Api\Config\ParcelshopConfig();
