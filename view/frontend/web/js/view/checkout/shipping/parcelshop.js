@@ -42,7 +42,6 @@ define([
                 var parcelshopAddress;
                 var baseUrl = window.checkoutConfig.backend_base_url;
                 var baseUrlApi = window.checkoutConfig.api_base_url;
-                console.log(baseUrl + ' ||||| ' + baseUrlApi);
                 var availableCarrierList;
                 var getAddressUrl = "wuunder/index/parcelshop/getAddress";
                 var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId";
@@ -66,6 +65,7 @@ define([
 
                 // add selected parcelshop to page
                 function _printParcelshopAddress() {
+                    console.log(parcelshopAddress);
                     if (parcelshopAddress) {
                         if (window.parent.document.getElementsByClassName("parcelshopInfo").length) {
                             window.parent.document.getElementsByClassName("parcelshopInfo")[0].remove();
@@ -73,8 +73,8 @@ define([
                         var currentParcelshop = document.createElement('div');
                         currentParcelshop.className += 'parcelshopInfo';
                         currentParcelshop.innerHTML = '<br/><strong>Huidige Parcelshop:</strong><br/>' + parcelshopAddress;
-                        window.parent.document.getElementById('parcelshopsSelectedContainer').appendChild(currentParcelshop);
-                        window.parent.document.getElementById('selectParcelshop').innerHTML = 'klik hier om een andere parcelshop te kiezen';
+                        window.parent.document.getElementById('wuunder_parcelshop_container').appendChild(currentParcelshop);
+                        window.parent.document.getElementById('get_parcels_link').innerHTML = 'klik hier om een andere parcelshop te kiezen';
 
                     }
                 }
@@ -139,7 +139,6 @@ define([
                         jQuery.post( baseUrl + setParcelshopId, {
                                 'parcelshopId' : id,
                         }, function( data ) {
-                                console.log(data);
                                 parcelshopAddress = _markupParcelshopAddress(data);
                                 _printParcelshopAddress();
                             });

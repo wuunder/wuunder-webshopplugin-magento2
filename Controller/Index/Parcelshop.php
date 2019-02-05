@@ -75,27 +75,26 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
                 $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
             }
 
-            $connector = new \Wuunder\Connector($apiKey, $test_mode === 1);
+            $connector = new \Wuunder\Connector($apiKey);
             $connector->setLanguage("NL");
             $parcelshopRequest = $connector->getParcelshopById();
             $parcelshopConfig = new \Wuunder\Api\Config\ParcelshopConfig();
-
+    
             $parcelshopConfig->setId($id);
-
+    
             if ($parcelshopConfig->validate()) {
                 $parcelshopRequest->setConfig($parcelshopConfig);
                 if ($parcelshopRequest->fire()) {
                     $parcelshop = $parcelshopRequest->getParcelshopResponse()->getParcelshopData();
                 } else {
-                    echo 'error';
                     var_dump($parcelshopRequest->getParcelshopResponse()->getError());
                 }
             } else {
                 $parcelshop = "ParcelshopsConfig not complete";
             }
-            return $parcelshop;
+            echo json_encode($parcelshop);
         }
-
-        return null;
+    
+        exit;
     }
 }
