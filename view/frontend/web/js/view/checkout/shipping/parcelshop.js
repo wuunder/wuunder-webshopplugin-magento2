@@ -45,7 +45,6 @@ define([
                 var availableCarrierList;
                 var getAddressUrl = "wuunder/index/parcelshop/getAddress";
                 var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId";
-                var addressId = "";
 
                 function _onShippingMethodChange() {
                     if (parcelshopShippingMethodElem.checked) {      
@@ -81,13 +80,13 @@ define([
 
 
                 function _showParcelshopLocator() {
-                    var address = "";
-
-                    //jQuery.post( baseUrl + getAddressUrl + "&addressId=" + addressId, function( data ) {
-                        //shippingAddress = data["address1"] + ' ' + data["postcode"] + ' ' + data["city"] + ' ' + data["country"];
-                        shippingAddress = "Noorderpoort 69 5916PJ Venlo Nederland";
-                        _openIframe();
-                    //});
+                    jQuery.post( baseUrl + getAddressUrl, 
+                        function( data ) {
+                            //shippingAddress = data["address1"] + ' ' + data["postcode"] + ' ' + data["city"] + ' ' + data["country"];
+                            console.log(data);
+                            shippingAddress = "Noorderpoort 69 5916PJ Venlo Nederland";
+                            _openIframe();
+                    });
                 }
 
 

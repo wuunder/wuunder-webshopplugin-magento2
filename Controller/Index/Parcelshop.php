@@ -4,6 +4,7 @@ namespace Wuunder\Wuunderconnector\Controller\Index;
 
 use \Wuunder\Wuunderconnector\Helper\Data;
 use Magento\Framework\App\Action\Context;
+use Magento\Checkout\Model\Session as checkoutSession;
 
 class Parcelshop extends \Magento\Framework\App\Action\Action
 {
@@ -13,17 +14,24 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
 
     protected $HelperBackend;
 
+    /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $_checkoutSession;
+
     public function __construct(
         \Magento\Backend\Helper\Data $HelperBackend,
         \Psr\Log\LoggerInterface $logger, 
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         Data $helper,
+        CheckoutSession $checkoutSession,
         Context $context
     ) {
         $this->HelperBackend = $HelperBackend;
         $this->logger = $logger;
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
+        $this->_checkoutSession = $checkoutSession;
         parent::__construct($context);
     }
     /**
@@ -35,7 +43,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     {
         $post = $this->getRequest()->getPostValue();
         if (null !== $this->getRequest()->getParam('getAddress')) {
-            $this->getCheckoutAddress($post);
+            $this->getCheckoutAddress();
         }
 
         if (null !== $this->getRequest()->getParam('setParcelshopId')) {
@@ -43,12 +51,11 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         }
     }
 
-    private function getCheckoutAddress($post)
+    private function getCheckoutAddress()
     {
-        $addressId = $post['addressId'];
-        $address = new Address((int) $addressId);
-        header('Content-Type: application/json');
-        die(json_encode($address));
+        //dit werkt niet... Lege return.
+        $checkoutAddress = $this->_checkoutSession->getQuote()->getShippingAddress();
+        return(($checkoutAddress));
     }
 
     private function setParcelshopId($post)

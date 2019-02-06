@@ -12,8 +12,11 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
     protected $scopeConfig;
 
-    public function __construct(Context $context, \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, Data $helper)
-    {
+    public function __construct(
+        Context $context,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
+        Data $helper
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
         parent::__construct($context);
