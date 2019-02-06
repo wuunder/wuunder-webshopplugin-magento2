@@ -118,7 +118,7 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->addColumn(
                     'parcelshop_id',
-                    Table::TYPE_VARCHAR,
+                    Table::TYPE_TEXT,
                     null,
                     ['nullable => true'],
                     'Parcelshop id'

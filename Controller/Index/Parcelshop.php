@@ -49,6 +49,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         if (null !== $this->getRequest()->getParam('setParcelshopId')) {
             $this->setParcelshopId($post);
         }
+
     }
 
     private function getCheckoutAddress()
@@ -64,6 +65,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
             $parcelshopId = $post['parcelshopId'];
             $address = $this->getParcelshopAddress($parcelshopId);
             $encodedAddress = json_encode($address);
+            $quoteId = $this->_checkoutSession->getQuote()->getQuoteId();
+            _saveParcelshopId($parcelshopId, $quoteId);
             die($encodedAddress);
         }
         return null;
@@ -103,5 +106,10 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         }
     
         exit;
+    }
+
+    private function _saveParcelshopId($parcelshopId, $quoteId) 
+    {
+        
     }
 }
