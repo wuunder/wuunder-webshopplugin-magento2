@@ -5,6 +5,8 @@ namespace Wuunder\Wuunderconnector\Controller\Index;
 use \Wuunder\Wuunderconnector\Helper\Data;
 use Magento\Framework\App\Action\Context;
 use Magento\Checkout\Model\Session as checkoutSession;
+use \Wuunder\Wuunderconnector\Model\QuoteIdFactory;
+use Magento\Framework\Controller\ResultFactory;
 
 class Parcelshop extends \Magento\Framework\App\Action\Action
 {
@@ -19,19 +21,23 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
      */
     protected $_checkoutSession;
 
+    protected $_QuoteId;
+
     public function __construct(
         \Magento\Backend\Helper\Data $HelperBackend,
         \Psr\Log\LoggerInterface $logger, 
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         Data $helper,
-        CheckoutSession $checkoutSession,
+        \Magento\Framework\Controller\ResultFactory $result,       
+        \Wuunder\Wuunderconnector\Model\QuoteIdFactory $QuoteId,
         Context $context
     ) {
         $this->HelperBackend = $HelperBackend;
         $this->logger = $logger;
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
-        $this->_checkoutSession = $checkoutSession;
+        $this->resultRedirect = $result;
+        $this->_QuoteId = $QuoteId;
         parent::__construct($context);
     }
     /**
@@ -42,31 +48,20 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $post = $this->getRequest()->getPostValue();
-        if (null !== $this->getRequest()->getParam('getAddress')) {
-            $this->getCheckoutAddress();
-        }
-
         if (null !== $this->getRequest()->getParam('setParcelshopId')) {
-            $this->setParcelshopId($post);
+            $parcelshopId = $post['parcelshopId'];
+            $quoteId = $post['quoteId'];
+            $this->_saveParcelshopId($parcelshopId, $quoteId);
+            $this->setParcelshopId($parcelshopId);
         }
 
     }
 
-    private function getCheckoutAddress()
+    private function setParcelshopId($id)
     {
-        //dit werkt niet... Lege return.
-        $checkoutAddress = $this->_checkoutSession->getQuote()->getShippingAddress();
-        return(($checkoutAddress));
-    }
-
-    private function setParcelshopId($post)
-    {
-        if ($post['parcelshopId']) {
-            $parcelshopId = $post['parcelshopId'];
-            $address = $this->getParcelshopAddress($parcelshopId);
+        if ($id) {
+            $address = $this->getParcelshopAddress($id);
             $encodedAddress = json_encode($address);
-            $quoteId = $this->_checkoutSession->getQuote()->getQuoteId();
-            _saveParcelshopId($parcelshopId, $quoteId);
             die($encodedAddress);
         }
         return null;
@@ -100,8 +95,10 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
                     var_dump($parcelshopRequest->getParcelshopResponse()->getError());
                 }
             } else {
-                $parcelshop = "ParcelshopsConfig not complete";
+                $this->helper->log("ParcelshopsConfig not complete");
+                die(null);
             }
+            $this->helper->log("parcelshop return");
             echo json_encode($parcelshop);
         }
     
@@ -110,6 +107,21 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
 
     private function _saveParcelshopId($parcelshopId, $quoteId) 
     {
+        $this->helper->log("going to save");
+        $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
+        $model = $this->_QuoteId->create();
+        $model->addData(
+            [
+            "quote_id" => $quoteId,
+            "parcelshop_id" => $parcelshopId,
+            ]
+        );
+        $saveData = $model->save();
+        if ($saveData) {
+            $this->messageManager->addSuccess(__('Insert Record Successfully !'));
+        }
+        return $resultRedirect;
         
     }
 }

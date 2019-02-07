@@ -80,19 +80,20 @@ define([
 
 
                 function _showParcelshopLocator() {
-                    jQuery.post( baseUrl + getAddressUrl, 
-                        function( data ) {
-                            //shippingAddress = data["address1"] + ' ' + data["postcode"] + ' ' + data["city"] + ' ' + data["country"];
-                            console.log(data);
-                            shippingAddress = "Noorderpoort 69 5916PJ Venlo Nederland";
-                            _openIframe();
-                    });
+                    if (quote.shippingAddress().isDefaultShipping()) {
+                        let shippingAddressFromQuote = quote.shippingAddress().getAddressInline();
+                        let shippingAddress = shippingAddressFromQuote.match(/.*?\,\ (.*?)\,\ (.*?)\,\ *(.*?)\,\ (.*?)$/);
+                        var urlAddress = encodeURI(shippingAddress[1] + ' ' + shippingAddress[3] + ' ' + shippingAddress[2] + ' ' + shippingAddress[4]);    
+                    } else {
+                        let shippingAddress = quote.shippingAddress();
+                        var urlAddress = encodeURI(shippingAddress.street + ' ' + shippingAddress.postcode + ' ' + shippingAddress.city + ' ' + shippingAddress.countryId);    
+                    }
+                    _openIframe(urlAddress);
                 }
 
 
-                function _openIframe() {
-                    var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,postnl&address=Noorderpoort%2069%205916Pj%20Venlo%20NL';
-
+                function _openIframe(urlAddress) {
+                    var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,postnl&address=' + urlAddress;
                     var iframeContainer = document.createElement('div');
                     iframeContainer.className = "parcelshopPickerIframeContainer";
                     iframeContainer.onclick = function() { removeElement(iframeContainer); };
@@ -137,6 +138,7 @@ define([
                 function _loadSelectedParcelshopAddress(id) {
                         jQuery.post( baseUrl + setParcelshopId, {
                                 'parcelshopId' : id,
+                                'quoteId' : quote.getQuoteId(),
                         }, function( data ) {
                                 parcelshopAddress = _markupParcelshopAddress(data);
                                 _printParcelshopAddress();

@@ -16,8 +16,7 @@ class Collection extends OriginalCollection
         FetchStrategy $fetchStrategy,
         EventManager $eventManager,
         \Magento\Backend\Model\Auth\Session $authSession
-    )
-    {
+    ) {
         $this->_authSession = $authSession;
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager);
     }
