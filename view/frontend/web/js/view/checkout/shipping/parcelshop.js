@@ -14,7 +14,6 @@ define([
 
         initialize: function () {
             this._super();
-            var parcelShops = null;
             var parcelshopShippingMethodElem;
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
@@ -26,24 +25,21 @@ define([
 
                         $('<tr><td id="wuunder_parcelshop_container" colspan="' + columnCount + '"></td><tr>').insertAfter($('#label_method_parcelshop-picker_parcelshop-picker').parent());
                         $('#wuunder_parcelshop_container').html('<div id="parcelshop" class="parcelshopwrapper"><a href="#" id="get_parcels_link">' + $.mage.__('Click here to select your Parcelshop') + '</a><div id="map_container"><div id="map_canvas" class="gmaps"></div></div></div>');
+                    } else if ($('#wuunder_parcelshop_container')) {
+                        $('#wuunder_parcelshop_container').show();
                     }
+
                 } else {
-                    $('#wuunder_parcelshop_container').remove();
-                    jQuery('.wuunder-shipping-information').hide();
+                    $('#wuunder_parcelshop_container').hide();
                 }
                 return selectedMethod;
             }, this);
 
             $(document).ready(function () {
-                var shippingCarrierId = ""; //hardcoden
-                // Get the modal
-                var shippingMethodElems = jQuery('input.delivery_option_radio');
-                var shippingAddress;
                 var parcelshopAddress;
                 var baseUrl = window.checkoutConfig.backend_base_url;
                 var baseUrlApi = window.checkoutConfig.api_base_url;
                 var availableCarrierList;
-                var getAddressUrl = "wuunder/index/parcelshop/getAddress";
                 var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId";
 
                 function _onShippingMethodChange() {
