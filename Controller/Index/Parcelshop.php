@@ -107,21 +107,25 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
 
     private function _saveParcelshopId($parcelshopId, $quoteId) 
     {
-        $this->helper->log("going to save");
-        $resultRedirect = $this->resultRedirect->create(ResultFactory::TYPE_REDIRECT);
-        $resultRedirect->setUrl($this->_redirect->getRefererUrl());
-        $model = $this->_QuoteId->create();
-        $model->addData(
-            [
-            "quote_id" => $quoteId,
-            "parcelshop_id" => $parcelshopId,
-            ]
-        );
-        $saveData = $model->save();
-        if ($saveData) {
-            $this->messageManager->addSuccess(__('Insert Record Successfully !'));
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
+        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+        $connection = $resource->getConnection();
+        $tableName = $resource->getTableName('wuunder_quote_id');
+
+        //Check if current quote is already in database
+        $sql = "SELECT * FROM " . $tableName ." WHERE quote_id =" . $quoteId;
+        if ($result = $connection->fetchAll($sql)) {
+            $sql = "UPDATE ". $tableName . " SET parcelshop_id = '" . $parcelshopId . "' WHERE quote_id = " . $quoteId;
+            $connection->query($sql);
+        } else {
+            $model = $this->_QuoteId->create();
+            $model->addData(
+                [
+                "quote_id" => $quoteId,
+                "parcelshop_id" => $parcelshopId,
+                ]
+            );
+            $saveData = $model->save();    
         }
-        return $resultRedirect;
-        
     }
 }
