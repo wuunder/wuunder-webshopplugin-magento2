@@ -22,7 +22,6 @@ define([
                 if (selectedMethod === 'parcelshop-picker_parcelshop-picker') {
                     if ($('#wuunder_parcelshop_container').length === 0) {
                         var columnCount = $('#label_method_parcelshop-picker_parcelshop-picker').parent().children().length;
-
                         $('<tr><td id="wuunder_parcelshop_container" colspan="' + columnCount + '"></td><tr>').insertAfter($('#label_method_parcelshop-picker_parcelshop-picker').parent());
                         $('#wuunder_parcelshop_container').html('<div id="parcelshop" class="parcelshopwrapper"><a href="#" id="get_parcels_link">' + $.mage.__('Click here to select your Parcelshop') + '</a><div id="map_container"><div id="map_canvas" class="gmaps"></div></div></div>');
                     } else if ($('#wuunder_parcelshop_container')) {
@@ -37,10 +36,19 @@ define([
 
             $(document).ready(function () {
                 var parcelshopAddress;
-                var baseUrl = window.checkoutConfig.backend_base_url;
                 var baseUrlApi = window.checkoutConfig.api_base_url;
+                var baseUrl = window.checkoutConfig.backend_base_url;
                 var availableCarrierList;
                 var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId";
+                let refreshParcelshopAddress = 'wuunder/index/parcelshop/refreshParcelshopAddress';
+                //Get parcelshop on refresh... Don't know where to implement this yet
+                jQuery.post( baseUrl + refreshParcelshopAddress, {
+                    'quoteId' : quote.getQuoteId(),
+                }, function( data ) {
+                    console.log(data);
+                    parcelshopAddress = _markupParcelshopAddress(data);
+                });
+                //--------------------------------------------------------------------//
 
                 function _onShippingMethodChange() {
                     if (parcelshopShippingMethodElem.checked) {      
@@ -89,6 +97,7 @@ define([
 
 
                 function _openIframe(urlAddress) {
+                    //var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=' . availableCarrierList . '&address=' + urlAddress;
                     var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,postnl&address=' + urlAddress;
                     var iframeContainer = document.createElement('div');
                     iframeContainer.className = "parcelshopPickerIframeContainer";
