@@ -45,8 +45,11 @@ define([
                 jQuery.post( baseUrl + refreshParcelshopAddress, {
                     'quoteId' : quote.getQuoteId(),
                 }, function( data ) {
-                    console.log(data);
                     parcelshopAddress = _markupParcelshopAddress(data);
+                    console.log(parcelshopAddress);
+                    if ($('#wuunder_parcelshop_container')) {
+                        _printParcelshopAddress();
+                    }
                 });
                 //--------------------------------------------------------------------//
 
