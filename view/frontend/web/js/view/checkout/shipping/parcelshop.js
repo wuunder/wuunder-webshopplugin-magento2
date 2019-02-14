@@ -14,7 +14,6 @@ define([
 
         initialize: function () {
             this._super();
-            var parcelshopShippingMethodElem;
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
@@ -42,15 +41,15 @@ define([
                 var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId";
                 let refreshParcelshopAddress = 'wuunder/index/parcelshop/refreshParcelshopAddress';
                 //Get parcelshop on refresh... Don't know where to implement this yet
-                jQuery.post( baseUrl + refreshParcelshopAddress, {
-                    'quoteId' : quote.getQuoteId(),
-                }, function( data ) {
-                    parcelshopAddress = _markupParcelshopAddress(data);
-                    console.log(parcelshopAddress);
-                    if ($('#wuunder_parcelshop_container')) {
-                        _printParcelshopAddress();
-                    }
-                });
+                // jQuery.post( baseUrl + refreshParcelshopAddress, {
+                //     'quoteId' : quote.getQuoteId(),
+                // }, function( data ) {
+                //     parcelshopAddress = _markupParcelshopAddress(data);
+                //     console.log(parcelshopAddress);
+                //     if ($('#wuunder_parcelshop_container')) {
+                //         _printParcelshopAddress();
+                //     }
+                // });
                 //--------------------------------------------------------------------//
 
                 function _onShippingMethodChange() {
@@ -71,7 +70,6 @@ define([
 
                 // add selected parcelshop to page
                 function _printParcelshopAddress() {
-                    console.log(parcelshopAddress);
                     if (parcelshopAddress) {
                         if (window.parent.document.getElementsByClassName("parcelshopInfo").length) {
                             window.parent.document.getElementsByClassName("parcelshopInfo")[0].remove();

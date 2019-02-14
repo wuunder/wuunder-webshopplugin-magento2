@@ -7,6 +7,7 @@ use Magento\Framework\Controller\Result;
 use Magento\Framework\Controller\ResultFactory;
 use \Wuunder\Wuunderconnector\Helper\Data;
 
+
 class Label extends \Magento\Framework\App\Action\Action
 {
     protected $_resultPageFactory;
@@ -41,7 +42,6 @@ class Label extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        $this->helper->log("executed");
         $redirect_url = $this->processOrderInfo();
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if (empty($redirect_url)) {
@@ -245,6 +245,9 @@ class Label extends \Magento\Framework\App\Action\Action
         $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
         $version = $productMetadata->getVersion();
 
+        //get parcelshop id from quote id
+        $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId(), $objectManager);
+
         $bookingConfig = new \Wuunder\Api\Config\BookingConfig();
         $bookingConfig->setDescription($infoArray['description']);
         $bookingConfig->setPersonalMessage($infoArray['personal_message']);
@@ -254,7 +257,10 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.7", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
         $bookingConfig->setDeliveryAddress($deliveryAddress);
         $bookingConfig->setPickupAddress($pickupAddress);
-
+        //add parcelshopid to bookingconfig
+        if (isset($parcelshopId)) {
+            $bookingConfig->setParcelshopId($parcelshopId);
+        }
         return $bookingConfig;
     }
 
@@ -274,5 +280,21 @@ class Label extends \Magento\Framework\App\Action\Action
         $result['houseNumberSuffix'] = (isset($addressParts[3])) ? $addressParts[3] : '';
 
         return $result;
+    }
+
+    private function getParcelshopIdForQuote($quoteId, $objectManager)
+    {
+        $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+        $connection = $resource->getConnection();
+        $tableName = $resource->getTableName('wuunder_quote_id');
+        $sql = "SELECT parcelshop_id FROM " . $tableName ." WHERE quote_id =" . $quoteId;
+        try {
+            $parcelshopId = $connection->fetchOne($sql);
+        } catch (Exception $e) {
+            $this->helper->log('ERROR getWuunderShipment : ' . $e);
+            return null;
+        }
+
+        return ($parcelshopId ? $parcelshopId : null);
     }
 }

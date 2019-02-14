@@ -126,10 +126,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $sql = "SELECT * FROM " . $initVariables['tableName'] ." WHERE quote_id =" . $quoteId;
 
         if ($result = $initVariables['connection']->fetchAll($sql)) {
-            $this->helper->log('updated');
             $this->_updateParcelshopId($parcelshopId, $quoteId);
         } else {
-            $this->helper->log('inserted');
             $this->_saveParcelshopId($parcelshopId, $quoteId);
         }
 
