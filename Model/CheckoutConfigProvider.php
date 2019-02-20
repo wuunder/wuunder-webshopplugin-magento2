@@ -13,7 +13,7 @@ class CheckoutConfigProvider implements \Magento\Checkout\Model\ConfigProviderIn
 
     private $scopeConfig;
 
-    private $storeManager;
+    private $_storeManager;
 
     public function __construct(
         UrlInterface $urlBuilder,
@@ -22,24 +22,18 @@ class CheckoutConfigProvider implements \Magento\Checkout\Model\ConfigProviderIn
     ) {
         $this->urlBuilder = $urlBuilder;
         $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
+        $this->_storeManager = $storeManager;
     }
 
     public function getConfig()
     {
-        $test_mode = (int)$this->scopeConfig->getValue(
-            'wuunder_wuunderconnector/general/testmode'
-        );
+        $test_mode = (int)$this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
 
-        $tmpEnvironment = new \Wuunder\Api\Environment(
-            $test_mode === 1 ? 'staging' : 'production'
-        );
+        $tmpEnvironment = new \Wuunder\Api\Environment($test_mode === 1 ? 'staging' : 'production');
         $baseApiUrl = substr($tmpEnvironment->getStageBaseUrl(), 0, -3);
         $output['api_base_url'] = $baseApiUrl;
-        $output['backend_base_url'] = $this->storeManager->getStore()->getBaseUrl();
-        $output['available_carriers'] = str_replace(
-            ' ', '', $this->scopeConfig->getValue('carriers/parcelshop-picker/enabledcarriers')
-        );
+        $output['backend_base_url'] = $this->_storeManager->getStore()->getBaseUrl();
+        $output['available_carriers'] = str_replace(' ', '', $this->scopeConfig->getValue('carriers/parcelshop-picker/enabledcarriers'));
         return $output;
     }
 }
