@@ -46,7 +46,6 @@ define([
 
             $(document).ready(function () {
                 //Get parcelshop on refresh... Don't know where to implement this yet
-                console.log(showParcelshopContainter);
                 _fetchAddress();
                 $(document).on('click', '#get_parcels_link', function(e) {
                     _showParcelshopLocator();
@@ -57,7 +56,6 @@ define([
                     'quoteId' : quote.getQuoteId(),
                 }, function( data ) {
                     parcelshopAddress = _markupParcelshopAddress(data);
-                    console.log(parcelshopAddress);
                     fetchedAddress = true;
                     _printParcelshopAddress();
                 });
@@ -141,21 +139,25 @@ define([
             }
 
             function _loadSelectedParcelshopAddress(id) {
-                    jQuery.post( baseUrl + setParcelshopId, {
-                            'parcelshopId' : id,
-                            'quoteId' : quote.getQuoteId(),
-                    }, function( data ) {
-                            parcelshopAddress = _markupParcelshopAddress(data);
-                            _printParcelshopAddress();
-                        });
+                jQuery.post( baseUrl + setParcelshopId, {
+                        'parcelshopId' : id,
+                        'quoteId' : quote.getQuoteId(),
+                }, function( data ) {
+                        parcelshopAddress = _markupParcelshopAddress(data);
+                        _printParcelshopAddress();
+                    });
             }
 
             function _markupParcelshopAddress(parcelshopData) {
-                            let data = JSON.parse(parcelshopData);
-                            var parcelshopInfoHtml = _capFirst(data.company_name) + "<br>" + _capFirst(data.address.street_name) +
-                            " " + data.address.house_number + "<br>" + data.address.city;
-                            parcelshopInfoHtml = parcelshopInfoHtml.replace(/"/g, '\\"').replace(/'/g, "\\'");
-                            return parcelshopInfoHtml;
+                if ("" !== parcelshopData) {
+                    var data = JSON.parse(parcelshopData);
+                } else {
+                    return;
+                }
+                var parcelshopInfoHtml = _capFirst(data.company_name) + "<br>" + _capFirst(data.address.street_name) +
+                " " + data.address.house_number + "<br>" + data.address.city;
+                parcelshopInfoHtml = parcelshopInfoHtml.replace(/"/g, '\\"').replace(/'/g, "\\'");
+                return parcelshopInfoHtml;
             }
 
             // Capitalizes first letter of every new word.

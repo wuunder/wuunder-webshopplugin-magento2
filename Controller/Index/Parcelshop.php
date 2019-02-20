@@ -124,7 +124,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         return $initVariables;
     }
 
-    private function _checkIfQuoteExists($parcelshopId, $quoteId) 
+    private function checkIfQuoteExists($parcelshopId, $quoteId) 
     {
         $initVariables = $this->initQuoteIdObject();
         //Check if current quote is already in database
@@ -165,8 +165,13 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $sql = "SELECT parcelshop_id 
                 FROM " . $initVariables['tableName'] 
                 ." WHERE quote_id =" . $quoteId;
-        $result = $initVariables['connection']->fetchAll($sql);
-        $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
+        if ($result = $initVariables['connection']->fetchAll($sql)) {
+            $this->helper->log('bestaat');
+            $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
+        } else {
+            $this->helper->log('bestaat niet');
+            $address = null;
+        }
         die($address);
     }
 }
