@@ -81,16 +81,6 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->setComment('Wuunder shipment table');
             $installer->getConnection()->createTable($table);
-            // $installer->getConnection()->addIndex(
-            //     $installer->getTable('wuunder_shipment'),
-            //     $setup->getIdxName(
-            //         $installer->getTable('wuunder_shipment'),
-            //         ['name','url_key','post_content','tags','featured_image','sample_upload_file'],
-            //         \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-            //     ),
-            //     ['name','url_key','post_content','tags','featured_image','sample_upload_file'],
-            //     \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-            // );
         }
 
         if (!$installer->tableExists('wuunder_quote_id')) {
