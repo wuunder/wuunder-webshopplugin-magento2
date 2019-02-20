@@ -166,10 +166,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
                 FROM " . $initVariables['tableName'] 
                 ." WHERE quote_id =" . $quoteId;
         if ($result = $initVariables['connection']->fetchAll($sql)) {
-            $this->helper->log('bestaat');
             $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
         } else {
-            $this->helper->log('bestaat niet');
             $address = null;
         }
         die($address);
