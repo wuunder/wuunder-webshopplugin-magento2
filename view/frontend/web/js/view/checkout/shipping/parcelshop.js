@@ -14,7 +14,6 @@ define([
 
         initialize: function () {
             this._super();
-            var showParcelshopContainter = false;
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
@@ -26,12 +25,10 @@ define([
                         $('#wuunder_parcelshop_container').html('<div id="parcelshop" class="parcelshopwrapper"><a href="#" id="get_parcels_link">' + $.mage.__('Click here to select your Parcelshop') + '</a><div id="map_container"><div id="map_canvas" class="gmaps"></div></div></div>');
                     } else if ($('#wuunder_parcelshop_container')) {
                         $('#wuunder_parcelshop_container').show();
-                        showParcelshopContainter = true;
                     }
                     _printParcelshopAddress();
                 } else {
                     $('#wuunder_parcelshop_container').hide();
-                    showParcelshopContainter = false;
                 }
                 return selectedMethod;
             }, this);
@@ -45,7 +42,6 @@ define([
             var fetchedAddress = false;
 
             $(document).ready(function () {
-                //Get parcelshop on refresh... Don't know where to implement this yet
                 _fetchAddress();
                 $(document).on('click', '#get_parcels_link', function(e) {
                     _showParcelshopLocator();
@@ -96,7 +92,6 @@ define([
 
             function _openIframe(urlAddress) {
                 var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=' + availableCarrierList + '&address=' + urlAddress;
-                // var iframeUrl = baseUrlApi + 'parcelshop_locator/iframe/?lang=nl&availableCarriers=dpd,postnl&address=' + urlAddress;
                 var iframeContainer = document.createElement('div');
                 iframeContainer.className = "parcelshopPickerIframeContainer";
                 iframeContainer.onclick = function() { removeElement(iframeContainer); };
