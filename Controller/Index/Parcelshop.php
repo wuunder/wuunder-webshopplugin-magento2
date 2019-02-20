@@ -19,9 +19,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $_checkoutSession;
-
-    protected $_QuoteId;
+    protected $QuoteId;
 
     public function __construct(
         \Magento\Backend\Helper\Data $HelperBackend,
@@ -37,7 +35,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
         $this->resultRedirect = $result;
-        $this->_QuoteId = $QuoteId;
+        $this->QuoteId = $QuoteId;
         parent::__construct($context);
     }
     /**
@@ -52,7 +50,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
             $parcelshopId = $post['parcelshopId'];
             $quoteId = $post['quoteId'];
             $this->_checkIfQuoteExists($parcelshopId, $quoteId);
-            $this->setParcelshopId($parcelshopId);
+            $this->_setParcelshopId($parcelshopId);
         }
         if (null !== $this->getRequest()->getParam('refreshParcelshopAddress')) {
             $quoteId = $post['quoteId'];
@@ -60,27 +58,33 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         }
     }
 
-    private function setParcelshopId($id)
+    private function _setParcelshopId($id)
     {
         if ($id) {
-            $address = $this->getParcelshopAddress($id);
+            $address = $this->_getParcelshopAddress($id);
             $encodedAddress = json_encode($address);
             die($encodedAddress);
         }
         return null;
     }
 
-    private function getParcelshopAddress($id)
+    private function _getParcelshopAddress($id)
     {
         if (empty($id)) {
             echo null;
         } else {
-            $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
+            $test_mode = $this->scopeConfig->getValue(
+                'wuunder_wuunderconnector/general/testmode'
+            );
 
             if ($test_mode == 1) {
-                $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
+                $apiKey = $this->scopeConfig->getValue(
+                    'wuunder_wuunderconnector/general/api_key_test'
+                );
             } else {
-                $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
+                $apiKey = $this->scopeConfig->getValue(
+                    'wuunder_wuunderconnector/general/api_key_live'
+                );
             }
 
             $connector = new \Wuunder\Connector($apiKey);
@@ -107,7 +111,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         exit;
     }
 
-    private function _initQuoteIdObject() {
+    private function _initQuoteIdObject() 
+    {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
         $connection = $resource->getConnection();
@@ -135,7 +140,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
 
     private function _saveParcelshopId($parcelshopId, $quoteId) 
     {
-            $model = $this->_QuoteId->create();
+            $model = $this->QuoteId->create();
             $model->addData(
                 [
                 "quote_id" => $quoteId,
@@ -148,16 +153,20 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     private function _updateParcelshopId($parcelshopId, $quoteId) 
     {
         $initVariables = $this->_initQuoteIdObject();
-        $sql = "UPDATE ". $initVariables['tableName'] . " SET parcelshop_id = '" . $parcelshopId . "' WHERE quote_id = " . $quoteId;
+        $sql = "UPDATE ". $initVariables['tableName'] 
+            . " SET parcelshop_id = '" . $parcelshopId 
+            . "' WHERE quote_id = " . $quoteId;
         $initVariables['connection']->query($sql);
     }
 
     private function _getParcelshopAddressForQuote($quoteId) 
     {
         $initVariables = $this->_initQuoteIdObject();
-        $sql = "SELECT parcelshop_id FROM " . $initVariables['tableName'] ." WHERE quote_id =" . $quoteId;
+        $sql = "SELECT parcelshop_id 
+                FROM " . $initVariables['tableName'] 
+                ." WHERE quote_id =" . $quoteId;
         $result = $initVariables['connection']->fetchAll($sql);
-        $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
+        $address = $this->_getParcelshopAddress($result[0]["parcelshop_id"]);
         die($address);
     }
 }
