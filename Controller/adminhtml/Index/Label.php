@@ -10,19 +10,19 @@ use \Wuunder\Wuunderconnector\Helper\Data;
 
 class Label extends \Magento\Framework\App\Action\Action
 {
-    protected $_resultPageFactory;
+    protected $resultPageFactory;
     protected $orderRepository;
-    protected $_productloader;
+    protected $productloader;
     protected $scopeConfig;
-    protected $_storeManager;
+    protected $storeManager;
     protected $HelperBackend;
-    protected $_messageManager;
+    protected $messageManager;
 
     public function __construct(
         Context $context, 
         \Magento\Framework\View\Result\PageFactory $resultPageFactory, 
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, 
-        \Magento\Catalog\Model\ProductFactory $_productloader, 
+        \Magento\Catalog\Model\ProductFactory $productloader, 
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
         \Magento\Store\Model\StoreManagerInterface $storeManager, 
         \Magento\Backend\Helper\Data $HelperBackend, 
@@ -30,22 +30,24 @@ class Label extends \Magento\Framework\App\Action\Action
         \Magento\Framework\Message\ManagerInterface $messageManager
     ) {
         $this->helper = $helper;
-        $this->_resultPageFactory = $resultPageFactory;
+        $this->resultPageFactory = $resultPageFactory;
         $this->orderRepository = $orderRepository;
-        $this->_productloader = $_productloader;
+        $this->productloader = $productloader;
         $this->scopeConfig = $scopeConfig;
-        $this->_storeManager = $storeManager;
+        $this->storeManager = $storeManager;
         $this->HelperBackend = $HelperBackend;
-        $this->_messageManager = $messageManager;
+        $this->messageManager = $messageManager;
         parent::__construct($context);
     }
 
     public function execute()
     {
-        $redirect_url = $this->processOrderInfo();
+        $redirect_url = $this->_processOrderInfo();
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if (empty($redirect_url)) {
-            $this->_messageManager->addError("Wuunderconnector: Something went wrong, please check the logging.");
+            $this->messageManager->addError(
+                "Wuunderconnector: Something went wrong, please check the logging."
+            );
             $resultRedirect->setUrl($this->HelperBackend->getUrl('sales/order'));
         } else {
             $resultRedirect->setUrl($redirect_url);
@@ -53,29 +55,36 @@ class Label extends \Magento\Framework\App\Action\Action
         return $resultRedirect;
     }
 
-    private function processOrderInfo()
+    private function _processOrderInfo()
     {
         $orderId = $this->getRequest()->getParam('orderId');
-        if (!$this->wuunderShipmentExists($orderId)) {
-            $infoArray = $this->getOrderInfo($orderId);
+        if (!$this->_wuunderShipmentExists($orderId)) {
+            $infoArray = $this->_getOrderInfo($orderId);
             // Fetch order
             $order = $this->orderRepository->get($orderId);
 
             // Get configuration
-            $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
+            $test_mode = $this->scopeConfig->getValue(
+                'wuunder_wuunderconnector/general/testmode'
+            );
             $booking_token = uniqid();
             $infoArray['booking_token'] = $booking_token;
             $redirect_url = $this->HelperBackend->getUrl('sales/order');
-            $webhook_url = $this->_storeManager->getStore()->getBaseUrl() . 'wuunder/index/webhook/order_id/' . $orderId;
+            $webhook_url = $this->storeManager->getStore()->getBaseUrl() 
+            . 'wuunder/index/webhook/order_id/' . $orderId;
 
             if ($test_mode == 1) {
-                $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_test');
+                $apiKey = $this->scopeConfig->getValue(
+                    'wuunder_wuunderconnector/general/api_key_test'
+                );
             } else {
-                $apiKey = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/api_key_live');
+                $apiKey = $this->scopeConfig->getValue(
+                    'wuunder_wuunderconnector/general/api_key_live'
+                );
             }
 
             // Combine wuunder info and order data
-            $bookingConfig = $this->buildWuunderData($infoArray, $order);
+            $bookingConfig = $this->_buildWuunderData($infoArray, $order);
             $bookingConfig->setRedirectUrl($redirect_url);
             $bookingConfig->setWebhookUrl($webhook_url);
 
@@ -88,7 +97,10 @@ class Label extends \Magento\Framework\App\Action\Action
                 if ($booking->fire()) {
                     $redirect_url = $booking->getBookingResponse()->getBookingUrl();
                     // Create or update wuunder_shipment
-                    $this->saveWuunderShipment($orderId, $redirect_url, "testtoken");
+                    $this->_saveWuunderShipment(
+                        $orderId, $redirect_url,
+                        "testtoken"
+                    );
                     return $redirect_url;
                 } else {
                     $this->helper->log($booking->getBookingResponse()->getError());
@@ -102,28 +114,35 @@ class Label extends \Magento\Framework\App\Action\Action
         return null;
     }
 
-    private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
+    private function _saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
-        $wuunderShipment->load($this->getRequest()->getParam('order_id'), 'order_id');
+        $wuunderShipment = $objectManager->create(
+            'Wuunder\Wuunderconnector\Model\WuunderShipment'
+        );
+        $wuunderShipment->load(
+            $this->getRequest()->getParam('order_id'),
+            'order_id'
+        );
         $wuunderShipment->setOrderId($orderId);
         $wuunderShipment->setBookingUrl($bookingUrl);
         $wuunderShipment->setBookingToken($bookingToken);
         $wuunderShipment->save();
     }
 
-    private function wuunderShipmentExists($orderId)
+    private function _wuunderShipmentExists($orderId)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $wuunderShipment = $objectManager->create('Wuunder\Wuunderconnector\Model\WuunderShipment');
+        $wuunderShipment = $objectManager->create(
+            'Wuunder\Wuunderconnector\Model\WuunderShipment'
+        );
         $wuunderShipment->load($orderId, 'order_id');
         $shipmentData = $wuunderShipment->getData();
 
         return (bool)$shipmentData;
     }
 
-    private function getOrderInfo($orderId)
+    private function _getOrderInfo($orderId)
     {
         $messageField = 'personal_message';
 
@@ -132,13 +151,15 @@ class Label extends \Magento\Framework\App\Action\Action
 
         $shipmentDescription = "";
         foreach ($order->getAllItems() as $item) {
-            $product = $this->_productloader->create()->load($item->getProductId());
+            $product = $this->productloader->create()->load($item->getProductId());
             $shipmentDescription .= $product->getName() . " ";
         }
 
         $phonenumber = trim($shippingAdr->getTelephone());
         // Set default values
-        if ((substr($phonenumber, 0, 1) == '0') && ($shippingAdr->getCountryId() == 'NL')) {
+        if ((substr($phonenumber, 0, 1) == '0') 
+            && ($shippingAdr->getCountryId() == 'NL')
+        ) {
             // If NL and phonenumber starting with 0, replace it with +31
             $phonenumber = '+31' . substr($phonenumber, 1);
         }
@@ -151,7 +172,7 @@ class Label extends \Magento\Framework\App\Action\Action
         );
     }
 
-    private function buildWuunderData($infoArray, $order)
+    private function _buildWuunderData($infoArray, $order)
     {
         $this->helper->log("Building data object for api.");
         $shippingAddress = $order->getShippingAddress();
@@ -163,19 +184,25 @@ class Label extends \Magento\Framework\App\Action\Action
             $streetName = $streetAddress[0];
             $houseNumber = $streetAddress[1];
         } else {
-            $streetAddress = $this->addressSplitter($streetAddress[0]);
+            $streetAddress = $this->_addressSplitter($streetAddress[0]);
             $streetName = $streetAddress['streetName'];
-            $houseNumber = $streetAddress['houseNumber'] . $shippingAddress['houseNumberSuffix'];
+            $houseNumber = $streetAddress['houseNumber'] 
+            . $shippingAddress['houseNumberSuffix'];
         }
 
         // Fix wuunder parcelshop first- and lastname override fix
         $firstname = $shippingAddress->getFirstname();
         $lastname = $shippingLastname;
         $company = $shippingAddress->getCompany();
+        if ($order->getCustomerEmail() !== '') {
+            $email = $order->getCustomerEmail();
+        } else {
+            $email = $shippingAddress->getEmail();
+        }
 
         $deliveryAddress = new \Wuunder\Api\Config\AddressConfig();
         $deliveryAddress->setBusiness(!empty($company) ? $company : null);
-        $deliveryAddress->setEmailAddress(($order->getCustomerEmail() !== '' ? $order->getCustomerEmail() : $shippingAddress->getEmail()));
+        $deliveryAddress->setEmailAddress($email);
         $deliveryAddress->setFamilyName($lastname);
         $deliveryAddress->setGivenName($firstname);
         $deliveryAddress->setLocality($shippingAddress->getCity());
@@ -189,18 +216,46 @@ class Label extends \Magento\Framework\App\Action\Action
         }
 
         $pickupAddress = new \Wuunder\Api\Config\AddressConfig();
-        $pickupAddress->setEmailAddress($this->scopeConfig->getValue('wuunder_wuunderconnector/general/email'));
-        $pickupAddress->setFamilyName($this->scopeConfig->getValue('wuunder_wuunderconnector/general/lastname'));
-        $pickupAddress->setGivenName($this->scopeConfig->getValue('wuunder_wuunderconnector/general/firstname'));
-        $pickupAddress->setLocality($this->scopeConfig->getValue('wuunder_wuunderconnector/general/city'));
-        $pickupAddress->setStreetName($this->scopeConfig->getValue('wuunder_wuunderconnector/general/streetname'));
-        $pickupAddress->setHouseNumber($this->scopeConfig->getValue('wuunder_wuunderconnector/general/housenumber'));
-        $pickupAddress->setZipCode($this->scopeConfig->getValue('wuunder_wuunderconnector/general/zipcode'));
-        $pickupAddress->setPhoneNumber($this->scopeConfig->getValue('wuunder_wuunderconnector/general/phone'));
-        $pickupAddress->setCountry($this->scopeConfig->getValue('wuunder_wuunderconnector/general/country'));
-        $pickupAddress->setBusiness($this->scopeConfig->getValue('wuunder_wuunderconnector/general/company'));
+        $pickupAddress->setEmailAddress(
+            $this->scopeConfig->getValue('wuunder_wuunderconnector/general/email')
+        );
+        $pickupAddress->setFamilyName(
+            $this->scopeConfig->getValue('wuunder_wuunderconnector/general/lastname')
+        );
+        $pickupAddress->setGivenName(
+            $this->scopeConfig->getValue(
+                'wuunder_wuunderconnector/general/firstname'
+            )
+        );
+        $pickupAddress->setLocality(
+            $this->scopeConfig->getValue('wuunder_wuunderconnector/general/city')
+        );
+        $pickupAddress->setStreetName(
+            $this->scopeConfig->getValue(
+                'wuunder_wuunderconnector/general/streetname'
+            )
+        );
+        $pickupAddress->setHouseNumber(
+            $this->scopeConfig->getValue(
+                'wuunder_wuunderconnector/general/housenumber'
+            )
+        );
+        $pickupAddress->setZipCode(
+            $this->scopeConfig->getValue('wuunder_wuunderconnector/general/zipcode')
+        );
+        $pickupAddress->setPhoneNumber(
+            $this->scopeConfig->getValue('wuunder_wuunderconnector/general/phone')
+        );
+        $pickupAddress->setCountry(
+            $this->scopeConfig->getValue('wuunder_wuunderconnector/general/country')
+        );
+        $pickupAddress->setBusiness(
+            $this->scopeConfig->getValue('wuunder_wuunderconnector/general/company')
+        );
         if (!$pickupAddress->validate()) {
-            $this->helper->log("Invalid pickup address. There are mistakes or missing fields.");
+            $this->helper->log(
+                "Invalid pickup address. There are mistakes or missing fields."
+            );
         }
 
         // Load product image for first ordered item
@@ -208,8 +263,12 @@ class Label extends \Magento\Framework\App\Action\Action
         $orderedItems = $order->getAllVisibleItems();
         if (count($orderedItems) > 0) {
             foreach ($orderedItems AS $orderedItem) {
-                $_product = $this->_productloader->create()->load($orderedItem->getProductId());
-                $imageUrl = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage();
+                $_product = $this->productloader->create()->load(
+                    $orderedItem->getProductId()
+                );
+                $imageUrl = $this->storeManager->getStore()->getBaseUrl(
+                    \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+                ) . 'catalog/product' . $_product->getImage();
                 try {
                     if (!empty($_product->getImage())) {
                         $data = @file_get_contents($imageUrl);
@@ -236,17 +295,23 @@ class Label extends \Magento\Framework\App\Action\Action
         $usedShippingMethod = $order->getShippingMethod();
         for ($i = 1; $i < 5; $i++) {
             if ($this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/filtermapping_' . $i . '_carrier') === $usedShippingMethod) {
-                $preferredServiceLevel = $this->scopeConfig->getValue('wuunder_wuunderconnector/advanced/filtermapping_' . $i . '_filter');
+                $preferredServiceLevel = $this->scopeConfig->getValue(
+                    'wuunder_wuunderconnector/advanced/filtermapping_' . $i . '_filter'
+                );
                 break;
             }
         }
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $productMetadata = $objectManager->get('Magento\Framework\App\ProductMetadataInterface');
+        $productMetadata = $objectManager->get(
+            'Magento\Framework\App\ProductMetadataInterface'
+        );
         $version = $productMetadata->getVersion();
 
         //get parcelshop id from quote id
-        $parcelshopId = $this->getParcelshopIdForQuote($order->getQuoteId(), $objectManager);
+        $parcelshopId = $this->_getParcelshopIdForQuote(
+            $order->getQuoteId(), $objectManager
+        );
 
         $bookingConfig = new \Wuunder\Api\Config\BookingConfig();
         $bookingConfig->setDescription($infoArray['description']);
@@ -254,7 +319,16 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setPicture($image);
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
-        $bookingConfig->setSource(array("product" => "Magento 2 extension", "version" => array("build" => "2.0.7", "plugin" => "2.0"), "platform" => array("name" => "Magento", "build" => $version)));
+        $bookingConfig->setSource(
+            array(
+                "product" => "Magento 2 extension",
+                "version" => array(
+                    "build" => "2.0.7",
+                    "plugin" => "2.0"),
+                    "platform" => array(
+                        "name" => "Magento",
+                        "build" => $version))
+        );
         $bookingConfig->setDeliveryAddress($deliveryAddress);
         $bookingConfig->setPickupAddress($pickupAddress);
         //add parcelshopid to bookingconfig
@@ -264,7 +338,7 @@ class Label extends \Magento\Framework\App\Action\Action
         return $bookingConfig;
     }
 
-    private function addressSplitter($address)
+    private function _addressSplitter($address)
     {
         if (!isset($address)) {
             return false;
@@ -282,7 +356,7 @@ class Label extends \Magento\Framework\App\Action\Action
         return $result;
     }
 
-    private function getParcelshopIdForQuote($quoteId, $objectManager)
+    private function _getParcelshopIdForQuote($quoteId, $objectManager)
     {
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
         $connection = $resource->getConnection();
