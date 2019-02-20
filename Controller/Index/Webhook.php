@@ -48,7 +48,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $this->helper->log(
                     "Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id')
                 );
-                $this->_ship(
+                $this->ship(
                     $this->getRequest()->getParam('order_id'),
                     $result['carrier_code'],
                     $result['track_and_trace_code']
@@ -60,7 +60,7 @@ class Webhook extends \Magento\Framework\App\Action\Action
 
     }
 
-    private function _ship($order_id, $carrier, $label_id) 
+    private function ship($order_id, $carrier, $label_id) 
     {
 
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();

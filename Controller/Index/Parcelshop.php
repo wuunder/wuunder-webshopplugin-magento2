@@ -49,26 +49,26 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         if (null !== $this->getRequest()->getParam('setParcelshopId')) {
             $parcelshopId = $post['parcelshopId'];
             $quoteId = $post['quoteId'];
-            $this->_checkIfQuoteExists($parcelshopId, $quoteId);
-            $this->_setParcelshopId($parcelshopId);
+            $this->checkIfQuoteExists($parcelshopId, $quoteId);
+            $this->setParcelshopId($parcelshopId);
         }
         if (null !== $this->getRequest()->getParam('refreshParcelshopAddress')) {
             $quoteId = $post['quoteId'];
-            $this->_getParcelshopAddressForQuote($quoteId);
+            $this->getParcelshopAddressForQuote($quoteId);
         }
     }
 
-    private function _setParcelshopId($id)
+    private function setParcelshopId($id)
     {
         if ($id) {
-            $address = $this->_getParcelshopAddress($id);
+            $address = $this->getParcelshopAddress($id);
             $encodedAddress = json_encode($address);
             die($encodedAddress);
         }
         return null;
     }
 
-    private function _getParcelshopAddress($id)
+    private function getParcelshopAddress($id)
     {
         if (empty($id)) {
             echo null;
@@ -111,7 +111,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         exit;
     }
 
-    private function _initQuoteIdObject() 
+    private function initQuoteIdObject() 
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
@@ -126,19 +126,19 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
 
     private function _checkIfQuoteExists($parcelshopId, $quoteId) 
     {
-        $initVariables = $this->_initQuoteIdObject();
+        $initVariables = $this->initQuoteIdObject();
         //Check if current quote is already in database
         $sql = "SELECT * FROM " . $initVariables['tableName'] ." WHERE quote_id =" . $quoteId;
 
         if ($result = $initVariables['connection']->fetchAll($sql)) {
-            $this->_updateParcelshopId($parcelshopId, $quoteId);
+            $this->updateParcelshopId($parcelshopId, $quoteId);
         } else {
-            $this->_saveParcelshopId($parcelshopId, $quoteId);
+            $this->saveParcelshopId($parcelshopId, $quoteId);
         }
 
     }
 
-    private function _saveParcelshopId($parcelshopId, $quoteId) 
+    private function saveParcelshopId($parcelshopId, $quoteId) 
     {
             $model = $this->QuoteId->create();
             $model->addData(
@@ -150,23 +150,23 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
             $saveData = $model->save();    
     }
 
-    private function _updateParcelshopId($parcelshopId, $quoteId) 
+    private function updateParcelshopId($parcelshopId, $quoteId) 
     {
-        $initVariables = $this->_initQuoteIdObject();
+        $initVariables = $this->initQuoteIdObject();
         $sql = "UPDATE ". $initVariables['tableName'] 
             . " SET parcelshop_id = '" . $parcelshopId 
             . "' WHERE quote_id = " . $quoteId;
         $initVariables['connection']->query($sql);
     }
 
-    private function _getParcelshopAddressForQuote($quoteId) 
+    private function getParcelshopAddressForQuote($quoteId) 
     {
-        $initVariables = $this->_initQuoteIdObject();
+        $initVariables = $this->initQuoteIdObject();
         $sql = "SELECT parcelshop_id 
                 FROM " . $initVariables['tableName'] 
                 ." WHERE quote_id =" . $quoteId;
         $result = $initVariables['connection']->fetchAll($sql);
-        $address = $this->_getParcelshopAddress($result[0]["parcelshop_id"]);
+        $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
         die($address);
     }
 }

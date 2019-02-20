@@ -42,7 +42,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
     public function execute()
     {
-        $redirect_url = $this->_processOrderInfo();
+        $redirect_url = $this->processOrderInfo();
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if (empty($redirect_url)) {
             $this->messageManager->addError(
@@ -55,11 +55,11 @@ class Label extends \Magento\Framework\App\Action\Action
         return $resultRedirect;
     }
 
-    private function _processOrderInfo()
+    private function processOrderInfo()
     {
         $orderId = $this->getRequest()->getParam('orderId');
         if (!$this->_wuunderShipmentExists($orderId)) {
-            $infoArray = $this->_getOrderInfo($orderId);
+            $infoArray = $this->getOrderInfo($orderId);
             // Fetch order
             $order = $this->orderRepository->get($orderId);
 
@@ -84,7 +84,7 @@ class Label extends \Magento\Framework\App\Action\Action
             }
 
             // Combine wuunder info and order data
-            $bookingConfig = $this->_buildWuunderData($infoArray, $order);
+            $bookingConfig = $this->buildWuunderData($infoArray, $order);
             $bookingConfig->setRedirectUrl($redirect_url);
             $bookingConfig->setWebhookUrl($webhook_url);
 
@@ -97,7 +97,7 @@ class Label extends \Magento\Framework\App\Action\Action
                 if ($booking->fire()) {
                     $redirect_url = $booking->getBookingResponse()->getBookingUrl();
                     // Create or update wuunder_shipment
-                    $this->_saveWuunderShipment(
+                    $this->saveWuunderShipment(
                         $orderId, $redirect_url,
                         "testtoken"
                     );
@@ -114,7 +114,7 @@ class Label extends \Magento\Framework\App\Action\Action
         return null;
     }
 
-    private function _saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
+    private function saveWuunderShipment($orderId, $bookingUrl, $bookingToken)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $wuunderShipment = $objectManager->create(
@@ -130,7 +130,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $wuunderShipment->save();
     }
 
-    private function _wuunderShipmentExists($orderId)
+    private function wuunderShipmentExists($orderId)
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $wuunderShipment = $objectManager->create(
@@ -142,7 +142,7 @@ class Label extends \Magento\Framework\App\Action\Action
         return (bool)$shipmentData;
     }
 
-    private function _getOrderInfo($orderId)
+    private function getOrderInfo($orderId)
     {
         $messageField = 'personal_message';
 
@@ -172,7 +172,7 @@ class Label extends \Magento\Framework\App\Action\Action
         );
     }
 
-    private function _buildWuunderData($infoArray, $order)
+    private function buildWuunderData($infoArray, $order)
     {
         $this->helper->log("Building data object for api.");
         $shippingAddress = $order->getShippingAddress();
@@ -184,7 +184,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $streetName = $streetAddress[0];
             $houseNumber = $streetAddress[1];
         } else {
-            $streetAddress = $this->_addressSplitter($streetAddress[0]);
+            $streetAddress = $this->addressSplitter($streetAddress[0]);
             $streetName = $streetAddress['streetName'];
             $houseNumber = $streetAddress['houseNumber'] 
             . $shippingAddress['houseNumberSuffix'];
@@ -309,7 +309,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $version = $productMetadata->getVersion();
 
         //get parcelshop id from quote id
-        $parcelshopId = $this->_getParcelshopIdForQuote(
+        $parcelshopId = $this->getParcelshopIdForQuote(
             $order->getQuoteId(), $objectManager
         );
 
@@ -338,7 +338,7 @@ class Label extends \Magento\Framework\App\Action\Action
         return $bookingConfig;
     }
 
-    private function _addressSplitter($address)
+    private function addressSplitter($address)
     {
         if (!isset($address)) {
             return false;
@@ -356,7 +356,7 @@ class Label extends \Magento\Framework\App\Action\Action
         return $result;
     }
 
-    private function _getParcelshopIdForQuote($quoteId, $objectManager)
+    private function getParcelshopIdForQuote($quoteId, $objectManager)
     {
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
         $connection = $resource->getConnection();
