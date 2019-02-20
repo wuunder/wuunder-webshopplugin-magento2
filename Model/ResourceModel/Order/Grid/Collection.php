@@ -21,7 +21,8 @@ class Collection extends OriginalCollection
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager);
     }
 
-    protected function _renderFiltersBefore() {
+    protected function _renderFiltersBefore() 
+    {
         $joinTable = $this->getTable('wuunder_shipment');
         $this->getSelect()->joinLeft($joinTable, 'wuunder_shipment.order_id = main_table.entity_id', ['label_id', 'label_url', 'tt_url', 'booking_url']);
         parent::_renderFiltersBefore();
