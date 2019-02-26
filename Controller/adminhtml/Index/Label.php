@@ -58,7 +58,7 @@ class Label extends \Magento\Framework\App\Action\Action
     private function processOrderInfo()
     {
         $orderId = $this->getRequest()->getParam('orderId');
-        if (!$this->_wuunderShipmentExists($orderId)) {
+        if (!$this->wuunderShipmentExists($orderId)) {
             $infoArray = $this->getOrderInfo($orderId);
             // Fetch order
             $order = $this->orderRepository->get($orderId);
