@@ -37,32 +37,32 @@ class Webhook extends \Magento\Framework\App\Action\Action
                 $wuunderShipment->setTtUrl($result['track_and_trace_url']);
                 $wuunderShipment->save();
 
-                // Fetch number of boxes from DB
-                $numBoxes = $wuunderShipment->getBoxesOrder();
+                // // Fetch number of boxes from DB
+                // $numBoxes = $wuunderShipment->getBoxesOrder();
 
-                // Only if the result kind is package and the number of boxes is positive will multiple boxes be sent
-                if ($result['kind'] === 'package' && $numBoxes > 0) {
-                    $this->helper->log("Kind is package with multiple boxes, preparing to send multiple boxes", '/var/log/ecobliss.log');
+                // // Only if the result kind is package and the number of boxes is positive will multiple boxes be sent
+                // if ($result['kind'] === 'package' && $numBoxes > 0) {
+                //     $this->helper->log("Kind is package with multiple boxes, preparing to send multiple boxes", '/var/log/ecobliss.log');
 
-                    // Fetch API-key and Url, based on the test mode
-                    $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
-                    $apiData = $this->getApiData($test_mode);
+                //     // Fetch API-key and Url, based on the test mode
+                //     $test_mode = $this->scopeConfig->getValue('wuunder_wuunderconnector/general/testmode');
+                //     $apiData = $this->getApiData($test_mode);
 
-                    // Parse the data into correct format for automated API
-                    $data = $this->parseData($result);
+                //     // Parse the data into correct format for automated API
+                //     $data = $this->parseData($result);
 
-                    $this->helper->log("Total boxes: " . (string)$numBoxes, '/var/log/ecobliss.log');
-                    for ($i = 0; $i < $numBoxes - 1; $i++) {
-                        $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
-                        // Call to the automated API
-                        $header = $this->helper->curlRequest($data, $apiData['api_url'], $apiData['api_key']);
-                        $this->helper->log($header, '/var/log/ecobliss.log');
-                    }
-                }
+                //     $this->helper->log("Total boxes: " . (string)$numBoxes, '/var/log/ecobliss.log');
+                //     for ($i = 0; $i < $numBoxes - 1; $i++) {
+                //         $this->helper->log("Sending shipment number: " . $i, '/var/log/ecobliss.log');
+                //         // Call to the automated API
+                //         $header = $this->helper->curlRequest($data, $apiData['api_url'], $apiData['api_key']);
+                //         $this->helper->log($header, '/var/log/ecobliss.log');
+                //     }
+                // }
 
-                $this->helper->log("Setting the total number of boxes to NULL", '/var/log/ecobliss.log');
-                $wuunderShipment->setBoxesOrder(null);
-                $wuunderShipment->save();
+                // $this->helper->log("Setting the total number of boxes to NULL", '/var/log/ecobliss.log');
+                // $wuunderShipment->setBoxesOrder(null);
+                // $wuunderShipment->save();
 
 
             } else if ($result['action'] === "track_and_trace_updated") {
