@@ -18,7 +18,12 @@ define([
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
 
-                if (selectedMethod === 'parcelshop-picker_parcelshop-picker') {
+                if (selectedMethod === 'parcelshop-picker_parcelshop-picker' 
+                    && quote.shippingAddress().city !== undefined
+                    && quote.shippingAddress().street !== undefined
+                    && quote.shippingAddress().postcode !== undefined
+                    && quote.shippingAddress().countryId !== undefined
+                ) {
                     if ($('#wuunder_parcelshop_container').length === 0) {
                         var columnCount = $('#label_method_parcelshop-picker_parcelshop-picker').parent().children().length;
                         $('<tr><td id="wuunder_parcelshop_container" colspan="' + columnCount + '"></td><tr>').insertAfter($('#label_method_parcelshop-picker_parcelshop-picker').parent());

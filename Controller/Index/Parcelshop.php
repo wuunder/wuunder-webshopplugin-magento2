@@ -16,6 +16,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
 
     protected $HelperBackend;
 
+    protected $checkoutSession;
+
     /**
      * @var \Magento\Checkout\Model\Session
      */
@@ -25,6 +27,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         \Magento\Backend\Helper\Data $HelperBackend,
         \Psr\Log\LoggerInterface $logger, 
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Customer\Model\Session $checkoutSession,
         Data $helper,
         \Magento\Framework\Controller\ResultFactory $result,       
         \Wuunder\Wuunderconnector\Model\QuoteIdFactory $QuoteId,
@@ -33,6 +36,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $this->HelperBackend = $HelperBackend;
         $this->logger = $logger;
         $this->scopeConfig = $scopeConfig;
+        $this->checkoutSession = $checkoutSession;
         $this->helper = $helper;
         $this->resultRedirect = $result;
         $this->QuoteId = $QuoteId;
@@ -161,12 +165,14 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
 
     private function getParcelshopAddressForQuote($quoteId) 
     {
-        $initVariables = $this->initQuoteIdObject();
-        $sql = "SELECT parcelshop_id 
-                FROM " . $initVariables['tableName'] 
-                ." WHERE quote_id =" . $quoteId;
-        if ($result = $initVariables['connection']->fetchAll($sql)) {
-            $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
+        if ($this->checkoutSession->isLoggedIn()) {
+            $initVariables = $this->initQuoteIdObject();
+            $sql = "SELECT parcelshop_id 
+                    FROM " . $initVariables['tableName'] 
+                    ." WHERE quote_id =" . $quoteId;
+            if ($result = $initVariables['connection']->fetchAll($sql)) {
+                $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
+            }
         } else {
             $address = null;
         }
