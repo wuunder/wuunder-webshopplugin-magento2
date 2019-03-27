@@ -80,7 +80,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - New structure for marketplace [@timoj](https://github.com/timoj)
 
 ### Changed
-- Code cleanup
+- Code cleanup [@timoj](https://github.com/timoj)
 
 
 ## Released
