@@ -1,4 +1,110 @@
 # Change Log
+All notable changes to this project will be documented in this file.
+Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` or `Security`.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/).
+
+## Released
+
+## [2.0.7](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.7) - 2019-01-08
+
+### Fix
+
+- Fix exception namespacing [@timoj](https://github.com/timoj)
+
+### Added
+
+- Added error message when api key is not valid [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [2.0.6](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.6) - 2018-12-13
+
+### Fix
+
+- Fix exception namespacing [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [2.0.5](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.5) - 2018-12-13
+
+### Changed
+
+- Cleanup code [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [2.0.4](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.4) - 2018-12-11
+
+### Changed
+
+- Updated readme [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [2.0.3](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.3) - 2018-12-10
+
+### Changed
+
+- Cleanup [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [2.0.2](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.2) - 2018-11-26
+
+### Fix
+
+- Bugfix composer [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [2.0.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.1) - 2018-11-26
+
+### Added
+
+- Implemented wuunder php-connector package [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [2.0.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.0) - 2018-6-30
+
+### Changed
+
+- New structure for marketplace [@timoj](https://github.com/timoj)
+
+### Changed
+- Code cleanup [@timoj](https://github.com/timoj)
+
+
+## Released
+
+## [1.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/1.2.0) - 2018-6-30
+
+### Added
+
+- Added models [@timoj](https://github.com/timoj)
+- Added logging support [@timoj](https://github.com/timoj)
+
+### Changed
+- Code cleanup
+
+
+## Released
+
+## [1.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/1.1.0) - 2018-03-28
+
+### Changed
+
+- Updated the URL to new Wuunder address. [@kFrolichs](https://github.com/kFrolichs)
+
+# Old change Log
 
 ## [1.0.5](https://github.com/kabisa/wuunder-webshopplugin-magento2/tree/1.0.5) (2018-03-07)
 [Full Changelog](https://github.com/kabisa/wuunder-webshopplugin-magento2/compare/1.0.4...1.0.5)
