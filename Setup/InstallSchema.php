@@ -81,18 +81,41 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->setComment('Wuunder shipment table');
             $installer->getConnection()->createTable($table);
-
-//            $installer->getConnection()->addIndex(
-//                $installer->getTable('wuunder_shipment'),
-//                $setup->getIdxName(
-//                    $installer->getTable('wuunder_shipment'),
-//                    ['name','url_key','post_content','tags','featured_image','sample_upload_file'],
-//                    \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-//                ),
-//                ['name','url_key','post_content','tags','featured_image','sample_upload_file'],
-//                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_FULLTEXT
-//            );
         }
-        $installer->endSetup();
+
+        if (!$installer->tableExists('wuunder_quote_id')) {
+            $table = $installer->getConnection()->newTable(
+                $installer->getTable('wuunder_quote_id')
+            )
+                ->addColumn(
+                    'id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    [
+                        'identity' => true,
+                        'nullable' => false,
+                        'primary'  => true,
+                        'unsigned' => true,
+                    ],
+                    'ID'
+                )
+                ->addColumn(
+                    'quote_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['nullable => false'],
+                    'Quote Info'
+                )
+                ->addColumn(
+                    'parcelshop_id',
+                    Table::TYPE_TEXT,
+                    null,
+                    ['nullable => true'],
+                    'Parcelshop id'
+                )
+                ->setComment('Wuunder shipment table');
+            $installer->getConnection()->createTable($table);
+            $installer->endSetup();
+        }
     }
 }

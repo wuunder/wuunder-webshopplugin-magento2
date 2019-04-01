@@ -4,6 +4,11 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Unreleased
+
+### Added
+- Wuunder parcelshop picker implementation [#9](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/9)
+
 ## Released
 
 ## [2.0.7](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.7) - 2019-01-08
