@@ -17,16 +17,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Added error message when api key is not valid [@timoj](https://github.com/timoj)
 
 
-## Released
-
 ## [2.0.6](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.6) - 2018-12-13
 
 ### Fix
 
 - Fix exception namespacing [@timoj](https://github.com/timoj)
 
-
-## Released
 
 ## [2.0.5](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.5) - 2018-12-13
 
@@ -35,7 +31,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Cleanup code [@timoj](https://github.com/timoj)
 
 
-## Released
 
 ## [2.0.4](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.4) - 2018-12-11
 
@@ -44,7 +39,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Updated readme [@timoj](https://github.com/timoj)
 
 
-## Released
 
 ## [2.0.3](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.3) - 2018-12-10
 
@@ -53,7 +47,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Cleanup [@timoj](https://github.com/timoj)
 
 
-## Released
 
 ## [2.0.2](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.2) - 2018-11-26
 
@@ -62,16 +55,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Bugfix composer [@timoj](https://github.com/timoj)
 
 
-## Released
-
 ## [2.0.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.1) - 2018-11-26
 
 ### Added
 
 - Implemented wuunder php-connector package [@timoj](https://github.com/timoj)
 
-
-## Released
 
 ## [2.0.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.0) - 2018-6-30
 
@@ -83,8 +72,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Code cleanup [@timoj](https://github.com/timoj)
 
 
-## Released
-
 ## [1.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/1.2.0) - 2018-6-30
 
 ### Added
@@ -95,8 +82,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 - Code cleanup
 
-
-## Released
 
 ## [1.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/1.1.0) - 2018-03-28
 
