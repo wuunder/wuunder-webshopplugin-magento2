@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Fix
 
 - Fix exception namespacing [@timoj](https://github.com/timoj)
+- Fixed an issue introduced after changing the routes.xml file [#12](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/12)
 
 ### Added
 
