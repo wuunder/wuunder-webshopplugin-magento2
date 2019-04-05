@@ -4,6 +4,12 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+- Fixed name of shipping method reference in parcelshop.js [#15](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/15)
+
+
 ## Released
 
 ## [2.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.7) - 2019-04-05
