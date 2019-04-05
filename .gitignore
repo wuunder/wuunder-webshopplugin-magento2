@@ -1,3 +1,5 @@
 app/code/Wuunder/Wuunderconnector/vendor
 app/code/Wuunder/Wuunderconnector/composer.lock
 .idea
+vendor
+.vscode

@@ -1,0 +1,63 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "e384de28cbc8815db9ce4e012a267c97",
+    "packages": [
+        {
+            "name": "wuunder/connector-php",
+            "version": "1.0.16",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wuunder/connector-php.git",
+                "reference": "8948defb494cd4edae70fb081fbb57fede3008c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wuunder/connector-php/zipball/8948defb494cd4edae70fb081fbb57fede3008c6",
+                "reference": "8948defb494cd4edae70fb081fbb57fede3008c6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Wuunder\\": "src/Wuunder"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Wuunder",
+                    "email": "info@wearewuunder.com",
+                    "homepage": "https://wearewuunder.com/"
+                }
+            ],
+            "description": "PHP connector for Wuunder API's",
+            "homepage": "https://github.com/wuunder/connector-php",
+            "keywords": [
+                "api",
+                "connector",
+                "parcelshop",
+                "php",
+                "wuunder"
+            ],
+            "time": "2018-09-05T08:06:03+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
