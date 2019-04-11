@@ -18,4 +18,4 @@ php bin/magento setup:static-content:deploy
 * Wuunder is now added to your orders page and is ready for use!
 
 ## Changelog ##
-Changelog can be found [here](https://github.com/kabisa/wuunder-webshopplugin-magento2/blob/master/CHANGELOG.md).
+Changelog can be found [here](CHANGELOG.md).
