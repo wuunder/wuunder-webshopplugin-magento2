@@ -3,9 +3,10 @@ define([
     'uiComponent',
     'ko',
     'Magento_Checkout/js/model/quote',
+    'Magento_Customer/js/model/customer',
 
-    ], function ($, Component, ko, quote) {  
-        'use strict';
+], function ($, Component, ko, quote, customer) {
+    'use strict';
 
     return Component.extend({
         defaults: {
@@ -18,15 +19,16 @@ define([
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
 
-                if (selectedMethod === 'parcelshop-picker_parcelshop-picker' 
+                if (selectedMethod === 'parcelshopPicker_parcelshopPicker'
+                    && customer.isLoggedIn()
                     && quote.shippingAddress().city !== undefined
                     && quote.shippingAddress().street !== undefined
                     && quote.shippingAddress().postcode !== undefined
                     && quote.shippingAddress().countryId !== undefined
                 ) {
                     if ($('#wuunder_parcelshop_container').length === 0) {
-                        var columnCount = $('#label_method_parcelshop-picker_parcelshop-picker').parent().children().length;
-                        $('<tr><td id="wuunder_parcelshop_container" colspan="' + columnCount + '"></td><tr>').insertAfter($('#label_method_parcelshop-picker_parcelshop-picker').parent());
+                        var columnCount = $('#label_method_parcelshopPicker_parcelshopPicker').parent().children().length;
+                        $('<tr><td id="wuunder_parcelshop_container" colspan="' + columnCount + '"></td><tr>').insertAfter($('#label_method_parcelshopPicker_parcelshopPicker').parent());
                         $('#wuunder_parcelshop_container').html('<div id="parcelshop" class="parcelshopwrapper"><a href="#" id="get_parcels_link">' + $.mage.__('Click here to select your Parcelshop') + '</a><div id="map_container"><div id="map_canvas" class="gmaps"></div></div></div>');
                     } else if ($('#wuunder_parcelshop_container')) {
                         $('#wuunder_parcelshop_container').show();
@@ -52,6 +54,7 @@ define([
                     _showParcelshopLocator();
                 });
             });
+
             function _fetchAddress() {
                 jQuery.post( baseUrl + refreshParcelshopAddress, {
                     'quoteId' : quote.getQuoteId(),
@@ -86,10 +89,10 @@ define([
                 if (quote.shippingAddress().isDefaultShipping()) {
                     let shippingAddressFromQuote = quote.shippingAddress().getAddressInline();
                     let shippingAddress = shippingAddressFromQuote.match(/.*?\,\ (.*?)\,\ (.*?)\,\ *(.*?)\,\ (.*?)$/);
-                    var urlAddress = encodeURI(shippingAddress[1] + ' ' + shippingAddress[3] + ' ' + shippingAddress[2] + ' ' + shippingAddress[4]);    
+                    var urlAddress = encodeURI(shippingAddress[1] + ' ' + shippingAddress[3] + ' ' + shippingAddress[2] + ' ' + shippingAddress[4]);
                 } else {
                     let shippingAddress = quote.shippingAddress();
-                    var urlAddress = encodeURI(shippingAddress.street + ' ' + shippingAddress.postcode + ' ' + shippingAddress.city + ' ' + shippingAddress.countryId);    
+                    var urlAddress = encodeURI(shippingAddress.street + ' ' + shippingAddress.postcode + ' ' + shippingAddress.city + ' ' + shippingAddress.countryId);
                 }
                 _openIframe(urlAddress);
             }
@@ -140,12 +143,12 @@ define([
 
             function _loadSelectedParcelshopAddress(id) {
                 jQuery.post( baseUrl + setParcelshopId, {
-                        'parcelshopId' : id,
-                        'quoteId' : quote.getQuoteId(),
+                    'parcelshopId' : id,
+                    'quoteId' : quote.getQuoteId(),
                 }, function( data ) {
-                        parcelshopAddress = _markupParcelshopAddress(data);
-                        _printParcelshopAddress();
-                    });
+                    parcelshopAddress = _markupParcelshopAddress(data);
+                    _printParcelshopAddress();
+                });
             }
 
             function _markupParcelshopAddress(parcelshopData) {
@@ -155,7 +158,7 @@ define([
                     return;
                 }
                 var parcelshopInfoHtml = _capFirst(data.company_name) + "<br>" + _capFirst(data.address.street_name) +
-                " " + data.address.house_number + "<br>" + data.address.city;
+                    " " + data.address.house_number + "<br>" + data.address.city;
                 parcelshopInfoHtml = parcelshopInfoHtml.replace(/"/g, '\\"').replace(/'/g, "\\'");
                 return parcelshopInfoHtml;
             }
@@ -175,7 +178,7 @@ define([
                 } else {
                     element && element.parentNode && element.parentNode.removeChild(element);
                 }
-                
+
             }
         },
     });

@@ -19,14 +19,14 @@ class Label extends \Magento\Framework\App\Action\Action
     protected $messageManager;
 
     public function __construct(
-        Context $context, 
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory, 
-        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, 
-        \Magento\Catalog\Model\ProductFactory $productloader, 
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
-        \Magento\Store\Model\StoreManagerInterface $storeManager, 
-        \Magento\Backend\Helper\Data $HelperBackend, 
-        Data $helper, 
+        Context $context,
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        \Magento\Catalog\Model\ProductFactory $productloader,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Backend\Helper\Data $HelperBackend,
+        Data $helper,
         \Magento\Framework\Message\ManagerInterface $messageManager
     ) {
         $this->helper = $helper;
@@ -70,7 +70,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $booking_token = uniqid();
             $infoArray['booking_token'] = $booking_token;
             $redirect_url = $this->HelperBackend->getUrl('sales/order');
-            $webhook_url = $this->storeManager->getStore()->getBaseUrl() 
+            $webhook_url = $this->storeManager->getStore()->getBaseUrl()
             . 'wuunder/index/webhook/order_id/' . $orderId;
 
             if ($test_mode == 1) {
@@ -157,7 +157,7 @@ class Label extends \Magento\Framework\App\Action\Action
 
         $phonenumber = trim($shippingAdr->getTelephone());
         // Set default values
-        if ((substr($phonenumber, 0, 1) == '0') 
+        if ((substr($phonenumber, 0, 1) == '0')
             && ($shippingAdr->getCountryId() == 'NL')
         ) {
             // If NL and phonenumber starting with 0, replace it with +31
@@ -186,7 +186,7 @@ class Label extends \Magento\Framework\App\Action\Action
         } else {
             $streetAddress = $this->addressSplitter($streetAddress[0]);
             $streetName = $streetAddress['streetName'];
-            $houseNumber = $streetAddress['houseNumber'] 
+            $houseNumber = $streetAddress['houseNumber']
             . $shippingAddress['houseNumberSuffix'];
         }
 
@@ -361,7 +361,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
         $connection = $resource->getConnection();
         $tableName = $resource->getTableName('wuunder_quote_id');
-        $sql = "SELECT parcelshop_id FROM " . $tableName ." WHERE quote_id =" . $quoteId;
+        $sql = "SELECT parcelshop_id FROM " . $tableName ." WHERE quote_id = '" . $quoteId . "'";
         try {
             $parcelshopId = $connection->fetchOne($sql);
         } catch (Exception $e) {
