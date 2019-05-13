@@ -5,7 +5,7 @@ We make shipping any parcel, pallet and document easy, personal and efficient. A
 
 ## Before you start ##
 * You need to create a free Wuunder account: https://app.wearewuunder.com and request an API-key to use the module: https://wearewuunder.com/en/contact/ 
-* You can download and install the module before you sign-up.
+* You can download and install the latest release before you sign-up: https://github.com/wuunder/wuunder-webshopplugin-magento2/releases
 * With this module you connect your Magento2 store to your Wuunder account.
 
 ## Install ##
