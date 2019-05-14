@@ -7,7 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 
 
-## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.1) - 2019-04-05
+## [2.1.4](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.4) - 2019-04-05
 
 ### Fixed
 - Fixed name of shipping method reference in parcelshop.js [#15](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/15)
