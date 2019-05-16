@@ -4,9 +4,14 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+
 ## Unreleased
 
-## Added
+### Fixed
+
+- Fixed checkout parcelshop address when user is not logged in [#17](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/17)
+
+### Added
 
 - Support for bulk booking via import in mywuunder via REST API. [#22](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/22)
 

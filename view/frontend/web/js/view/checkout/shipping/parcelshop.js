@@ -3,9 +3,10 @@ define([
     'uiComponent',
     'ko',
     'Magento_Checkout/js/model/quote',
+    'Magento_Customer/js/model/customer',
 
-    ], function ($, Component, ko, quote) {  
-        'use strict';
+], function ($, Component, ko, quote, customer) {
+    'use strict';
 
     return Component.extend({
         defaults: {
@@ -52,10 +53,12 @@ define([
                     _showParcelshopLocator();
                 });
             });
+
             function _fetchAddress() {
                 jQuery.post( baseUrl + refreshParcelshopAddress, {
                     'quoteId' : quote.getQuoteId(),
                 }, function( data ) {
+                    console.log(data);
                     parcelshopAddress = _markupParcelshopAddress(data);
                     fetchedAddress = true;
                     _printParcelshopAddress();
@@ -86,10 +89,10 @@ define([
                 if (quote.shippingAddress().isDefaultShipping()) {
                     let shippingAddressFromQuote = quote.shippingAddress().getAddressInline();
                     let shippingAddress = shippingAddressFromQuote.match(/.*?\,\ (.*?)\,\ (.*?)\,\ *(.*?)\,\ (.*?)$/);
-                    var urlAddress = encodeURI(shippingAddress[1] + ' ' + shippingAddress[3] + ' ' + shippingAddress[2] + ' ' + shippingAddress[4]);    
+                    var urlAddress = encodeURI(shippingAddress[1] + ' ' + shippingAddress[3] + ' ' + shippingAddress[2] + ' ' + shippingAddress[4]);
                 } else {
                     let shippingAddress = quote.shippingAddress();
-                    var urlAddress = encodeURI(shippingAddress.street + ' ' + shippingAddress.postcode + ' ' + shippingAddress.city + ' ' + shippingAddress.countryId);    
+                    var urlAddress = encodeURI(shippingAddress.street + ' ' + shippingAddress.postcode + ' ' + shippingAddress.city + ' ' + shippingAddress.countryId);
                 }
                 _openIframe(urlAddress);
             }
@@ -140,12 +143,12 @@ define([
 
             function _loadSelectedParcelshopAddress(id) {
                 jQuery.post( baseUrl + setParcelshopId, {
-                        'parcelshopId' : id,
-                        'quoteId' : quote.getQuoteId(),
+                    'parcelshopId' : id,
+                    'quoteId' : quote.getQuoteId(),
                 }, function( data ) {
-                        parcelshopAddress = _markupParcelshopAddress(data);
-                        _printParcelshopAddress();
-                    });
+                    parcelshopAddress = _markupParcelshopAddress(data);
+                    _printParcelshopAddress();
+                });
             }
 
             function _markupParcelshopAddress(parcelshopData) {
@@ -155,7 +158,7 @@ define([
                     return;
                 }
                 var parcelshopInfoHtml = _capFirst(data.company_name) + "<br>" + _capFirst(data.address.street_name) +
-                " " + data.address.house_number + "<br>" + data.address.city;
+                    " " + data.address.house_number + "<br>" + data.address.city;
                 parcelshopInfoHtml = parcelshopInfoHtml.replace(/"/g, '\\"').replace(/'/g, "\\'");
                 return parcelshopInfoHtml;
             }
@@ -175,7 +178,7 @@ define([
                 } else {
                     element && element.parentNode && element.parentNode.removeChild(element);
                 }
-                
+
             }
         },
     });
