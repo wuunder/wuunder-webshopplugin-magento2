@@ -6,7 +6,6 @@ use Magento\Sales\Api\Data\OrderExtensionFactory;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderSearchResultInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Quote\Api\CartRepositoryInterface;
 
 
 class OrderRepository

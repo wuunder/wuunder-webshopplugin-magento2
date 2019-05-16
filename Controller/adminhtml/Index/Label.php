@@ -240,8 +240,6 @@ class Label extends \Magento\Framework\App\Action\Action
                 'wuunder_wuunderconnector/general/housenumber'
             )
         );
-        $this->helper->log("Hi");
-        $this->helper->log($this->scopeConfig->getValue('wuunder_wuunderconnector/general/zipcode'));
         $pickupAddress->setZipCode(
             $this->scopeConfig->getValue('wuunder_wuunderconnector/general/zipcode')
         );
