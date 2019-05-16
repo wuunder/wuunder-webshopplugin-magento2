@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## Added
+
+- Support for bulk booking via import in mywuunder via REST API. [#22](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/22)
+
 
 ## [2.1.4](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.4) - 2019-04-05
 
