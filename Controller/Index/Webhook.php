@@ -40,6 +40,10 @@ class Webhook extends \Magento\Framework\App\Action\Action
                     'Wuunder\Wuunderconnector\Model\WuunderShipment'
                 );
                 $wuunderShipment->load($this->getRequest()->getParam('order_id'), 'order_id');
+                if (!$wuunderShipment->getId()) {
+                    //shipment does not exist yet
+                    $wuunderShipment->setOrderId($this->getRequest()->getParam('order_id'));
+                }
                 $wuunderShipment->setLabelId($result['id']);
                 $wuunderShipment->setLabelUrl($result['label_url']);
                 $wuunderShipment->setTtUrl($result['track_and_trace_url']);
