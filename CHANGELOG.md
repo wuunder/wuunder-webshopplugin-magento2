@@ -15,16 +15,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## [2.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.0) - 2019-04-05
 
 ### Added
+
 - Wuunder parcelshop picker implementation [#9](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/9)
 
-## Released
+### Fix
+
+- Parcelshop picker fixes
+- Configuration fixes
+- Code cleanup
 
 ## [2.0.7](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.7) - 2019-01-08
 
 ### Fix
 
-- Fix exception namespacing [@timoj](https://github.com/timoj)
-- Fixed an issue introduced after changing the routes.xml file [#12](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/12)
+- Bugfix redirect uri build
+- Added error message when api key is not valid
 
 ### Added
 
