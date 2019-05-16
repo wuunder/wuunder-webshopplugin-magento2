@@ -20,7 +20,6 @@ define([
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
 
                 if (selectedMethod === 'parcelshopPicker_parcelshopPicker'
-                    && customer.isLoggedIn()
                     && quote.shippingAddress().city !== undefined
                     && quote.shippingAddress().street !== undefined
                     && quote.shippingAddress().postcode !== undefined
@@ -59,6 +58,7 @@ define([
                 jQuery.post( baseUrl + refreshParcelshopAddress, {
                     'quoteId' : quote.getQuoteId(),
                 }, function( data ) {
+                    console.log(data);
                     parcelshopAddress = _markupParcelshopAddress(data);
                     fetchedAddress = true;
                     _printParcelshopAddress();
