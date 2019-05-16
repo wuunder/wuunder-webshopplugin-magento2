@@ -4,7 +4,15 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## Released
+
+
+## Unreleased
+
+
+### Fixed
+
+- Fixed checkout parcelshop address when user is not logged in [#17](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/17)
+
 
 ## [2.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.7) - 2019-04-05
 
