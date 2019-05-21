@@ -70,7 +70,21 @@
                     <validate>required-entry</validate>
                 </field>
             </group>
-            <group id="advanced" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+            <group id="automaticbooking" translate="label" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Automatic booking</label>
+                <field id="auto_booking_enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable automatic booking</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="auto_booking_state" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0" >
+                    <label>Order State to trigger automatic booking</label>
+                    <source_model>Wuunder\Wuunderconnector\Model\Config\Source\Order\State</source_model>
+                    <depends>
+                        <field id="wuunder_wuunderconnector/automaticbooking/auto_booking_enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="advanced" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="0" showInStore="0">
                 <label>Advanced settings</label>
                 <field id="post_booking_status" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Set order status after booking to:</label>

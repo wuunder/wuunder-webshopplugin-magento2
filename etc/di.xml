@@ -7,4 +7,13 @@
             </argument>
         </arguments>
     </type>
+
+    <preference for="Wuunder\Wuunderconnector\Api\BookingProcessorInterface"
+                type="Wuunder\Wuunderconnector\AutoBooking\Processor" />
+    
+    <preference for="Wuunder\Wuunderconnector\Api\WuunderShipmentRepositoryInterface"
+                type="Wuunder\Wuunderconnector\Model\WuunderShipmentRepository" />
+
+    <preference for="Wuunder\Wuunderconnector\Api\BookingConfigBuilderInterface"
+                type="Wuunder\Wuunderconnector\Model\BookingConfigBuilder" />
 </config>

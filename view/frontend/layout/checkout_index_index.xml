@@ -4,7 +4,7 @@
         <css src="Wuunder_Wuunderconnector::css/parcelshoppicker.css"/>
     </head>
     <body>
-        <referenceBlock name="checkout.root">
+        <!--referenceBlock name="checkout.root">
             <arguments>
                 <argument name="jsLayout" xsi:type="array">
                     <item name="components" xsi:type="array">
@@ -36,6 +36,6 @@
                     </item>
                 </argument>
             </arguments>
-        </referenceBlock>
+        </referenceBlock-->
     </body>
 </page>
