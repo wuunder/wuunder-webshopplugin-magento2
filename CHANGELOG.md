@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Fixed
 
+- Fixed notice in order grid
 - Fixed checkout parcelshop address when user is not logged in [#17](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/17)
 
 ### Added
