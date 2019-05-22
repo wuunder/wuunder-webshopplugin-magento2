@@ -42,7 +42,7 @@ class Status extends Column
     {
         $orderId = $item['entity_id'];
         $icons = '';
-        if (!is_null($item['label_id'])) {
+        if (isset($item['label_id']) && !is_null($item['label_id'])) {
             $icons = '<li class="wuunder-label-download"><a href="' . $item['label_url'] . 
                 '"  target="_blank" title="Print verzendlabel"></a></li>';
             $icons .= '<li class="wuunder-label-tracktrace"><a href="' . $item['tt_url'] .
