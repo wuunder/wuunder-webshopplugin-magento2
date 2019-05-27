@@ -7,7 +7,7 @@ use Wuunder\Wuunderconnector\Api\BookingProcessorInterface;
 
 class AutoBooking implements ObserverInterface
 {
-    /** @var FpOrderProcess\Processor\Shipment */
+    /** @var BookingProcessorInterface */
     protected $bookingProcessor;
 
     /**

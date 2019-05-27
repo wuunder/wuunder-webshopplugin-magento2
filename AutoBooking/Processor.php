@@ -8,9 +8,9 @@ use Wuunder\Wuunderconnector\Exception\AutomaticBookingException;
 class Processor implements BookingProcessorInterface
 {
     /**
-     * @var Wuunder\Wuunderconnector\Api\BookingConfigBuilderInterface
+     * @var \Wuunder\Wuunderconnector\Api\ShipmentConfigBuilderInterface
      */
-    private $bookingConfigBuilder;
+    private $shipmentConfigBuilder;
 
     /**
      * @var \Wuunder\Wuunderconnector\Helper\Api
@@ -21,14 +21,14 @@ class Processor implements BookingProcessorInterface
      * @var \Wuunder\Wuunderconnector\Model\WuunderShipmentRepository
      */
     private $wuunderShipmentRepository;
-    
+
     public function __construct(
         \Wuunder\Wuunderconnector\Api\WuunderShipmentRepositoryInterface $wuunderShipmentRepository,
-        \Wuunder\Wuunderconnector\Api\BookingConfigBuilderInterface $bookingConfigBuilder,
+        \Wuunder\Wuunderconnector\Api\ShipmentConfigBuilderInterface $shipmentConfigBuilder,
         \Wuunder\Wuunderconnector\Helper\Api $api
     ) {
         $this->wuunderShipmentRepository = $wuunderShipmentRepository;
-        $this->bookingConfigBuilder = $bookingConfigBuilder;
+        $this->shipmentConfigBuilder = $shipmentConfigBuilder;
         $this->api = $api;
     }
 
@@ -50,20 +50,23 @@ class Processor implements BookingProcessorInterface
             );
         }
 
-        $config = $this->bookingConfigBuilder->build($order);
+        $config = $this->shipmentConfigBuilder->build($order);
 
         $connector = new \Wuunder\Connector($this->api->getApiKey(), $this->api->testMode());
-        $booking = $connector->createBooking();
+        $shipment = $connector->createShipment();
 
         if (!$config->validate()) {
             throw new AutomaticBookingException(__("Bookingconfig not complete"));
         }
-        $booking->setConfig($config);
-        if ($booking->fire()) {
+        $shipment->setConfig($config);
+        if ($shipment->fire()) {
             try {
+                /** @var \Wuunder\Api\ShipmentApiResponse $response */
+                $response = $shipment->getShipmentResponse();
+                $response->getShipmentData();
                 $this->saveWuunderShipment(
                     $order->getId(),
-                    $booking->getBookingResponse()->getBookingUrl(),
+                    $shipment->getShipmentResponse()->getBookingUrl(),
                     "testtoken"
                 );
             } catch (

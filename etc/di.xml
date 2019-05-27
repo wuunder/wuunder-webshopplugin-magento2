@@ -16,4 +16,7 @@
 
     <preference for="Wuunder\Wuunderconnector\Api\BookingConfigBuilderInterface"
                 type="Wuunder\Wuunderconnector\Model\BookingConfigBuilder" />
+
+    <preference for="Wuunder\Wuunderconnector\Api\ShipmentConfigBuilderInterface"
+                type="Wuunder\Wuunderconnector\Model\ShipmentConfigBuilder" />
 </config>
