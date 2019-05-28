@@ -88,11 +88,11 @@ class ShipmentConfigBuilder implements ShipmentConfigBuilderInterface
 
         //required fields:
         $shipmentConfig->setDescription($orderinfo->getShippingDescription());
-        $shipmentConfig->setValue($order->getSubtotal());
+        $shipmentConfig->setValue((int)($order->getSubtotal() * 100));
         $shipmentConfig->setKind('package'); //One of "document", "package" or "pallet"
-        $shipmentConfig->setLength(0);
-        $shipmentConfig->setWidth(0);
-        $shipmentConfig->setHeight(0);
+        $shipmentConfig->setLength(1);
+        $shipmentConfig->setWidth(1);
+        $shipmentConfig->setHeight(1);
         $shipmentConfig->setWeight(1000);
         $shipmentConfig->setDeliveryAddress($this->getDeliveryAddress($order));
         $shipmentConfig->setPickupAddress($this->getPickupAddress());

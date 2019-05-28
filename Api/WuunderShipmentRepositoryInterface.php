@@ -20,6 +20,30 @@ interface WuunderShipmentRepositoryInterface
     public function getByOrderId(int $orderId): \Wuunder\Wuunderconnector\Model\WuunderShipment;
 
     /**
+     * @param int $orderId
+     * @return bool
+     */
+    public function hasLabelForOrderId(int $orderId): bool;
+
+    /**
+     * @param int $orderId
+     * @return string
+     */
+    public function getLabelUrlByOrderId(int $orderId): ?string;
+
+    /**
+     * @param int $orderId
+     * @return string
+     */
+    public function getTrackAndTraceUrlByOrderId(int $orderId): ?string;
+
+    /**
+     * @param int $orderId
+     * @return string|null
+     */
+    public function getErrorByOrderId(int $orderId): ?string;
+
+    /**
      * @param \Wuunder\Wuunderconnector\Model\WuunderShipment $wuunderShipment
      *
      * @return \Wuunder\Wuunderconnector\Model\WuunderShipment

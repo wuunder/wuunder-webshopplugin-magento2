@@ -47,16 +47,16 @@ class AutoBooking implements ObserverInterface
             $order = $observer->getData('order');
 
             if ($order->hasShipments()
-                || $this->dataPersistor->get('observer_run_'.$order->getId()) === true
+                || $this->dataPersistor->get('observer_run_' . $order->getId()) === true
                 || $this->config->isAutobookingEnabled() === false
             ) {
                 return;
             }
 
-            $this->dataPersistor->set('observer_run_'.$order->getId(), true);
+            $this->dataPersistor->set('observer_run_' . $order->getId(), true);
 
             if ($order->getState() === $this->config->getAutobookingState()) {
-                $shipment = $this->bookingProcessor->book($order);
+                $this->bookingProcessor->book($order);
             }
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage());

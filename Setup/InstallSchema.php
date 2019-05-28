@@ -4,7 +4,6 @@ namespace Wuunder\Wuunderconnector\Setup;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
 
 class InstallSchema implements InstallSchemaInterface
@@ -78,6 +77,13 @@ class InstallSchema implements InstallSchemaInterface
                     '64k',
                     ['nullable => false'],
                     'Shipment booking token'
+                )
+                ->addColumn(
+                    'auto_booking_error',
+                    Table::TYPE_TEXT,
+                    '64k',
+                    ['nullable => true'],
+                    'Wuunder error reponse'
                 )
                 ->setComment('Wuunder shipment table');
             $installer->getConnection()->createTable($table);

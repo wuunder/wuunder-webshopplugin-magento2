@@ -63,11 +63,9 @@ class Processor implements BookingProcessorInterface
             try {
                 /** @var \Wuunder\Api\ShipmentApiResponse $response */
                 $response = $shipment->getShipmentResponse();
-                $response->getShipmentData();
                 $this->saveWuunderShipment(
                     $order->getId(),
-                    $shipment->getShipmentResponse()->getBookingUrl(),
-                    "testtoken"
+                    $response->getShipmentData()
                 );
             } catch (
                 \Magento\Framework\Exception\AlreadyExistsException |
@@ -76,23 +74,50 @@ class Processor implements BookingProcessorInterface
                 throw new AutomaticBookingException(__($e->getMessage()));
             }
         } else {
-            throw new AutomaticBookingException(__($booking->getBookingResponse()->getError()));
+            if ($shipment->getShipmentResponse()->getError()) {
+                try {
+                    $this->saveError($order->getId(), $shipment->getShipmentResponse()->getError());
+                } catch (
+                    \Magento\Framework\Exception\AlreadyExistsException |
+                    \Magento\Framework\Exception\NoSuchEntityException $e
+                ) {
+                    throw new AutomaticBookingException(__($e->getMessage()));
+                }
+            }
+            throw new AutomaticBookingException(__($shipment->getShipmentResponse()->getError()));
         }
     }
 
     /**
      * @param int    $orderId
-     * @param string $bookingUrl
-     * @param string $bookingToken
+     * @param string $error
      * @throws \Magento\Framework\Exception\AlreadyExistsException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    private function saveWuunderShipment(int $orderId, string $bookingUrl, string $bookingToken): void
+    public function saveError(int $orderId, string $error)
     {
         $wuunderShipment = $this->wuunderShipmentRepository->getByOrderId($orderId);
         $wuunderShipment->setOrderId($orderId);
-        $wuunderShipment->setBookingUrl($bookingUrl);
-        $wuunderShipment->setBookingToken($bookingToken);
+        $wuunderShipment->setAutoBookingError($error);
+
+        $this->wuunderShipmentRepository->save(
+            $wuunderShipment
+        );
+    }
+
+    /**
+     * @param int                          $orderId
+     * @param \Wuunder\Model\ShipmentModel $shipment
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    private function saveWuunderShipment(int $orderId, \Wuunder\Model\ShipmentModel $shipment): void
+    {
+        $wuunderShipment = $this->wuunderShipmentRepository->getByOrderId($orderId);
+        $wuunderShipment->setOrderId($orderId);
+        $wuunderShipment->setLabelUrl($shipment->getLabelUrl());
+        $wuunderShipment->setLabelId($shipment->getId());
+        $wuunderShipment->setTtUrl($shipment->getTrackAndTraceUrl());
 
         $this->wuunderShipmentRepository->save(
             $wuunderShipment

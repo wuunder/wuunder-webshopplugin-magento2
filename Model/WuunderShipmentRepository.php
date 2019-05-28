@@ -13,6 +13,11 @@ class WuunderShipmentRepository implements \Wuunder\Wuunderconnector\Api\Wuunder
     protected $resource;
 
     /**
+     * @var WuunderShipmentFactory
+     */
+    protected $factory;
+
+    /**
      * WuunderShipmentRepository constructor.
      * @param ResourceModel\WuunderShipment $resource
      * @param WuunderShipmentFactory        $factory
@@ -40,6 +45,10 @@ class WuunderShipmentRepository implements \Wuunder\Wuunderconnector\Api\Wuunder
         return $object;
     }
 
+    /**
+     * @param int $orderId
+     * @return WuunderShipment
+     */
     public function getByOrderId(int $orderId): \Wuunder\Wuunderconnector\Model\WuunderShipment
     {
         $object = $this->factory->create();
@@ -52,17 +61,48 @@ class WuunderShipmentRepository implements \Wuunder\Wuunderconnector\Api\Wuunder
     }
 
     /**
+     * @param int $orderId
+     * @return bool
+     */
+    public function hasShipmentForOrderId(int $orderId): bool
+    {
+        return $this->resource->getIdByOrderId($orderId) ? true : false;
+    }
+
+    /**
+     * @param int $orderId
+     * @return bool
+     */
+    public function hasLabelForOrderId(int $orderId): bool
+    {
+        return $this->resource->getLabelIdByOrderId($orderId) ? true : false;
+    }
+
+    public function getLabelUrlByOrderId(int $orderId): ?string
+    {
+        return $this->resource->getLabelUrlByOrderId($orderId);
+    }
+
+    public function getTrackAndTraceUrlByOrderId(int $orderId): ?string
+    {
+        return $this->resource->getTrackAndTraceUrlByOrderId($orderId);
+    }
+
+    public function getErrorByOrderId(int $orderId): ?string
+    {
+        return $this->resource->getErrorByOrderId($orderId);
+    }
+
+    /**
      * @param WuunderShipment $wuunderShipment
      * @return WuunderShipment
      * @throws Framework\Exception\AlreadyExistsException
      */
-    public function save(\Wuunder\Wuunderconnector\Model\WuunderShipment $wuunderShipment
-    ): \Wuunder\Wuunderconnector\Model\WuunderShipment
+    public function save(\Wuunder\Wuunderconnector\Model\WuunderShipment $wuunderShipment): \Wuunder\Wuunderconnector\Model\WuunderShipment
     {
         $this->resource->save($wuunderShipment);
 
         return $wuunderShipment;
     }
-
 
 }
