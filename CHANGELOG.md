@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ## Unreleased
 
 
+## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.2) - 2019-06-04
+
+### Fixed
+- Admin routes fixed [#27](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/27)
+
 ## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.1) - 2019-04-05
 
 ### Fixed
