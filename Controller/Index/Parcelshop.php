@@ -132,7 +132,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     {
         $initVariables = $this->initQuoteIdObject();
         //Check if current quote is already in database
-        $sql = "SELECT * FROM " . $initVariables['tableName'] ." WHERE quote_id =" . $quoteId;
+        $sql = "SELECT * FROM " . $initVariables['tableName'] ." WHERE quote_id = '" . $quoteId . "'";
 
         if ($result = $initVariables['connection']->fetchAll($sql)) {
             $this->updateParcelshopId($parcelshopId, $quoteId);
@@ -157,9 +157,9 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     private function updateParcelshopId($parcelshopId, $quoteId) 
     {
         $initVariables = $this->initQuoteIdObject();
-        $sql = "UPDATE ". $initVariables['tableName'] 
+        $sql = "UPDATE " . $initVariables['tableName']
             . " SET parcelshop_id = '" . $parcelshopId 
-            . "' WHERE quote_id = " . $quoteId;
+            . "' WHERE quote_id = '" . $quoteId . "'";
         $initVariables['connection']->query($sql);
     }
 
@@ -167,9 +167,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     {
         if ($this->checkoutSession->isLoggedIn()) {
             $initVariables = $this->initQuoteIdObject();
-            $sql = "SELECT parcelshop_id 
-                    FROM " . $initVariables['tableName'] 
-                    ." WHERE quote_id =" . $quoteId;
+            $sql = "SELECT parcelshop_id FROM " . $initVariables['tableName'] . " WHERE quote_id = '" . $quoteId . "'";
             if ($result = $initVariables['connection']->fetchAll($sql)) {
                 $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
             }
