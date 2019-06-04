@@ -5,7 +5,11 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
+## 2019-06-04
 
+### Fixed
+
+- Fix parcelshop id querying
 
 ## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.1) - 2019-04-05
 
