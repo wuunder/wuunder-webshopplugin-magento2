@@ -319,6 +319,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setPicture($image);
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
+        $bookingConfig->setValue($order->getBaseGrandTotal() * 100);
         $bookingConfig->setSource(
             array(
                 "product" => "Magento 2 extension",

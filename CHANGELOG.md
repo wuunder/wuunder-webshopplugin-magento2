@@ -11,31 +11,36 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Fixed issues from feedback after plugin submission magento 2 marketplace
 - Fixed notice in order grid
+- Fix parcelshop id querying
 - Fixed checkout parcelshop address when user is not logged in [#17](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/17)
 
 ### Added
 
 - Support for bulk booking via import in mywuunder via REST API. [#22](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/22)
 
-
-## [2.1.4](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.4) - 2019-04-05
+## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.2) - 2019-06-04
 
 ### Fixed
-- Fixed name of shipping method reference in parcelshop.js [#15](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/15)
+- Admin routes fixed [#27](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/27)
 
 ## [2.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.0) - 2019-04-05
 
 ### Added
+
 - Wuunder parcelshop picker implementation [#9](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/9)
 
-## Released
+### Fix
+
+- Parcelshop picker fixes
+- Configuration fixes
+- Code cleanup
 
 ## [2.0.7](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.0.7) - 2019-01-08
 
 ### Fix
 
-- Fix exception namespacing [@timoj](https://github.com/timoj)
-- Fixed an issue introduced after changing the routes.xml file [#12](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/12)
+- Bugfix redirect uri build
+- Added error message when api key is not valid
 
 ### Added
 
