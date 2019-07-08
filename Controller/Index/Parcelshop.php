@@ -167,8 +167,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     {
         $initVariables = $this->initQuoteIdObject();
         $sql = "UPDATE " . $initVariables['tableName']
-            . " SET parcelshop_id = '" . $parcelshopId
-            . " WHERE quote_id = '" . $quoteId . "'";
+            . " SET parcelshop_id = '" . $parcelshopId 
+            . "' WHERE quote_id = '" . $quoteId . "'";
         $initVariables['connection']->query($sql);
     }
 
