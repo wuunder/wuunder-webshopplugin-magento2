@@ -18,7 +18,6 @@ define([
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
-                console.log(selectedMethod);
                 if (selectedMethod === 'parcelshopPicker_parcelshopPicker'
                     && quote.shippingAddress().city !== undefined
                     && quote.shippingAddress().street !== undefined
