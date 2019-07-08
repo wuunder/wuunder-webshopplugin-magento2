@@ -7,6 +7,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Checkout\Model\Session as checkoutSession;
 use \Wuunder\Wuunderconnector\Model\QuoteIdFactory;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Quote\Model\QuoteIdMaskFactory;
 
 class Parcelshop extends \Magento\Framework\App\Action\Action
 {
@@ -23,6 +24,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
      */
     protected $QuoteId;
 
+    protected $quoteIdMaskFactory;
+
     public function __construct(
         \Magento\Backend\Helper\Data $HelperBackend,
         \Psr\Log\LoggerInterface $logger,
@@ -31,7 +34,8 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         Data $helper,
         \Magento\Framework\Controller\ResultFactory $result,
         \Wuunder\Wuunderconnector\Model\QuoteIdFactory $QuoteId,
-        Context $context
+        Context $context,
+        QuoteIdMaskFactory $quoteIdMaskFactory
     )
     {
         $this->HelperBackend = $HelperBackend;
@@ -41,6 +45,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $this->helper = $helper;
         $this->resultRedirect = $result;
         $this->QuoteId = $QuoteId;
+        $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         parent::__construct($context);
     }
 
@@ -55,6 +60,10 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         if (null !== $this->getRequest()->getParam('setParcelshopId')) {
             $parcelshopId = $post['parcelshopId'];
             $quoteId = $post['quoteId'];
+            if (!is_numeric($quoteId)) {
+                $quoteIdMask = $this->quoteIdMaskFactory->create()->load($quoteId, 'masked_id');
+                $quoteId = $quoteIdMask->getQuoteId();
+            }
             $this->checkIfQuoteExists($parcelshopId, $quoteId);
             $this->setParcelshopId($parcelshopId);
         }
