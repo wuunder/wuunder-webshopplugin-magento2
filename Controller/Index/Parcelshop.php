@@ -78,7 +78,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         if ($id) {
             $address = $this->getParcelshopAddress($id);
             $encodedAddress = json_encode($address);
-            die($encodedAddress);
+            $this->getResponse()->setBody($encodedAddress);
         }
         return null;
     }
@@ -86,7 +86,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     private function getParcelshopAddress($id)
     {
         if (empty($id)) {
-            echo null;
+            $this->getResponse()->setBody(null);
         } else {
             $test_mode = $this->scopeConfig->getValue(
                 'wuunder_wuunderconnector/general/testmode'
@@ -118,12 +118,11 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
                 }
             } else {
                 $this->helper->log("ParcelshopsConfig not complete");
-                die(null);
+                $this->getResponse()->setBody(null);
             }
-            echo json_encode($parcelshop);
+            $this->getResponse()->setBody(json_encode($parcelshop));
         }
-
-        exit;
+        $this->getResponse()->setBody(null);
     }
 
     private function initQuoteIdObject()
@@ -168,7 +167,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $initVariables = $this->initQuoteIdObject();
         $sql = "UPDATE " . $initVariables['tableName']
             . " SET parcelshop_id = '" . $parcelshopId
-            . " WHERE quote_id = '" . $quoteId . "'";
+            . "' WHERE quote_id = '" . $quoteId . "'";
         $initVariables['connection']->query($sql);
     }
 
@@ -183,7 +182,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         if ($result = $initVariables['connection']->fetchAll($sql)) {
             $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
         }
-        die($address);
+        $this->getResponse()->setBody($address);
 //        }
     }
 }

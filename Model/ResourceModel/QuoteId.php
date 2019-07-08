@@ -8,4 +8,3 @@ class QuoteId extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $this->_init('wuunder_quote_id', 'id');
     }
 }
-?>

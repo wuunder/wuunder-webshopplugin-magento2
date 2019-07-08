@@ -364,7 +364,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $sql = "SELECT parcelshop_id FROM " . $tableName ." WHERE quote_id = '" . $quoteId . "'";
         try {
             $parcelshopId = $connection->fetchOne($sql);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->helper->log('ERROR getWuunderShipment : ' . $e);
             return null;
         }

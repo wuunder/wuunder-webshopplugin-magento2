@@ -18,7 +18,7 @@ define([
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
-
+                console.log(selectedMethod);
                 if (selectedMethod === 'parcelshopPicker_parcelshopPicker'
                     && quote.shippingAddress().city !== undefined
                     && quote.shippingAddress().street !== undefined
@@ -58,7 +58,6 @@ define([
                 jQuery.post( baseUrl + refreshParcelshopAddress, {
                     'quoteId' : quote.getQuoteId(),
                 }, function( data ) {
-                    console.log(data);
                     parcelshopAddress = _markupParcelshopAddress(data);
                     fetchedAddress = true;
                     _printParcelshopAddress();
