@@ -122,7 +122,6 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
             }
             $this->getResponse()->setBody(json_encode($parcelshop));
         }
-        $this->getResponse()->setBody(null);
     }
 
     private function initQuoteIdObject()
