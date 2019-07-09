@@ -79,14 +79,15 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
             $address = $this->getParcelshopAddress($id);
             $encodedAddress = json_encode($address);
             $this->getResponse()->setBody($encodedAddress);
+        } else {
+            $this->getResponse()->setBody(null);
         }
-        return null;
     }
 
     private function getParcelshopAddress($id)
     {
         if (empty($id)) {
-            $this->getResponse()->setBody(null);
+            return null;
         } else {
             $test_mode = $this->scopeConfig->getValue(
                 'wuunder_wuunderconnector/general/testmode'
@@ -119,6 +120,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
             } else {
                 $this->helper->log("ParcelshopsConfig not complete");
                 $this->getResponse()->setBody(null);
+                return;
             }
             $this->getResponse()->setBody(json_encode($parcelshop));
         }
