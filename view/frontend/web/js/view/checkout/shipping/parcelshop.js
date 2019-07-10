@@ -18,6 +18,7 @@ define([
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
                 var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
+                console.log(selectedMethod);
                 if (selectedMethod === 'parcelshopPicker_parcelshopPicker'
                     && quote.shippingAddress().city !== undefined
                     && quote.shippingAddress().street !== undefined
@@ -150,11 +151,11 @@ define([
             }
 
             function _markupParcelshopAddress(parcelshopData) {
-                if ("" !== parcelshopData) {
-                    var data = JSON.parse(parcelshopData);
-                } else {
+                if (parcelshopData === "") {
                     return;
                 }
+                var data = parcelshopData;
+                console.log(parcelshopData);
                 var parcelshopInfoHtml = _capFirst(data.company_name) + "<br>" + _capFirst(data.address.street_name) +
                     " " + data.address.house_number + "<br>" + data.address.city;
                 parcelshopInfoHtml = parcelshopInfoHtml.replace(/"/g, '\\"').replace(/'/g, "\\'");

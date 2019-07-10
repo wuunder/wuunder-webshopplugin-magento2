@@ -57,18 +57,17 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $post = $this->getRequest()->getPostValue();
+        $quoteId = $post['quoteId'];
+        if (!is_numeric($quoteId)) {
+            $quoteIdMask = $this->quoteIdMaskFactory->create()->load($quoteId, 'masked_id');
+            $quoteId = $quoteIdMask->getQuoteId();
+        }
         if (null !== $this->getRequest()->getParam('setParcelshopId')) {
             $parcelshopId = $post['parcelshopId'];
-            $quoteId = $post['quoteId'];
-            if (!is_numeric($quoteId)) {
-                $quoteIdMask = $this->quoteIdMaskFactory->create()->load($quoteId, 'masked_id');
-                $quoteId = $quoteIdMask->getQuoteId();
-            }
             $this->checkIfQuoteExists($parcelshopId, $quoteId);
             $this->setParcelshopId($parcelshopId);
         }
         if (null !== $this->getRequest()->getParam('refreshParcelshopAddress')) {
-            $quoteId = $post['quoteId'];
             $this->getParcelshopAddressForQuote($quoteId);
         }
     }
@@ -77,10 +76,14 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     {
         if ($id) {
             $address = $this->getParcelshopAddress($id);
-            $encodedAddress = json_encode($address);
-            $this->getResponse()->setBody($encodedAddress);
+
+            $this->getResponse()->setHeader('Content-type', 'application/json');
+            $this->getResponse()->setBody(\Zend_Json::encode($address));
+            $this->getResponse()->sendResponse();
         } else {
-            $this->getResponse()->setBody(null);
+            $this->getResponse()->setHeader('Content-type', 'application/json');
+            $this->getResponse()->setBody(\Zend_Json::encode(null));
+            $this->getResponse()->sendResponse();
         }
     }
 
@@ -119,10 +122,9 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
                 }
             } else {
                 $this->helper->log("ParcelshopsConfig not complete");
-                $this->getResponse()->setBody(null);
-                return;
+                return null;
             }
-            $this->getResponse()->setBody(json_encode($parcelshop));
+            return $parcelshop;
         }
     }
 
@@ -183,7 +185,10 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         if ($result = $initVariables['connection']->fetchAll($sql)) {
             $address = $this->getParcelshopAddress($result[0]["parcelshop_id"]);
         }
-        $this->getResponse()->setBody($address);
+
+        $this->getResponse()->setHeader('Content-type', 'application/json');
+        $this->getResponse()->setBody(\Zend_Json::encode($address));
+        $this->getResponse()->sendResponse();
 //        }
     }
 }
