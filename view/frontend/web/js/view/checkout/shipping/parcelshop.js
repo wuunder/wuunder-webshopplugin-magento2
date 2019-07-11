@@ -151,7 +151,7 @@ define([
             }
 
             function _markupParcelshopAddress(parcelshopData) {
-                if (parcelshopData === "") {
+                if (parcelshopData === "" || parcelshopData === null || parcelshopData === undefined) {
                     return;
                 }
                 var data = parcelshopData;
