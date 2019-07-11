@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## [2.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.0) - 2019-07-11
+
 ### Fixed
 
 - Fixed issues from feedback after plugin submission magento 2 marketplace
@@ -18,7 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - Support for bulk booking via import in mywuunder via REST API. [#22](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/22)
 
-## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.2) - 2019-06-04
+## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.1) - 2019-06-04
 
 ### Fixed
 - Admin routes fixed [#27](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/27)

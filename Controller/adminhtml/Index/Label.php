@@ -324,7 +324,7 @@ class Label extends \Magento\Framework\App\Action\Action
             array(
                 "product" => "Magento 2 extension",
                 "version" => array(
-                    "build" => "2.1.5",
+                    "build" => "2.2.0",
                     "plugin" => "2.1"),
                     "platform" => array(
                         "name" => "Magento",
