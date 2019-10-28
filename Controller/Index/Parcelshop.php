@@ -176,7 +176,6 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
     private function getParcelshopAddressForQuote($quoteId)
     {
         $address = null;
-//        if ($this->checkoutSession->isLoggedIn()) {
         $initVariables = $this->initQuoteIdObject();
         $sql = "SELECT parcelshop_id 
                     FROM " . $initVariables['tableName']
@@ -188,6 +187,5 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $this->getResponse()->setHeader('Content-type', 'application/json');
         $this->getResponse()->setBody(\Zend_Json::encode($address));
         $this->getResponse()->sendResponse();
-//        }
     }
 }
