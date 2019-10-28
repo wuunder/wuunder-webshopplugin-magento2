@@ -32,7 +32,6 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Customer\Model\Session $checkoutSession,
         Data $helper,
-        \Magento\Framework\Controller\ResultFactory $result,
         \Wuunder\Wuunderconnector\Model\QuoteIdFactory $QuoteId,
         Context $context,
         QuoteIdMaskFactory $quoteIdMaskFactory
@@ -43,7 +42,7 @@ class Parcelshop extends \Magento\Framework\App\Action\Action
         $this->scopeConfig = $scopeConfig;
         $this->checkoutSession = $checkoutSession;
         $this->helper = $helper;
-        $this->resultRedirect = $result;
+        $this->resultRedirect = $context->getResultFactory();
         $this->QuoteId = $QuoteId;
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
         parent::__construct($context);

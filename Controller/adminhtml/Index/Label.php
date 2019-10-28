@@ -24,19 +24,17 @@ class Label extends \Magento\Framework\App\Action\Action
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\Catalog\Model\ProductFactory $productloader,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Backend\Helper\Data $HelperBackend,
-        Data $helper,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        Data $helper
     ) {
         $this->helper = $helper;
         $this->resultPageFactory = $resultPageFactory;
         $this->orderRepository = $orderRepository;
         $this->productloader = $productloader;
         $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
+        $this->storeManager = $context->getStoreManager();
         $this->HelperBackend = $HelperBackend;
-        $this->messageManager = $messageManager;
+        $this->messageManager = $context->getMessageManager();
         parent::__construct($context);
     }
 
