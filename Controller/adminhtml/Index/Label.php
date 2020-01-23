@@ -14,25 +14,26 @@ class Label extends \Magento\Framework\App\Action\Action
     protected $orderRepository;
     protected $productloader;
     protected $scopeConfig;
-    protected $storeManager;
+    protected $storeManagerInterface;
     protected $HelperBackend;
     protected $messageManager;
 
     public function __construct(
-        Context $context,
+        Data $helper,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
         \Magento\Catalog\Model\ProductFactory $productloader,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Store\Model\StoreManagerInterface $storeManagerInterface,
         \Magento\Backend\Helper\Data $HelperBackend,
-        Data $helper
+        Context $context
     ) {
         $this->helper = $helper;
         $this->resultPageFactory = $resultPageFactory;
         $this->orderRepository = $orderRepository;
         $this->productloader = $productloader;
         $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $context->getStoreManager();
+        $this->storeManagerInterface = $storeManagerInterface; // Cannot be fetched from Action context, got via dep. injection
         $this->HelperBackend = $HelperBackend;
         $this->messageManager = $context->getMessageManager();
         parent::__construct($context);
@@ -68,7 +69,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $booking_token = uniqid();
             $infoArray['booking_token'] = $booking_token;
             $redirect_url = $this->HelperBackend->getUrl('sales/order');
-            $webhook_url = $this->storeManager->getStore()->getBaseUrl()
+            $webhook_url = $this->storeManagerInterface->getStore()->getBaseUrl()
             . 'wuunder/index/webhook/order_id/' . $orderId;
 
             if ($test_mode == 1) {
@@ -264,7 +265,7 @@ class Label extends \Magento\Framework\App\Action\Action
                 $_product = $this->productloader->create()->load(
                     $orderedItem->getProductId()
                 );
-                $imageUrl = $this->storeManager->getStore()->getBaseUrl(
+                $imageUrl = $this->storeManagerInterface->getStore()->getBaseUrl(
                     \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
                 ) . 'catalog/product' . $_product->getImage();
                 try {
