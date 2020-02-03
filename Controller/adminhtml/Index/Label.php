@@ -149,9 +149,11 @@ class Label extends \Magento\Framework\App\Action\Action
         $shippingAdr = $order->getShippingAddress();
 
         $shipmentDescription = "";
+        $weight = 0;
         foreach ($order->getAllItems() as $item) {
             $product = $this->productloader->create()->load($item->getProductId());
             $shipmentDescription .= $product->getName() . " ";
+            $weight += ($item->getWeight() * $item->getQty()) ;
         }
 
         $phonenumber = trim($shippingAdr->getTelephone());
@@ -168,6 +170,7 @@ class Label extends \Magento\Framework\App\Action\Action
             'description' => $shipmentDescription,
             $messageField => '',
             'phone_number' => $phonenumber,
+            'weight' => $weight
         );
     }
 
@@ -262,6 +265,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $orderedItems = $order->getAllVisibleItems();
         if (count($orderedItems) > 0) {
             foreach ($orderedItems AS $orderedItem) {
+
                 $_product = $this->productloader->create()->load(
                     $orderedItem->getProductId()
                 );
@@ -318,6 +322,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setPicture($image);
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
+        $bookingConfig->setWeight($infoArray['weight']);
         $bookingConfig->setValue($order->getBaseGrandTotal() * 100);
         $bookingConfig->setSource(
             array(
