@@ -6,6 +6,8 @@ use Magento\Framework\App\Action\Context;
 use Magento\Sales\Model\Order;
 use \Wuunder\Wuunderconnector\Helper\Data;
 use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
 
 class Webhook extends \Magento\Framework\App\Action\Action  implements CsrfAwareActionInterface
 {
