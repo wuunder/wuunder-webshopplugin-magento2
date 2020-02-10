@@ -5,8 +5,9 @@ namespace Wuunder\Wuunderconnector\Controller\Index;
 use Magento\Framework\App\Action\Context;
 use Magento\Sales\Model\Order;
 use \Wuunder\Wuunderconnector\Helper\Data;
+use Magento\Framework\App\CsrfAwareActionInterface;
 
-class Webhook extends \Magento\Framework\App\Action\Action
+class Webhook extends \Magento\Framework\App\Action\Action  implements CsrfAwareActionInterface
 {
 
     protected $scopeConfig;
@@ -19,6 +20,16 @@ class Webhook extends \Magento\Framework\App\Action\Action
         $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
         parent::__construct($context);
+    }
+
+    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    {
+        return null;
+    }
+
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 
     public function execute()
