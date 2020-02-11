@@ -90,6 +90,8 @@ class Label extends \Magento\Framework\App\Action\Action
             $connector = new \Wuunder\Connector($apiKey, $test_mode == 1);
             $booking = $connector->createBooking();
 
+            
+
             if ($bookingConfig->validate()) {
                 $booking->setConfig($bookingConfig);
                 $this->helper->log("Going to fire for bookingurl");
@@ -153,7 +155,7 @@ class Label extends \Magento\Framework\App\Action\Action
         foreach ($order->getAllItems() as $item) {
             $product = $this->productloader->create()->load($item->getProductId());
             $shipmentDescription .= $product->getName() . " ";
-            $weight += ($item->getWeight() * $item->getQty()) ;
+            $weight += intval($item->getWeight()) * intval($item->getQtyOrdered()) ;
         }
 
         $phonenumber = trim($shippingAdr->getTelephone());
