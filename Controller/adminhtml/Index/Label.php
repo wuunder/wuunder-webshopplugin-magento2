@@ -165,8 +165,6 @@ class Label extends \Magento\Framework\App\Action\Action
             $phonenumber = '+31' . substr($phonenumber, 1);
         }
 
-        var_dump($weight); exit;
-
         return array(
             'reference' => $orderId,
             'description' => $shipmentDescription,
