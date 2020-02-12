@@ -15,7 +15,6 @@ define([
         },
 
         initialize: function () {
-            console.log("init!");
             this._super();
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
@@ -96,16 +95,12 @@ define([
 
             function _printParcelshopAddress() {
                 if (parcelshopAddress) {
-                    console.log("h1");
                     if (window.parent.document.getElementsByClassName("parcelshopInfo").length) {
-                        console.log("h2");
                         window.parent.document.getElementsByClassName("parcelshopInfo")[0].remove();
                     }
                     if (window.parent.document.getElementById('wuunder_parcelshop_container') === null) {
-                        console.log("h3");
                         return;
                     }
-                    console.log("h4");
                     var currentParcelshop = document.createElement('div');
                     currentParcelshop.className += 'parcelshopInfo';
                     currentParcelshop.innerHTML = '<br/><strong>Huidige Parcelshop:</strong><br/>' + parcelshopAddress;
