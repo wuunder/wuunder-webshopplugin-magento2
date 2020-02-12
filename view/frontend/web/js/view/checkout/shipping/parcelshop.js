@@ -1,3 +1,4 @@
+
 define([
     'jquery',
     'uiComponent',
@@ -14,6 +15,7 @@ define([
         },
 
         initialize: function () {
+            console.log("init!");
             this._super();
             this.selectedMethod = ko.computed(function () {
                 var parcelshopShippingMethodElem = quote.shippingMethod();
@@ -46,6 +48,35 @@ define([
             let refreshParcelshopAddress = 'wuunder/index/parcelshop/refreshParcelshopAddress';
             var fetchedAddress = false;
 
+
+            /*
+            The following method is needed to (re)insert when shipping methods get reloaded.
+            */
+            $(document).ajaxComplete(function() {
+                this.selectedMethod = ko.computed(function () {
+                    var parcelshopShippingMethodElem = quote.shippingMethod();
+                    var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
+                    if (selectedMethod === 'parcelshopPicker_parcelshopPicker'
+                        && quote.shippingAddress().city !== undefined
+                        && quote.shippingAddress().street !== undefined
+                        && quote.shippingAddress().postcode !== undefined
+                        && quote.shippingAddress().countryId !== undefined
+                    ) {
+                        if ($('#wuunder_parcelshop_container').length === 0) {
+                            var columnCount = $('#label_method_parcelshopPicker_parcelshopPicker').parent().children().length;
+                            $('<tr><td id="wuunder_parcelshop_container" colspan="' + columnCount + '"></td><tr>').insertAfter($('#label_method_parcelshopPicker_parcelshopPicker').parent());
+                            $('#wuunder_parcelshop_container').html('<div id="parcelshop" class="parcelshopwrapper"><a href="#" id="get_parcels_link">' + $.mage.__('Click here to select your Parcelshop') + '</a><div id="map_container"><div id="map_canvas" class="gmaps"></div></div></div>');
+                        } else if ($('#wuunder_parcelshop_container')) {
+                            $('#wuunder_parcelshop_container').show();
+                        }
+                        _printParcelshopAddress();
+                    } else {
+                        $('#wuunder_parcelshop_container').hide();
+                    }
+                    return selectedMethod;
+                }, this);
+            });
+
             $(document).ready(function () {
                 _fetchAddress();
                 $(document).on('click', '#get_parcels_link', function(e) {
@@ -65,12 +96,16 @@ define([
 
             function _printParcelshopAddress() {
                 if (parcelshopAddress) {
+                    console.log("h1");
                     if (window.parent.document.getElementsByClassName("parcelshopInfo").length) {
+                        console.log("h2");
                         window.parent.document.getElementsByClassName("parcelshopInfo")[0].remove();
                     }
                     if (window.parent.document.getElementById('wuunder_parcelshop_container') === null) {
+                        console.log("h3");
                         return;
                     }
+                    console.log("h4");
                     var currentParcelshop = document.createElement('div');
                     currentParcelshop.className += 'parcelshopInfo';
                     currentParcelshop.innerHTML = '<br/><strong>Huidige Parcelshop:</strong><br/>' + parcelshopAddress;
