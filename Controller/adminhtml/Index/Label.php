@@ -155,7 +155,7 @@ class Label extends \Magento\Framework\App\Action\Action
         foreach ($order->getAllItems() as $item) {
             $product = $this->productloader->create()->load($item->getProductId());
             $shipmentDescription .= $product->getName() . " ";
-            $weight += intval($item->getWeight()) * intval($item->getQtyOrdered()) ;
+            $weight += intval($item->getWeight() * 1000) * intval($item->getQtyOrdered()) ;
         }
 
         $phonenumber = trim($shippingAdr->getTelephone());
