@@ -4,22 +4,24 @@ Please file changes under `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` o
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+
 ## Unreleased
-## 2019-06-04
+
+## [2.1.2](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.2) - 2020-02-13
 
 ### Fixed
 
+- Fixed issues from feedback after plugin submission magento 2 marketplace
+- Fixed notice in order grid
 - Fix parcelshop id querying
+- Fixed checkout parcelshop address when user is not logged in [#17](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/17)
+- Bulkbook address, weight and value fix
+- SQL query security
 
-## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.2) - 2019-06-04
+## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.1) - 2019-06-04
 
 ### Fixed
 - Admin routes fixed [#27](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/27)
-
-## [2.1.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.1) - 2019-04-05
-
-### Fixed
-- Fixed name of shipping method reference in parcelshop.js [#15](https://github.com/wuunder/wuunder-webshopplugin-magento2/pull/15)
 
 ## [2.1.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.0) - 2019-04-05
 

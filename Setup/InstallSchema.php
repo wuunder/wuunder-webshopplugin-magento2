@@ -115,7 +115,23 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->setComment('Wuunder shipment table');
             $installer->getConnection()->createTable($table);
-            $installer->endSetup();
+
         }
+
+        $orderTable = 'sales_order';
+
+        //Order table
+        $setup->getConnection()
+            ->addColumn(
+                $setup->getTable($orderTable),
+                'wuunder_parcelshop_id',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    'length' => 255,
+                    'comment' =>'Custom Attribute'
+                ]
+            );
+
+        $setup->endSetup();
     }
 }

@@ -14,29 +14,28 @@ class Label extends \Magento\Framework\App\Action\Action
     protected $orderRepository;
     protected $productloader;
     protected $scopeConfig;
-    protected $storeManager;
+    protected $storeManagerInterface;
     protected $HelperBackend;
     protected $messageManager;
 
     public function __construct(
-        Context $context, 
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory, 
-        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository, 
-        \Magento\Catalog\Model\ProductFactory $productloader, 
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, 
-        \Magento\Store\Model\StoreManagerInterface $storeManager, 
-        \Magento\Backend\Helper\Data $HelperBackend, 
-        Data $helper, 
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        Data $helper,
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
+        \Magento\Sales\Api\OrderRepositoryInterface $orderRepository,
+        \Magento\Catalog\Model\ProductFactory $productloader,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Store\Model\StoreManagerInterface $storeManagerInterface,
+        \Magento\Backend\Helper\Data $HelperBackend,
+        Context $context
     ) {
         $this->helper = $helper;
         $this->resultPageFactory = $resultPageFactory;
         $this->orderRepository = $orderRepository;
         $this->productloader = $productloader;
         $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
+        $this->storeManagerInterface = $storeManagerInterface; // Cannot be fetched from Action context, got via dep. injection
         $this->HelperBackend = $HelperBackend;
-        $this->messageManager = $messageManager;
+        $this->messageManager = $context->getMessageManager();
         parent::__construct($context);
     }
 
@@ -70,7 +69,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $booking_token = uniqid();
             $infoArray['booking_token'] = $booking_token;
             $redirect_url = $this->HelperBackend->getUrl('sales/order');
-            $webhook_url = $this->storeManager->getStore()->getBaseUrl() 
+            $webhook_url = $this->storeManagerInterface->getStore()->getBaseUrl()
             . 'wuunder/index/webhook/order_id/' . $orderId;
 
             if ($test_mode == 1) {
@@ -90,6 +89,8 @@ class Label extends \Magento\Framework\App\Action\Action
 
             $connector = new \Wuunder\Connector($apiKey, $test_mode == 1);
             $booking = $connector->createBooking();
+
+            
 
             if ($bookingConfig->validate()) {
                 $booking->setConfig($bookingConfig);
@@ -150,14 +151,16 @@ class Label extends \Magento\Framework\App\Action\Action
         $shippingAdr = $order->getShippingAddress();
 
         $shipmentDescription = "";
+        $weight = 0;
         foreach ($order->getAllItems() as $item) {
             $product = $this->productloader->create()->load($item->getProductId());
             $shipmentDescription .= $product->getName() . " ";
+            $weight += intval($item->getWeight() * 1000) * intval($item->getQtyOrdered()) ;
         }
 
         $phonenumber = trim($shippingAdr->getTelephone());
         // Set default values
-        if ((substr($phonenumber, 0, 1) == '0') 
+        if ((substr($phonenumber, 0, 1) == '0')
             && ($shippingAdr->getCountryId() == 'NL')
         ) {
             // If NL and phonenumber starting with 0, replace it with +31
@@ -169,6 +172,7 @@ class Label extends \Magento\Framework\App\Action\Action
             'description' => $shipmentDescription,
             $messageField => '',
             'phone_number' => $phonenumber,
+            'weight' => $weight
         );
     }
 
@@ -186,7 +190,7 @@ class Label extends \Magento\Framework\App\Action\Action
         } else {
             $streetAddress = $this->addressSplitter($streetAddress[0]);
             $streetName = $streetAddress['streetName'];
-            $houseNumber = $streetAddress['houseNumber'] 
+            $houseNumber = $streetAddress['houseNumber']
             . $shippingAddress['houseNumberSuffix'];
         }
 
@@ -263,10 +267,11 @@ class Label extends \Magento\Framework\App\Action\Action
         $orderedItems = $order->getAllVisibleItems();
         if (count($orderedItems) > 0) {
             foreach ($orderedItems AS $orderedItem) {
+
                 $_product = $this->productloader->create()->load(
                     $orderedItem->getProductId()
                 );
-                $imageUrl = $this->storeManager->getStore()->getBaseUrl(
+                $imageUrl = $this->storeManagerInterface->getStore()->getBaseUrl(
                     \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
                 ) . 'catalog/product' . $_product->getImage();
                 try {
@@ -319,12 +324,14 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setPicture($image);
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
+        $bookingConfig->setWeight($infoArray['weight']);
+        $bookingConfig->setValue($order->getBaseGrandTotal() * 100);
         $bookingConfig->setSource(
             array(
                 "product" => "Magento 2 extension",
                 "version" => array(
                     "build" => "2.1.2",
-                    "plugin" => "2.1"),
+                    "plugin" => "2.0"),
                     "platform" => array(
                         "name" => "Magento",
                         "build" => $version))
@@ -361,10 +368,10 @@ class Label extends \Magento\Framework\App\Action\Action
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
         $connection = $resource->getConnection();
         $tableName = $resource->getTableName('wuunder_quote_id');
-        $sql = "SELECT parcelshop_id FROM " . $tableName ." WHERE quote_id =" . $quoteId;
+        $sql = "SELECT parcelshop_id FROM " . $tableName ." WHERE quote_id = '" . $quoteId . "'";
         try {
             $parcelshopId = $connection->fetchOne($sql);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->helper->log('ERROR getWuunderShipment : ' . $e);
             return null;
         }
