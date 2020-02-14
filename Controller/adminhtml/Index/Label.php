@@ -324,7 +324,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
         $bookingConfig->setWeight($infoArray['weight']);
-        $bookingConfig->setValue($order->getBaseGrandTotal() * 100);
+        $bookingConfig->setValue($order->getBaseSubtotalInclTax() * 100);
         $bookingConfig->setSource(
             array(
                 "product" => "Magento 2 extension",
