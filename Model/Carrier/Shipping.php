@@ -72,7 +72,7 @@ class Shipping extends \Magento\Shipping\Model\Carrier\AbstractCarrier implement
      */
     public function collectRates(RateRequest $request)
     {
-        if (!$this->getConfigFlag('active')) {
+        if (!$this->getConfigFlag('active') || !$this->getConfigFlag('enabledcarriers')) {
             return false;
         }
 
