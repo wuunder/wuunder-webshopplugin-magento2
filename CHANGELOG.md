@@ -7,6 +7,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## [2.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.0) - 2020-02-14
+
+### Fixed
+
+- Fix front-end controller action for webhook. Only supports mage >= 2.3
+
 ## [2.1.3](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.3) - 2020-02-14
 
 ### Fixed
