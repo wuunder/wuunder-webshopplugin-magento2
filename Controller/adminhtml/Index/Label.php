@@ -184,14 +184,13 @@ class Label extends \Magento\Framework\App\Action\Action
         $shippingLastname = $shippingAddress->getLastname();
 
         $streetAddress = $shippingAddress->getStreet();
+
         if (count($streetAddress) > 1) {
             $streetName = $streetAddress[0];
             $houseNumber = $streetAddress[1];
         } else {
-            $streetAddress = $this->addressSplitter($streetAddress[0]);
-            $streetName = $streetAddress['streetName'];
-            $houseNumber = $streetAddress['houseNumber']
-            . $shippingAddress['houseNumberSuffix'];
+            $streetName = $streetAddress[0];
+            $houseNumber = null;
         }
 
         // Fix wuunder parcelshop first- and lastname override fix
@@ -325,13 +324,13 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
         $bookingConfig->setWeight($infoArray['weight']);
-        $bookingConfig->setValue($order->getBaseGrandTotal() * 100);
+        $bookingConfig->setValue($order->getBaseSubtotalInclTax() * 100);
         $bookingConfig->setSource(
             array(
                 "product" => "Magento 2 extension",
                 "version" => array(
-                    "build" => "2.2.0",
-                    "plugin" => "2.1"),
+                    "build" => "2.1.3",
+                    "plugin" => "2.0"),
                     "platform" => array(
                         "name" => "Magento",
                         "build" => $version))
@@ -343,24 +342,6 @@ class Label extends \Magento\Framework\App\Action\Action
             $bookingConfig->setParcelshopId($parcelshopId);
         }
         return $bookingConfig;
-    }
-
-    private function addressSplitter($address)
-    {
-        if (!isset($address)) {
-            return false;
-        }
-
-        // Pregmatch pattern, dutch addresses
-        $pattern = '#^([a-z0-9 [:punct:]\']*) ([0-9]{1,5})([a-z0-9 \-/]{0,})$#i';
-
-        preg_match($pattern, $address, $addressParts);
-
-        $result['streetName'] = isset($addressParts[1]) ? $addressParts[1] : $address;
-        $result['houseNumber'] = isset($addressParts[2]) ? $addressParts[2] : "";
-        $result['houseNumberSuffix'] = (isset($addressParts[3])) ? $addressParts[3] : '';
-
-        return $result;
     }
 
     private function getParcelshopIdForQuote($quoteId, $objectManager)
