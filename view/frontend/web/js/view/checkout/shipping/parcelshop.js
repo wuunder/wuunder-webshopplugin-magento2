@@ -1,3 +1,4 @@
+
 define([
     'jquery',
     'uiComponent',
@@ -45,6 +46,35 @@ define([
             var setParcelshopId = "wuunder/index/parcelshop/setParcelshopId";
             let refreshParcelshopAddress = 'wuunder/index/parcelshop/refreshParcelshopAddress';
             var fetchedAddress = false;
+
+
+            /*
+            The following method is needed to (re)insert when shipping methods get reloaded.
+            */
+            $(document).ajaxComplete(function() {
+                this.selectedMethod = ko.computed(function () {
+                    var parcelshopShippingMethodElem = quote.shippingMethod();
+                    var selectedMethod = parcelshopShippingMethodElem !== null ? parcelshopShippingMethodElem.carrier_code + '_' + parcelshopShippingMethodElem.method_code : null;
+                    if (selectedMethod === 'parcelshopPicker_parcelshopPicker'
+                        && quote.shippingAddress().city !== undefined
+                        && quote.shippingAddress().street !== undefined
+                        && quote.shippingAddress().postcode !== undefined
+                        && quote.shippingAddress().countryId !== undefined
+                    ) {
+                        if ($('#wuunder_parcelshop_container').length === 0) {
+                            var columnCount = $('#label_method_parcelshopPicker_parcelshopPicker').parent().children().length;
+                            $('<tr><td id="wuunder_parcelshop_container" colspan="' + columnCount + '"></td><tr>').insertAfter($('#label_method_parcelshopPicker_parcelshopPicker').parent());
+                            $('#wuunder_parcelshop_container').html('<div id="parcelshop" class="parcelshopwrapper"><a href="#" id="get_parcels_link">' + $.mage.__('Click here to select your Parcelshop') + '</a><div id="map_container"><div id="map_canvas" class="gmaps"></div></div></div>');
+                        } else if ($('#wuunder_parcelshop_container')) {
+                            $('#wuunder_parcelshop_container').show();
+                        }
+                        _printParcelshopAddress();
+                    } else {
+                        $('#wuunder_parcelshop_container').hide();
+                    }
+                    return selectedMethod;
+                }, this);
+            });
 
             $(document).ready(function () {
                 _fetchAddress();
