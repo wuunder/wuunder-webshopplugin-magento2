@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## [2.1.3](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.3) - 2020-02-14
+
+### Fixed
+
+- Fix value without shipping costs
+- Fix debug config field label text
+- Fix parcelshop address shown after refresh
+
 ## [2.1.2](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.1.2) - 2020-02-13
 
 ### Fixed
