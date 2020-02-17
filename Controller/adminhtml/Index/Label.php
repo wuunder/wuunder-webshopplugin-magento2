@@ -275,7 +275,7 @@ class Label extends \Magento\Framework\App\Action\Action
                 ) . 'catalog/product' . $_product->getImage();
                 try {
                     if (!empty($_product->getImage())) {
-                        $data = @file_get_contents($imageUrl);
+                        $data = file_get_contents($imageUrl);
                         if ($data) {
                             $base64Image = base64_encode($data);
                         } else {
