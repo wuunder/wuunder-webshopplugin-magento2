@@ -154,7 +154,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $weight = 0;
         foreach ($order->getAllItems() as $item) {
             $product = $this->productloader->create()->load($item->getProductId());
-            $shipmentDescription .= $product->getName() . " ";
+            $shipmentDescription .= "- " . intval($item->getQtyOrdered()) . "x " . $product->getName() . "\r\n";
             $weight += intval($item->getWeight() * 1000) * intval($item->getQtyOrdered()) ;
         }
 
