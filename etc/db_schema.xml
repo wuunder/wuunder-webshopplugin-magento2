@@ -11,6 +11,9 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="shipment_id"/>
         </constraint>
+        <index referenceId="INDEX_ORDER_ID" indexType="btree">
+            <column name="order_id"/>
+        </index>
     </table>
 
     <table name="wuunder_quote_id" resource="default" engine="innodb" comment="Wuunder Shipment Table">
