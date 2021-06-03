@@ -53,28 +53,45 @@ class Webhook extends \Magento\Framework\App\Action\Action  implements CsrfAware
                     'Wuunder\Wuunderconnector\Model\WuunderShipment'
                 );
                 $wuunderShipment->load($this->getRequest()->getParam('order_id'), 'order_id');
+
+                $wuunderShipment = $this->get_wuunder_shipment($this->getRequest()->getParam('order_id'));
+
                 if (!$wuunderShipment->getId()) {
                     //shipment does not exist yet
                     $wuunderShipment->setOrderId($this->getRequest()->getParam('order_id'));
                 }
-                $wuunderShipment->setLabelId($result['id']);
-                $wuunderShipment->setLabelUrl($result['label_url']);
-                $wuunderShipment->setTtUrl($result['track_and_trace_url']);
-                $wuunderShipment->save();
+                if (!$wuunderShipment->getLabelId()){
+                    $wuunderShipment->setLabelId($result['id']);
+                    $wuunderShipment->setLabelUrl($result['label_url']);
+                    $wuunderShipment->setTtUrl($result['track_and_trace_url']);
+                    $wuunderShipment->save();
+                }
             } else if ($result['action'] === "track_and_trace_updated") {
                 $this->helper->log(
                     "Webhook - Track and trace for order: " . $this->getRequest()->getParam('order_id')
                 );
+
                 $this->ship(
                     $this->getRequest()->getParam('order_id'),
                     $result['carrier_code'],
                     $result['track_and_trace_code']
-                );
+                );    
             }
         } else {
             $this->helper->log("Invalid order_id for the webhook");
         }
 
+    }
+
+    private function get_wuunder_shipment($order_id)
+    {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $wuunderShipment = $objectManager->create(
+            'Wuunder\Wuunderconnector\Model\WuunderShipment'
+        );
+        $wuunderShipment->load($this->getRequest()->getParam('order_id'), 'order_id');
+
+        return $wuunderShipment;
     }
 
     private function ship($order_id, $carrier, $label_id) 

@@ -273,9 +273,10 @@ class Label extends \Magento\Framework\App\Action\Action
                 $imageUrl = $this->storeManagerInterface->getStore()->getBaseUrl(
                     \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
                 ) . 'catalog/product' . $_product->getImage();
+                
                 try {
                     if (!empty($_product->getImage())) {
-                        $data = @file_get_contents($imageUrl);
+                        $data = file_get_contents($imageUrl);
                         if ($data) {
                             $base64Image = base64_encode($data);
                         } else {
@@ -324,12 +325,12 @@ class Label extends \Magento\Framework\App\Action\Action
         $bookingConfig->setCustomerReference($order->getIncrementId());
         $bookingConfig->setPreferredServiceLevel($preferredServiceLevel);
         $bookingConfig->setWeight($infoArray['weight']);
-        $bookingConfig->setValue($order->getBaseSubtotalInclTax() * 100);
+        $bookingConfig->setValue($order->getBaseSubtotal() * 100);
         $bookingConfig->setSource(
             array(
                 "product" => "Magento 2 extension",
                 "version" => array(
-                    "build" => "2.2.0",
+                    "build" => "2.2.1",
                     "plugin" => "2.0"),
                     "platform" => array(
                         "name" => "Magento",
