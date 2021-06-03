@@ -24,7 +24,7 @@ class Collection extends OriginalCollection
     protected function _renderFiltersBefore() 
     {
         $joinTable = $this->getTable('wuunder_shipment');
-        $this->getSelect()->joinLeft($joinTable, 'wuunder_shipment.order_id = main_table.entity_id', ['label_id', 'label_url', 'tt_url', 'booking_url']);
+        $this->getSelect()->joinLeft($joinTable, $joinTable.'.order_id = main_table.entity_id', ['label_id', 'label_url', 'tt_url', 'booking_url']);
         parent::_renderFiltersBefore();
     }
 }
