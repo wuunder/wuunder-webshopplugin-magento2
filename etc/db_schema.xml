@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="wuunder_shipment" resource="default" engine="innodb" comment="Wuunder Shipment Table">
+        <column xsi:type="int" name="shipment_id" padding="11" unsigned="true" nullable="false" identity="true" comment="Shipment ID"/>
+        <column xsi:type="int" name="order_id" padding="11" unsigned="true" nullable="false" comment="Order ID"/>
+        <column xsi:type="int" name="label_id" padding="11" unsigned="true" nullable="true" comment="Shipment Label ID"/>
+        <column xsi:type="text" name="label_url" nullable="true" comment="Shipment Label URL"/>
+        <column xsi:type="text" name="tt_url" nullable="true" comment="Shipment Track and Trace URL"/>
+        <column xsi:type="text" name="booking_url" nullable="true" comment="Shipment Booking URL"/>
+        <column xsi:type="text" name="booking_token" nullable="false" comment="Shipment Booking Token"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="shipment_id"/>
+        </constraint>
+        <index referenceId="INDEX_ORDER_ID" indexType="btree">
+            <column name="order_id"/>
+        </index>
+    </table>
+
+    <table name="wuunder_quote_id" resource="default" engine="innodb" comment="Wuunder Shipment Table">
+        <column xsi:type="int" name="id" padding="11" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="int" name="quote_id" padding="11" unsigned="true" nullable="false" comment="Quote ID"/>
+        <column xsi:type="text" name="parcelshop_id" nullable="true" comment="Parcelshop ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+
+    <table name="sales_order">
+        <column xsi:type="varchar" name="wuunder_parcelshop_id" nullable="false" length="255" comment="Wuunder Parcelshop ID"/>
+    </table>
+</schema>
