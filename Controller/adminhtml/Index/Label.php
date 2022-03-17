@@ -152,9 +152,9 @@ class Label extends \Magento\Framework\App\Action\Action
 
         $shipmentDescription = "";
         $weight = 0;
-        foreach ($order->getAllItems() as $item) {
+        foreach ($order->getAllVisibleItems() as $item) {
             $product = $this->productloader->create()->load($item->getProductId());
-            $shipmentDescription .= $product->getName() . " ";
+            $shipmentDescription .= "- " . intval($item->getQtyOrdered()) . "x " . $product->getName() . "\r\n";
             $weight += intval($item->getWeight() * 1000) * intval($item->getQtyOrdered()) ;
         }
 
@@ -330,7 +330,7 @@ class Label extends \Magento\Framework\App\Action\Action
             array(
                 "product" => "Magento 2 extension",
                 "version" => array(
-                    "build" => "2.2.1",
+                    "build" => "2.2.2",
                     "plugin" => "2.0"),
                     "platform" => array(
                         "name" => "Magento",
