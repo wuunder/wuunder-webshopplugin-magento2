@@ -2,7 +2,7 @@
   "name": "wuunder/magento2-connector",
   "description": "Magento 2 extension Wuunder",
   "type": "magento2-module",
-  "version": "2.2.0",
+  "version": "2.2.2",
   "homepage": "https://wearewuunder.com/",
   "require": {
     "wuunder/connector-php": ">=1.0.0"
