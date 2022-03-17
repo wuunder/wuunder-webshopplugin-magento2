@@ -7,6 +7,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## Unreleased
 
+## [2.2.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.1) - 2021-06-03
+
+### Fixed
+
+- Fix query table support prefix
+- Removed error suppression
+- Prevent multiple shipment updates when booking multiple shipments
+- Removed tax from value for shipments
+
+
 ## [2.2.0](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.0) - 2020-02-14
 
 ### Fixed
