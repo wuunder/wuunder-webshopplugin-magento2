@@ -7,16 +7,19 @@
             </argument>
         </arguments>
     </type>
-    <type name="Vendor\Wuunderconnector\Observer\WuunderLoggingObserver">
+    <!-- start logger-->
+    <type name="Wuunder\Wuunderconnector\Logger\Handler">
         <arguments>
-            <argument name="logger" xsi:type="object">WuunderLogging</argument>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
         </arguments>
     </type>
-    <virtualType name="WuunderLogging" type="Magento\Framework\Logger\Monolog">
+    <type name="Wuunder\Wuunderconnector\Logger\Logger">
         <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="error" xsi:type="object">Vendor\Wuunderconnector\Logger\WuunderLogging\ErrorHandler</item>
+            <argument name="name" xsi:type="string">customLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">Wuunder\Wuunderconnector\Logger\Handler</item>
             </argument>
         </arguments>
-    </virtualType>
+    </type>
+    <!-- end logger-->
 </config>

@@ -2,15 +2,16 @@
 
 namespace Wuunder\Wuunderconnector\Helper;
 
-use \Psr\Log\LoggerInterfacer;
 use \Magento\Framework\App\Helper\AbstractHelper;
 
 class Data extends AbstractHelper
 {
-    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Vendor\Wuunderconnector\Logger\WuunderLogging $wuunder_logger)
-    {
+    public function __construct(
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Wuunder\Wuunderconnector\Logger\Logger $wuunderLogger
+    ) {
         $this->scopeConfig = $scopeConfig;
-        $this->wuunder_logger = $wuunder_logger;
+        $this->wuunder_logger = $wuunderLogger;
     }
 
     public function log($message)
