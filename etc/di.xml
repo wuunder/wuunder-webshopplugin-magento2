@@ -7,4 +7,16 @@
             </argument>
         </arguments>
     </type>
+    <type name="Vendor\Wuunderconnector\Observer\WuunderLoggingObserver">
+        <arguments>
+            <argument name="logger" xsi:type="object">WuunderLogging</argument>
+        </arguments>
+    </type>
+    <virtualType name="WuunderLogging" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="error" xsi:type="object">Vendor\Wuunderconnector\Logger\WuunderLogging\ErrorHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>
