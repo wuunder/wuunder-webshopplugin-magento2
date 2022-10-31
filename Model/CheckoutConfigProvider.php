@@ -37,9 +37,13 @@ class CheckoutConfigProvider implements \Magento\Checkout\Model\ConfigProviderIn
         $baseApiUrl = substr($tmpEnvironment->getStageBaseUrl(), 0, -3);
         $output['api_base_url'] = $baseApiUrl;
         $output['backend_base_url'] = $this->storeManager->getStore()->getBaseUrl();
-        $output['available_carriers'] = str_replace(
-            ' ', '', $this->scopeConfig->getValue('carriers/parcelshopPicker/enabledcarriers')
-        );
+        if(empty($this->scopeConfig->getValue('carriers/parcelshopPicker/enabledcarriers')) || $this->scopeConfig->getValue('carriers/parcelshopPicker/enabledcarriers') == NULL){
+            $output['available_carriers'] = null;
+        } else {
+            $output['available_carriers'] = str_replace(
+                ' ', '', $this->scopeConfig->getValue('carriers/parcelshopPicker/enabledcarriers')
+            );
+        }
         return $output;
     }
 }
