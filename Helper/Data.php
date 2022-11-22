@@ -1,23 +1,24 @@
 <?php
 
 namespace Wuunder\Wuunderconnector\Helper;
-use \Magento\Framework\App\Helper\AbstractHelper;
 
+use \Magento\Framework\App\Helper\AbstractHelper;
 
 class Data extends AbstractHelper
 {
-    public function __construct(\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig)
-    {
+    public function __construct(
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Wuunder\Wuunderconnector\Logger\Logger $wuunderLogger
+    ) {
         $this->scopeConfig = $scopeConfig;
+        $this->wuunder_logger = $wuunderLogger;
     }
 
     public function log($message)
+
     {
         if ($this->_isLoggingEnabled()) {
-            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/wuunder.log');
-            $logger = new \Zend\Log\Logger();
-            $logger->addWriter($writer);
-            $logger->info($message);
+            $this->wuunder_logger->error($message);
         }
     }
 
