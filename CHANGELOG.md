@@ -6,12 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 
 ## Unreleased
-## [2.2.3](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.3) - 2020-02-14
+## [2.2.3](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.3) - 2022-12-06
 
 ### Fixed
 
 - Support php 8.1
-## [2.2.2](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.2) - 2020-02-14
+## [2.2.2](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.2) - 2021-03-17
 
 ### Changed
 
