@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 
 ## Unreleased
+## [2.2.3](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.3) - 2020-02-14
+
+### Fixed
+
+- Support php 8.1
+## [2.2.2](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.2) - 2020-02-14
+
+### Changed
+
+- Shipper address optional
+- Only visible items added to description
+
+### Fixed
+
+- Description string
 
 ## [2.2.1](https://github.com/wuunder/wuunder-webshopplugin-magento2/releases/tag/2.2.1) - 2021-06-03
 
