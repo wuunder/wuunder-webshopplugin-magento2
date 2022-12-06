@@ -70,7 +70,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $infoArray['booking_token'] = $booking_token;
             $redirect_url = $this->HelperBackend->getUrl('sales/order');
             $webhook_url = $this->storeManagerInterface->getStore()->getBaseUrl()
-            . 'wuunder/index/webhook/order_id/' . $orderId;
+                . 'wuunder/index/webhook/order_id/' . $orderId;
 
             if ($test_mode == 1) {
                 $apiKey = $this->scopeConfig->getValue(
@@ -90,7 +90,7 @@ class Label extends \Magento\Framework\App\Action\Action
             $connector = new \Wuunder\Connector($apiKey, $test_mode == 1);
             $booking = $connector->createBooking();
 
-            
+
 
             if ($bookingConfig->validate()) {
                 $booking->setConfig($bookingConfig);
@@ -99,7 +99,8 @@ class Label extends \Magento\Framework\App\Action\Action
                     $redirect_url = $booking->getBookingResponse()->getBookingUrl();
                     // Create or update wuunder_shipment
                     $this->saveWuunderShipment(
-                        $orderId, $redirect_url,
+                        $orderId,
+                        $redirect_url,
                         "testtoken"
                     );
                     return $redirect_url;
@@ -109,8 +110,6 @@ class Label extends \Magento\Framework\App\Action\Action
             } else {
                 $this->helper->log("Bookingconfig not complete");
             }
-
-
         }
         return null;
     }
@@ -155,7 +154,7 @@ class Label extends \Magento\Framework\App\Action\Action
         foreach ($order->getAllVisibleItems() as $item) {
             $product = $this->productloader->create()->load($item->getProductId());
             $shipmentDescription .= "- " . intval($item->getQtyOrdered()) . "x " . $product->getName() . "\r\n";
-            $weight += intval($item->getWeight() * 1000) * intval($item->getQtyOrdered()) ;
+            $weight += intval($item->getWeight() * 1000) * intval($item->getQtyOrdered());
         }
 
         $phonenumber = trim($shippingAdr->getTelephone());
@@ -265,7 +264,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $image = null;
         $orderedItems = $order->getAllVisibleItems();
         if (count($orderedItems) > 0) {
-            foreach ($orderedItems AS $orderedItem) {
+            foreach ($orderedItems as $orderedItem) {
 
                 $_product = $this->productloader->create()->load(
                     $orderedItem->getProductId()
@@ -273,7 +272,7 @@ class Label extends \Magento\Framework\App\Action\Action
                 $imageUrl = $this->storeManagerInterface->getStore()->getBaseUrl(
                     \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
                 ) . 'catalog/product' . $_product->getImage();
-                
+
                 try {
                     if (!empty($_product->getImage())) {
                         $data = file_get_contents($imageUrl);
@@ -315,7 +314,8 @@ class Label extends \Magento\Framework\App\Action\Action
 
         //get parcelshop id from quote id
         $parcelshopId = $this->getParcelshopIdForQuote(
-            $order->getQuoteId(), $objectManager
+            $order->getQuoteId(),
+            $objectManager
         );
 
         $bookingConfig = new \Wuunder\Api\Config\BookingConfig();
@@ -330,11 +330,14 @@ class Label extends \Magento\Framework\App\Action\Action
             array(
                 "product" => "Magento 2 extension",
                 "version" => array(
-                    "build" => "2.2.2",
-                    "plugin" => "2.0"),
-                    "platform" => array(
-                        "name" => "Magento",
-                        "build" => $version))
+                    "build" => "2.2.3",
+                    "plugin" => "2.0"
+                ),
+                "platform" => array(
+                    "name" => "Magento",
+                    "build" => $version
+                )
+            )
         );
         $bookingConfig->setDeliveryAddress($deliveryAddress);
         $bookingConfig->setPickupAddress($pickupAddress);
@@ -350,7 +353,7 @@ class Label extends \Magento\Framework\App\Action\Action
         $resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
         $connection = $resource->getConnection();
         $tableName = $resource->getTableName('wuunder_quote_id');
-        $sql = "SELECT parcelshop_id FROM " . $tableName ." WHERE quote_id = '" . $quoteId . "'";
+        $sql = "SELECT parcelshop_id FROM " . $tableName . " WHERE quote_id = '" . $quoteId . "'";
         try {
             $parcelshopId = $connection->fetchOne($sql);
         } catch (\Exception $e) {
