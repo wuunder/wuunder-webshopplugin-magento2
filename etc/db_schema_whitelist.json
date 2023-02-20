@@ -1,0 +1,31 @@
+{
+    "wuunder_shipment": {
+        "column": {
+            "shipment_id": true,
+            "order_id": true,
+            "label_id": true,
+            "label_url": true,
+            "tt_url": true,
+            "booking_url": true,
+            "booking_token": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "wuunder_quote_id": {
+        "column": {
+            "id": true,
+            "quote_id": true,
+            "parcelshop_id": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "sales_order": {
+        "column": {
+            "wuunder_parcelshop_id": true
+        }
+    }
+}

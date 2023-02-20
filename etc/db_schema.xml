@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-    <table name="wuunder_shipment" resource="default" engine="innodb" comment="'Wuunder shipment table">
+    <table name="wuunder_shipment" resource="default" engine="innodb" comment="Wuunder shipment table">
         <column xsi:type="int" name="shipment_id" padding="11" primary="true" unsigned="true" nullable="false" identity="true" comment="Shipment ID"/>
         <column xsi:type="int" name="order_id" nullable="false" comment="Shipment Name"/>
         <column xsi:type="int" name="label_id" nullable="true" comment="Shipment label id"/>
         <column xsi:type="varchar" name="label_url" unsigned="true" length="255" nullable="true" comment="Shipment label url"/>
-        <column xsi:type="varchar" name="tt_url" unsigned="true" length="255" nullable="true" comment="Shipment T&T url"/>
+        <column xsi:type="varchar" name="tt_url" unsigned="true" length="255" nullable="true" comment="Shipment Track and Trace url"/>
         <column xsi:type="varchar" name="booking_url" unsigned="true" length="255" nullable="true" comment="Shipment booking url"/>
         <column xsi:type="varchar" name="booking_token" unsigned="true" length="255" nullable="true" comment="Shipment booking token"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
@@ -13,7 +13,7 @@
         </constraint>
     </table>
 
-    <table name="wuunder_quote_id" resource="default" engine="innodb" comment="'Wuunder parcelshop table">
+    <table name="wuunder_quote_id" resource="default" engine="innodb" comment="Wuunder parcelshop table">
         <column xsi:type="int" name="id" padding="11" primary="true" unsigned="true" nullable="false" identity="true" comment="ID"/>
         <column xsi:type="int" name="quote_id" nullable="false" comment="Quote info"/>
         <column xsi:type="varchar" name="parcelshop_id" unsigned="true" length="255" nullable="true" comment="Parcelshop id"/>
