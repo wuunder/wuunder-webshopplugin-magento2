@@ -14,8 +14,8 @@ class Data extends AbstractHelper
     public function log($message)
     {
         if ($this->_isLoggingEnabled()) {
-            $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/wuunder.log');
-            $logger = new \Zend\Log\Logger();
+            $writer = new \Zend_Log_Writer_Stream(BP . '/var/log/wuunder.log');
+            $logger = new \Zend_Log();
             $logger->addWriter($writer);
             $logger->info($message);
         }
